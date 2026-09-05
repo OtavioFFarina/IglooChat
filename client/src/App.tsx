@@ -16,7 +16,12 @@ const ConcordApp: React.FC = () => {
   const {
     currentServer,
     currentDM,
-    activeStageView
+    activeStageView,
+    isCreateServerOpen,
+    isJoinServerOpen,
+    isCreateChannelOpen,
+    isUserSettingsOpen,
+    directCall
   } = useConcord();
 
   const [isMemberListOpen, setIsMemberListOpen] = useState(true);
@@ -53,11 +58,11 @@ const ConcordApp: React.FC = () => {
       </div>
 
       {/* Modals & Overlays */}
-      <CreateServerModal />
-      <JoinServerModal />
-      <CreateChannelModal />
-      <UserSettingsModal />
-      <IncomingCallModal />
+      {isCreateServerOpen && <CreateServerModal />}
+      {isJoinServerOpen && <JoinServerModal />}
+      {isCreateChannelOpen && <CreateChannelModal />}
+      {isUserSettingsOpen && <UserSettingsModal />}
+      {directCall?.status === 'incoming' && <IncomingCallModal />}
     </div>
   );
 };

@@ -5,7 +5,6 @@ import { X, Mic, Video, Monitor, Check, UserCheck } from 'lucide-react';
 
 export const UserSettingsModal: React.FC = () => {
   const {
-    isUserSettingsOpen,
     closeUserSettingsModal,
     currentUser,
     updateUserProfile,
@@ -37,38 +36,41 @@ export const UserSettingsModal: React.FC = () => {
   const [screenTestStream, setScreenTestStream] = useState<MediaStream | null>(null);
   const screenPreviewRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    setUsername(currentUser.username);
-    setAvatar(currentUser.avatar);
-    setStatus(currentUser.status);
-    setCustomStatus(currentUser.custom_status || '');
-  }, [currentUser]);
-
-  // Cleanup tests on modal close
-  useEffect(() => {
-    if (!isUserSettingsOpen) {
-      stopMicTest();
-      stopCameraTest();
-      stopScreenTest();
+  // Stop / Cleanup functions defined first
+  const stopMicTest = () => {
+    if (micIntervalRef.current) {
+      clearInterval(micIntervalRef.current);
+      micIntervalRef.current = null;
     }
-  }, [isUserSettingsOpen]);
-
-  if (!isUserSettingsOpen) return null;
-
-  const handleSaveProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSaving(true);
-    await updateUserProfile({
-      username,
-      avatar,
-      status,
-      custom_status: customStatus
-    });
-    setIsSaving(false);
-    closeUserSettingsModal();
+    if (micStreamRef.current) {
+      micStreamRef.current.getTracks().forEach(t => t.stop());
+      micStreamRef.current = null;
+    }
+    if (micAudioCtxRef.current) {
+      micAudioCtxRef.current.close().catch(() => {});
+      micAudioCtxRef.current = null;
+    }
+    setIsTestingMic(false);
+    setMicVolume(0);
   };
 
-  // Mic test logic
+  const stopCameraTest = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(t => t.stop());
+      setCameraStream(null);
+    }
+    setIsTestingCamera(false);
+  };
+
+  const stopScreenTest = () => {
+    if (screenTestStream) {
+      screenTestStream.getTracks().forEach(t => t.stop());
+      setScreenTestStream(null);
+    }
+    setIsTestingScreen(false);
+  };
+
+  // Start functions
   const startMicTest = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -99,24 +101,6 @@ export const UserSettingsModal: React.FC = () => {
     }
   };
 
-  const stopMicTest = () => {
-    if (micIntervalRef.current) {
-      clearInterval(micIntervalRef.current);
-      micIntervalRef.current = null;
-    }
-    if (micStreamRef.current) {
-      micStreamRef.current.getTracks().forEach(t => t.stop());
-      micStreamRef.current = null;
-    }
-    if (micAudioCtxRef.current) {
-      micAudioCtxRef.current.close().catch(() => {});
-      micAudioCtxRef.current = null;
-    }
-    setIsTestingMic(false);
-    setMicVolume(0);
-  };
-
-  // Camera test logic
   const startCameraTest = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -130,15 +114,6 @@ export const UserSettingsModal: React.FC = () => {
     }
   };
 
-  const stopCameraTest = () => {
-    if (cameraStream) {
-      cameraStream.getTracks().forEach(t => t.stop());
-      setCameraStream(null);
-    }
-    setIsTestingCamera(false);
-  };
-
-  // Screen share test logic
   const startScreenTest = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
@@ -155,12 +130,33 @@ export const UserSettingsModal: React.FC = () => {
     }
   };
 
-  const stopScreenTest = () => {
-    if (screenTestStream) {
-      screenTestStream.getTracks().forEach(t => t.stop());
-      setScreenTestStream(null);
-    }
-    setIsTestingScreen(false);
+  useEffect(() => {
+    setUsername(currentUser.username);
+    setAvatar(currentUser.avatar);
+    setStatus(currentUser.status);
+    setCustomStatus(currentUser.custom_status || '');
+  }, [currentUser]);
+
+  // Cleanup all hardware tests on unmount
+  useEffect(() => {
+    return () => {
+      stopMicTest();
+      stopCameraTest();
+      stopScreenTest();
+    };
+  }, []);
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    await updateUserProfile({
+      username,
+      avatar,
+      status,
+      custom_status: customStatus
+    });
+    setIsSaving(false);
+    closeUserSettingsModal();
   };
 
   const AVATAR_PRESETS = [
