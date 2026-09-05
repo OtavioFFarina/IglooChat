@@ -1,0 +1,29 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Builds
+dist/
+build/
+.vite/
+
+# Environment & Local
+.env
+.env.local
+*.sqlite
+*.sqlite-journal
+server/data/*.sqlite
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
