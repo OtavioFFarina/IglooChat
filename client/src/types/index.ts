@@ -5,9 +5,20 @@ export interface User {
   username: string;
   discriminator: string;
   avatar: string;
+  avatar_history?: string[];
   status: UserStatus;
+  status_preference?: UserStatus;
   custom_status?: string;
   created_at?: string;
+}
+
+export interface FriendRequest {
+  id: string;
+  from_id: string;
+  to_id: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  created_at: string;
+  user: User;
 }
 
 export interface ServerMember {
@@ -72,6 +83,8 @@ export interface Message {
   reply_to_id?: string;
   reply_to?: Message;
   reactions?: Reaction[];
+  is_pinned?: boolean;
+  edited_at?: string;
   created_at: string;
 }
 
@@ -100,4 +113,45 @@ export interface DirectCallState {
   caller: User;
   recipient: User;
   status: 'idle' | 'calling' | 'incoming' | 'connected';
+}
+
+export interface UserAudioSetting {
+  volume: number; // 0 to 200
+  muted: boolean;
+  videoDisabled: boolean;
+}
+
+export interface StreamAudioSetting {
+  volume: number; // 0 to 200
+  muted: boolean;
+}
+
+export interface UserContextMenuState {
+  user: User;
+  x: number;
+  y: number;
+}
+
+export interface MessageContextMenuState {
+  message: Message;
+  x: number;
+  y: number;
+}
+
+export interface AppearanceSettings {
+  fontSize: 'small' | 'normal' | 'medium' | 'large';
+  messageDisplay: 'cozy' | 'compact';
+  theme: 'dark' | 'midnight' | 'concord' | 'blurple' | 'emerald' | 'crimson';
+}
+
+export interface MentionNotification {
+  id: string;
+  serverName?: string;
+  serverIcon?: string;
+  channelName?: string;
+  author: User;
+  message: string;
+  channelId?: string;
+  dmId?: string;
+  serverId?: string;
 }

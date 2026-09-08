@@ -26,7 +26,33 @@ const upload = multer({
   limits: { fileSize: 25 * 1024 * 1024 } // 25MB max
 });
 
-// File upload endpoint
+// Authentication Middleware
+function requireAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Acesso não autorizado. Faça login para continuar.' });
+  }
+  const token = authHeader.split(' ')[1];
+  const user = db.getUserByToken(token);
+  if (!user) {
+    return res.status(401).json({ error: 'Sessão inválida ou expirada.' });
+  }
+  req.user = user;
+  req.token = token;
+  next();
+}
+
+// Optional Auth (populates req.user if token present)
+function optionalAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    req.user = db.getUserByToken(token);
+  }
+  next();
+}
+
+// File / Avatar upload endpoint
 router.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Nenhum arquivo enviado.' });
@@ -40,7 +66,52 @@ router.post('/upload', upload.single('file'), (req, res) => {
   });
 });
 
-// Users
+// =====================================
+// AUTHENTICATION ROUTES
+// =====================================
+
+router.post('/auth/register', (req, res) => {
+  const { email, username, password, avatar } = req.body;
+  if (!email || !username || !password) {
+    return res.status(400).json({ error: 'E-mail, nome de usuário e senha são obrigatórios.' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'A senha deve ter no mínimo 6 caracteres.' });
+  }
+
+  const result = db.registerUser({ email, username, password, avatar });
+  if (result.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.status(201).json(result);
+});
+
+router.post('/auth/login', (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
+  }
+
+  const result = db.loginUser({ email, password });
+  if (result.error) {
+    return res.status(401).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+router.get('/auth/me', requireAuth, (req, res) => {
+  res.json({ user: req.user, token: req.token });
+});
+
+router.post('/auth/logout', requireAuth, (req, res) => {
+  db.logoutUser(req.token);
+  res.json({ success: true });
+});
+
+// =====================================
+// USER PROFILE & ACCOUNT MANAGEMENT
+// =====================================
+
 router.get('/users', (req, res) => {
   res.json(db.getUsers());
 });
@@ -51,49 +122,154 @@ router.get('/users/:id', (req, res) => {
   res.json(user);
 });
 
-router.patch('/users/:id', (req, res) => {
+router.patch('/users/:id', requireAuth, (req, res) => {
+  if (req.user.id !== req.params.id) {
+    return res.status(403).json({ error: 'Você só pode editar seu próprio perfil.' });
+  }
   const updated = db.updateUser(req.params.id, req.body);
   if (!updated) return res.status(404).json({ error: 'Usuário não encontrado' });
   res.json(updated);
 });
 
-// Servers
-router.get('/servers', (req, res) => {
+router.post('/users/change-password', requireAuth, (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Senha atual e nova senha são obrigatórias.' });
+  }
+  const result = db.changePassword(req.user.id, currentPassword, newPassword);
+  if (result.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json({ success: true });
+});
+
+router.delete('/users/me', requireAuth, (req, res) => {
+  const result = db.deleteAccount(req.user.id);
+  if (result.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json({ success: true });
+});
+
+// =====================================
+// FRIENDS ROUTES (DISCORD-STYLE)
+// =====================================
+
+router.get('/friends', requireAuth, (req, res) => {
+  res.json(db.getFriends(req.user.id));
+});
+
+router.get('/friends/requests', requireAuth, (req, res) => {
+  res.json(db.getFriendRequests(req.user.id));
+});
+
+router.post('/friends/request', requireAuth, (req, res) => {
+  const { target } = req.body;
+  if (!target) {
+    return res.status(400).json({ error: 'Informe a tag ou nome de usuário.' });
+  }
+  const result = db.sendFriendRequest(req.user.id, target);
+  if (result.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+router.post('/friends/accept', requireAuth, (req, res) => {
+  const { requestId } = req.body;
+  if (!requestId) {
+    return res.status(400).json({ error: 'requestId obrigatório.' });
+  }
+  const result = db.acceptFriendRequest(requestId, req.user.id);
+  if (result.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+router.post('/friends/reject', requireAuth, (req, res) => {
+  const { requestId } = req.body;
+  if (!requestId) {
+    return res.status(400).json({ error: 'requestId obrigatório.' });
+  }
+  const result = db.rejectFriendRequest(requestId, req.user.id);
+  if (result.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+router.delete('/friends/:id', requireAuth, (req, res) => {
+  const result = db.removeFriend(req.user.id, req.params.id);
+  res.json(result);
+});
+
+// =====================================
+// SERVERS ROUTES
+// =====================================
+
+router.get('/servers', optionalAuth, (req, res) => {
   const { userId } = req.query;
-  if (userId) {
-    return res.json(db.getUserServers(userId));
+  const targetId = userId || (req.user ? req.user.id : null);
+  if (targetId) {
+    return res.json(db.getUserServers(targetId));
   }
   res.json(db.getServers());
 });
 
-router.post('/servers', (req, res) => {
-  const { name, icon, owner_id } = req.body;
-  if (!name || !owner_id) {
-    return res.status(400).json({ error: 'Nome e owner_id são obrigatórios.' });
+router.post('/servers', requireAuth, (req, res) => {
+  const { name, icon } = req.body;
+  if (!name) {
+    return res.status(400).json({ error: 'Nome do servidor é obrigatório.' });
   }
-  const server = db.createServer({ name, icon, owner_id });
+  const server = db.createServer({ name, icon, owner_id: req.user.id });
   res.status(201).json(server);
 });
 
-router.get('/servers/:id', (req, res) => {
+router.get('/servers/:id', requireAuth, (req, res) => {
   const server = db.getServer(req.params.id);
   if (!server) return res.status(404).json({ error: 'Servidor não encontrado' });
   res.json(server);
 });
 
-router.post('/servers/join', (req, res) => {
-  const { invite_code, user_id } = req.body;
-  if (!invite_code || !user_id) {
-    return res.status(400).json({ error: 'Código de convite e user_id são obrigatórios.' });
+router.patch('/servers/:id', requireAuth, (req, res) => {
+  const { name, icon } = req.body;
+  const result = db.updateServer(req.params.id, req.user.id, { name, icon });
+  if (result.error) {
+    return res.status(403).json({ error: result.error });
   }
-  const result = db.joinServerByCode(invite_code, user_id);
+  res.json(result.server);
+});
+
+router.delete('/servers/:id', requireAuth, (req, res) => {
+  const result = db.deleteServer(req.params.id, req.user.id);
+  if (result.error) {
+    return res.status(403).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+router.post('/servers/:id/leave', requireAuth, (req, res) => {
+  const result = db.leaveServer(req.params.id, req.user.id);
+  if (result.error) {
+    return res.status(400).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+router.post('/servers/join', requireAuth, (req, res) => {
+  const invite_code = req.body.invite_code || req.body.code;
+  if (!invite_code) {
+    return res.status(400).json({ error: 'Código de convite obrigatório.' });
+  }
+  const result = db.joinServerByCode(invite_code, req.user.id);
   if (result.error) {
     return res.status(404).json({ error: result.error });
   }
   res.json(result.server);
 });
 
-router.post('/servers/:id/channels', (req, res) => {
+router.post('/servers/:id/channels', requireAuth, (req, res) => {
   const { name, type, category_id, topic } = req.body;
   if (!name || !type) {
     return res.status(400).json({ error: 'Nome e tipo são obrigatórios.' });
@@ -109,20 +285,40 @@ router.post('/servers/:id/channels', (req, res) => {
   res.status(201).json(channel);
 });
 
-// Channel Messages
-router.get('/channels/:id/messages', (req, res) => {
+router.patch('/channels/:id', requireAuth, (req, res) => {
+  const { name, topic } = req.body;
+  if (!name && topic === undefined) {
+    return res.status(400).json({ error: 'Nome ou tópico são obrigatórios.' });
+  }
+  const result = db.updateChannel({ channel_id: req.params.id, name, topic });
+  if (!result) return res.status(404).json({ error: 'Canal não encontrado.' });
+  res.json(result);
+});
+
+router.delete('/channels/:id', requireAuth, (req, res) => {
+  const result = db.deleteChannel(req.params.id);
+  if (!result) return res.status(404).json({ error: 'Canal não encontrado.' });
+  res.json(result);
+});
+
+// =====================================
+// CHANNEL MESSAGES
+// =====================================
+
+router.get('/channels/:id/messages', requireAuth, (req, res) => {
   const messages = db.getChannelMessages(req.params.id);
   res.json(messages);
 });
 
-router.post('/channels/:id/messages', (req, res) => {
-  const { author_id, content, attachments, reply_to_id } = req.body;
-  if (!author_id || (!content && (!attachments || attachments.length === 0))) {
+router.post('/channels/:id/messages', requireAuth, (req, res) => {
+  const { content, attachments, reply_to_id, server_id } = req.body;
+  if (!content && (!attachments || attachments.length === 0)) {
     return res.status(400).json({ error: 'Mensagem inválida.' });
   }
   const msg = db.createChannelMessage({
     channel_id: req.params.id,
-    author_id,
+    server_id: server_id || '',
+    author_id: req.user.id,
     content: content || '',
     attachments: attachments || [],
     reply_to_id
@@ -130,53 +326,149 @@ router.post('/channels/:id/messages', (req, res) => {
   res.status(201).json(msg);
 });
 
-router.post('/messages/:id/reactions', (req, res) => {
-  const { user_id, emoji } = req.body;
-  if (!user_id || !emoji) {
-    return res.status(400).json({ error: 'user_id e emoji são obrigatórios.' });
+router.post('/messages/:id/reactions', requireAuth, (req, res) => {
+  const { emoji } = req.body;
+  if (!emoji) {
+    return res.status(400).json({ error: 'emoji é obrigatório.' });
   }
   const msg = db.addReaction({
     message_id: req.params.id,
-    user_id,
+    user_id: req.user.id,
     emoji
   });
   if (!msg) return res.status(404).json({ error: 'Mensagem não encontrada' });
   res.json(msg);
 });
 
-// Direct Messages (DMs)
-router.get('/direct', (req, res) => {
-  const { userId } = req.query;
-  if (!userId) return res.status(400).json({ error: 'userId obrigatório' });
-  res.json(db.getDirectChannels(userId));
+router.patch('/messages/:id', requireAuth, (req, res) => {
+  const { content } = req.body;
+  if (!content || !content.trim()) {
+    return res.status(400).json({ error: 'Conteúdo não pode ser vazio.' });
+  }
+  const result = db.editMessage(req.params.id, req.user.id, content.trim());
+  if (result.error) {
+    return res.status(403).json({ error: result.error });
+  }
+  res.json(result);
 });
 
-router.post('/direct', (req, res) => {
-  const { user1_id, user2_id } = req.body;
-  if (!user1_id || !user2_id) {
-    return res.status(400).json({ error: 'user1_id e user2_id são obrigatórios' });
+router.delete('/messages/:id', requireAuth, (req, res) => {
+  const result = db.deleteMessage(req.params.id, req.user.id);
+  if (result.error) {
+    return res.status(403).json({ error: result.error });
   }
-  const dm = db.getOrCreateDirectChannel(user1_id, user2_id);
+  res.json(result);
+});
+
+router.post('/messages/:id/pin', requireAuth, (req, res) => {
+  const result = db.pinMessage(req.params.id, req.user.id);
+  if (result.error) {
+    return res.status(404).json({ error: result.error });
+  }
+  res.json(result);
+});
+
+// =====================================
+// DIRECT MESSAGES (DMs)
+// =====================================
+
+router.get('/direct', requireAuth, (req, res) => {
+  res.json(db.getDirectChannels(req.user.id));
+});
+
+router.post('/direct', requireAuth, (req, res) => {
+  const { user2_id } = req.body;
+  if (!user2_id) {
+    return res.status(400).json({ error: 'user2_id é obrigatório' });
+  }
+  const dm = db.getOrCreateDirectChannel(req.user.id, user2_id);
   res.json(dm);
 });
 
-router.get('/direct/:id/messages', (req, res) => {
+router.get('/direct/:id/messages', requireAuth, (req, res) => {
   const messages = db.getDirectMessages(req.params.id);
   res.json(messages);
 });
 
-router.post('/direct/:id/messages', (req, res) => {
-  const { author_id, content, attachments } = req.body;
-  if (!author_id || (!content && (!attachments || attachments.length === 0))) {
+router.post('/direct/:id/messages', requireAuth, (req, res) => {
+  const { content, attachments, reply_to_id } = req.body;
+  if (!content && (!attachments || attachments.length === 0)) {
     return res.status(400).json({ error: 'Mensagem inválida.' });
   }
   const msg = db.createDirectMessage({
     channel_id: req.params.id,
-    author_id,
+    author_id: req.user.id,
     content: content || '',
-    attachments: attachments || []
+    attachments: attachments || [],
+    reply_to_id: reply_to_id || null
   });
-  res.status(201).json(msg);
+  res.json(msg);
+});
+
+// =====================================
+// WEBRTC ICE & TURN SERVERS ENDPOINT
+// =====================================
+let cachedIceServers = null;
+let lastFetchTime = 0;
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 min
+
+const FALLBACK_ICE_SERVERS = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' },
+  { urls: 'stun:stun2.l.google.com:19302' },
+  { urls: 'stun:stun.cloudflare.com:3478' },
+  { urls: 'stun:stun.relay.metered.ca:80' },
+  {
+    urls: 'turn:global.relay.metered.ca:80',
+    username: '9264d51bf7b61ba6f3c250bd',
+    credential: 'wNe5ZCN1gAGNqtmK'
+  },
+  {
+    urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+    username: '9264d51bf7b61ba6f3c250bd',
+    credential: 'wNe5ZCN1gAGNqtmK'
+  },
+  {
+    urls: 'turn:global.relay.metered.ca:443',
+    username: '9264d51bf7b61ba6f3c250bd',
+    credential: 'wNe5ZCN1gAGNqtmK'
+  },
+  {
+    urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+    username: '9264d51bf7b61ba6f3c250bd',
+    credential: 'wNe5ZCN1gAGNqtmK'
+  }
+];
+
+router.get('/webrtc/ice-servers', async (req, res) => {
+  const now = Date.now();
+  if (cachedIceServers && (now - lastFetchTime < CACHE_TTL_MS)) {
+    return res.json({ iceServers: cachedIceServers });
+  }
+
+  try {
+    const fetchRes = await fetch('https://doudizhu-online.metered.live/api/v1/turn/credentials?apiKey=69960ccff638874fa5ab1dcb405d13b1097f', {
+      signal: AbortSignal.timeout(4000)
+    });
+    if (fetchRes.ok) {
+      const data = await fetchRes.json();
+      if (Array.isArray(data) && data.length > 0) {
+        cachedIceServers = [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun.cloudflare.com:3478' },
+          ...data
+        ];
+        lastFetchTime = now;
+        return res.json({ iceServers: cachedIceServers });
+      }
+    }
+  } catch (err) {
+    console.warn('[WebRTC ICE] Usando fallback com servidores TURN autenticados:', err.message);
+  }
+
+  cachedIceServers = FALLBACK_ICE_SERVERS;
+  lastFetchTime = now;
+  return res.json({ iceServers: cachedIceServers });
 });
 
 module.exports = router;

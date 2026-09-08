@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { useConcord } from '../context/ConcordContext';
 import { User } from '../types';
-import { MessageSquare, Phone } from 'lucide-react';
+import { MessageSquare, Phone, UserPlus } from 'lucide-react';
 
 export const MemberList: React.FC = () => {
   const {
     currentServer,
     allUsers,
-    selectDM,
     currentUser,
-    startDirectCall
+    friends,
+    sendFriendRequest,
+    openDMWithUser,
+    startDirectCall,
+    openUserContextMenu
   } = useConcord();
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [friendStatusMsg, setFriendStatusMsg] = useState<string | null>(null);
 
   if (!currentServer) return null;
 
@@ -33,21 +37,9 @@ export const MemberList: React.FC = () => {
   };
 
   const startDMWithUser = async (user: User) => {
-    try {
-      const res = await fetch('/api/direct', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user1_id: currentUser.id,
-          user2_id: user.id
-        })
-      });
-      const dm = await res.json();
-      selectDM(dm);
-      setSelectedUser(null);
-    } catch (e) {
-      console.error('Failed to create DM', e);
-    }
+    if (!currentUser) return;
+    await openDMWithUser(user.id);
+    setSelectedUser(null);
   };
 
   return (
@@ -65,6 +57,10 @@ export const MemberList: React.FC = () => {
             <button
               key={user.id}
               onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                openUserContextMenu(user, e.clientX, e.clientY);
+              }}
               className="w-full flex items-center space-x-2.5 px-2 py-1.5 rounded hover:bg-[#35373c] text-left group transition"
             >
               <div className="relative flex-shrink-0">
@@ -95,6 +91,10 @@ export const MemberList: React.FC = () => {
               <button
                 key={user.id}
                 onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  openUserContextMenu(user, e.clientX, e.clientY);
+                }}
                 className="w-full flex items-center space-x-2.5 px-2 py-1.5 rounded hover:bg-[#35373c] text-left group transition"
               >
                 <div className="relative flex-shrink-0">
@@ -137,8 +137,26 @@ export const MemberList: React.FC = () => {
               </div>
             )}
 
-            {selectedUser.id !== currentUser.id && (
+            {currentUser && selectedUser.id !== currentUser.id && (
               <div className="mt-4 space-y-2">
+                {!friends.some(f => f.id === selectedUser.id) && (
+                  <button
+                    onClick={async () => {
+                      const res = await sendFriendRequest(`${selectedUser.username}#${selectedUser.discriminator}`);
+                      if (res.success) {
+                        setFriendStatusMsg(res.autoAccepted ? 'Agora são amigos!' : 'Pedido enviado!');
+                      } else {
+                        setFriendStatusMsg(res.error || 'Erro ao enviar');
+                      }
+                      setTimeout(() => setFriendStatusMsg(null), 3000);
+                    }}
+                    className="w-full flex items-center justify-center space-x-2 bg-[#2b2d31] hover:bg-[#35373c] text-white py-1.5 px-3 rounded text-xs font-semibold transition"
+                  >
+                    <UserPlus className="w-3.5 h-3.5 text-discord-green" />
+                    <span>{friendStatusMsg || 'Adicionar Amigo'}</span>
+                  </button>
+                )}
+
                 <button
                   onClick={() => startDMWithUser(selectedUser)}
                   className="w-full flex items-center justify-center space-x-2 bg-discord-blurple hover:bg-discord-blurple-hover text-white py-1.5 px-3 rounded text-xs font-semibold transition"

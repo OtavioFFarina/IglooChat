@@ -1,6 +1,6 @@
 import React from 'react';
 import { useConcord } from '../context/ConcordContext';
-import { Mic, MicOff, Headphones, VolumeX, Settings } from 'lucide-react';
+import { Mic, MicOff, Headphones, VolumeX, Settings, AudioWaveform } from 'lucide-react';
 
 export const UserControls: React.FC = () => {
   const {
@@ -9,7 +9,9 @@ export const UserControls: React.FC = () => {
     isDeafened,
     toggleMute,
     toggleDeafen,
-    openUserSettingsModal
+    openUserSettingsModal,
+    isNoiseSuppressionEnabled,
+    toggleNoiseSuppression
   } = useConcord();
 
   const getStatusColor = (status: string) => {
@@ -20,6 +22,8 @@ export const UserControls: React.FC = () => {
       default: return 'bg-discord-gray';
     }
   };
+
+  if (!currentUser) return null;
 
   return (
     <div className="h-[52px] bg-discord-floating px-2 flex items-center justify-between border-t border-[#1a1b1e] select-none flex-shrink-0">
@@ -68,6 +72,17 @@ export const UserControls: React.FC = () => {
           }`}
         >
           {isDeafened ? <VolumeX className="w-4 h-4" /> : <Headphones className="w-4 h-4" />}
+        </button>
+
+        {/* Noise Suppression Toggle */}
+        <button
+          onClick={toggleNoiseSuppression}
+          title={isNoiseSuppressionEnabled ? 'Supressão de Ruído Ativada (Krisp)' : 'Supressão de Ruído Desativada'}
+          className={`p-1.5 rounded-md hover:bg-[#35373c] transition ${
+            isNoiseSuppressionEnabled ? 'text-discord-green' : 'text-discord-muted hover:text-discord-header'
+          }`}
+        >
+          <AudioWaveform className="w-4 h-4" />
         </button>
 
         {/* User Settings Modal Trigger */}

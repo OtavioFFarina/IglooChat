@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useConcord } from '../context/ConcordContext';
 import { X, Upload, Gamepad2, School, Users, Sparkles } from 'lucide-react';
 
@@ -7,13 +7,49 @@ export const CreateServerModal: React.FC = () => {
   const [step, setStep] = useState<'template' | 'details'>('template');
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('');
+  const [iconUrlInput, setIconUrlInput] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isCreateServerOpen) return null;
 
   const handleTemplateSelect = (defaultName: string) => {
     setName(defaultName);
     setStep('details');
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.url) {
+        setIcon(data.url);
+      }
+    } catch (err) {
+      console.error('Erro ao enviar ícone do servidor:', err);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleApplyUrl = () => {
+    if (iconUrlInput.trim()) {
+      setIcon(iconUrlInput.trim());
+      setIconUrlInput('');
+    }
   };
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -25,6 +61,7 @@ export const CreateServerModal: React.FC = () => {
       setStep('template');
       setName('');
       setIcon('');
+      setIconUrlInput('');
     } catch (err) {
       console.error('Create server error', err);
     } finally {
@@ -32,15 +69,8 @@ export const CreateServerModal: React.FC = () => {
     }
   };
 
-  const PRESET_ICONS = [
-    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
-    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=150',
-    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=150',
-    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=150'
-  ];
-
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none animate-in fade-in">
       <div className="bg-[#313338] border border-[#232428] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95">
         {/* Header */}
         <div className="p-6 text-center relative pb-2">
@@ -112,21 +142,55 @@ export const CreateServerModal: React.FC = () => {
           </div>
         ) : (
           <form onSubmit={handleCreate} className="p-6 pt-2 space-y-4">
-            {/* Icon Picker */}
-            <div className="flex flex-col items-center">
+            {/* Server Icon with Upload or URL */}
+            <div>
               <div className="text-xs font-bold text-discord-muted uppercase mb-2">Ícone do Servidor</div>
-              <div className="flex space-x-2">
-                {PRESET_ICONS.map((preset, idx) => (
-                  <img
-                    key={idx}
-                    src={preset}
-                    alt="Preset"
-                    onClick={() => setIcon(preset)}
-                    className={`w-12 h-12 rounded-full object-cover cursor-pointer border-2 transition ${
-                      icon === preset ? 'border-discord-blurple scale-110' : 'border-transparent opacity-70 hover:opacity-100'
-                    }`}
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 rounded-full bg-[#1e1f22] border-2 border-discord-blurple flex items-center justify-center overflow-hidden flex-shrink-0 shadow-md">
+                  {icon ? (
+                    <img src={icon} alt="Server Icon Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xl font-bold text-white">
+                      {name ? name.substring(0, 2).toUpperCase() : 'CO'}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
                   />
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="bg-[#2b2d31] hover:bg-[#35373c] text-white text-xs px-3 py-1.5 rounded flex items-center space-x-2 transition font-medium"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{isUploading ? 'Enviando...' : 'Fazer Upload de Ícone'}</span>
+                  </button>
+
+                  <div className="flex items-center space-x-1.5">
+                    <input
+                      type="url"
+                      placeholder="Ou cole a URL de uma imagem..."
+                      value={iconUrlInput}
+                      onChange={(e) => setIconUrlInput(e.target.value)}
+                      className="flex-1 bg-[#1e1f22] text-xs text-white px-2.5 py-1 rounded border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyUrl}
+                      className="bg-[#2b2d31] hover:bg-[#35373c] text-discord-header text-xs px-2.5 py-1 rounded transition"
+                    >
+                      OK
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -43,9 +43,18 @@ function initSocket(io) {
       userSockets.get(user.id).add(socket.id);
       socket.join(`user_${user.id}`);
 
-      // Update status in DB
-      db.updateUser(user.id, { status: user.status || 'online' });
-      io.emit('user:presence_updated', { userId: user.id, status: user.status || 'online', custom_status: user.custom_status });
+      // Query stored user from DB to preserve true status preference (online, idle, dnd)
+      const dbUser = db.getUser(user.id);
+      const effectiveStatus = (dbUser && dbUser.status_preference && dbUser.status_preference !== 'offline')
+        ? dbUser.status_preference
+        : (user.status && user.status !== 'offline' ? user.status : 'online');
+
+      db.updateUser(user.id, { status: effectiveStatus });
+      io.emit('user:presence_updated', {
+        userId: user.id,
+        status: effectiveStatus,
+        custom_status: (dbUser && dbUser.custom_status) || user.custom_status
+      });
 
       // Send initial voice states to new connection
       broadcastGlobalVoiceStates();
@@ -53,7 +62,7 @@ function initSocket(io) {
 
     // User status change
     socket.on('user:change_status', ({ userId, status, custom_status }) => {
-      const updated = db.updateUser(userId, { status, custom_status });
+      const updated = db.updateUser(userId, { status, status_preference: status, custom_status });
       if (updated) {
         io.emit('user:presence_updated', { userId, status: updated.status, custom_status: updated.custom_status });
       }
@@ -80,6 +89,21 @@ function initSocket(io) {
       io.to(`channel_${reactionData.channel_id}`).emit('message:reaction_updated', reactionData);
     });
 
+    socket.on('message:edit', ({ channelId, message, isDM }) => {
+      const room = isDM ? `dm_${channelId}` : `channel_${channelId}`;
+      io.to(room).emit('message:updated', message);
+    });
+
+    socket.on('message:delete', ({ channelId, messageId, isDM }) => {
+      const room = isDM ? `dm_${channelId}` : `channel_${channelId}`;
+      io.to(room).emit('message:deleted', { messageId, channelId });
+    });
+
+    socket.on('message:pin', ({ channelId, message, isDM }) => {
+      const room = isDM ? `dm_${channelId}` : `channel_${channelId}`;
+      io.to(room).emit('message:pinned', message);
+    });
+
     // Direct Messages
     socket.on('dm:join', (dmChannelId) => {
       socket.join(`dm_${dmChannelId}`);
@@ -94,10 +118,72 @@ function initSocket(io) {
     });
 
     // ==========================================
+    // FRIENDS REAL-TIME EVENTS
+    // ==========================================
+    socket.on('friend:request_sent', ({ targetUserId, request }) => {
+      const targetSockets = userSockets.get(targetUserId);
+      if (targetSockets) {
+        for (const sId of targetSockets) {
+          io.to(sId).emit('friend:request_received', request);
+        }
+      }
+    });
+
+    socket.on('friend:accepted', ({ fromUserId, toUserId, friendDataForFrom, friendDataForTo }) => {
+      const fromSockets = userSockets.get(fromUserId);
+      if (fromSockets) {
+        for (const sId of fromSockets) {
+          io.to(sId).emit('friend:added', friendDataForFrom);
+        }
+      }
+      const toSockets = userSockets.get(toUserId);
+      if (toSockets) {
+        for (const sId of toSockets) {
+          io.to(sId).emit('friend:added', friendDataForTo);
+        }
+      }
+    });
+
+    socket.on('friend:removed', ({ targetUserId, byUserId }) => {
+      const targetSockets = userSockets.get(targetUserId);
+      if (targetSockets) {
+        for (const sId of targetSockets) {
+          io.to(sId).emit('friend:removed', { friendId: byUserId });
+        }
+      }
+    });
+
+    // ==========================================
+    // SERVERS LIFECYCLE EVENTS
+    // ==========================================
+    socket.on('server:deleted', ({ serverId }) => {
+      io.emit('server:deleted', { serverId });
+    });
+
+    socket.on('server:updated', ({ server }) => {
+      io.emit('server:updated', { server });
+    });
+
+    socket.on('channel:updated', ({ channel, server }) => {
+      io.emit('channel:updated', { channel, server });
+    });
+
+    socket.on('channel:deleted', ({ channelId, server }) => {
+      io.emit('channel:deleted', { channelId, server });
+    });
+
+    socket.on('stream:viewer_joined', ({ channelId, user, streamOwnerSocketId }) => {
+      io.to(`voice_${channelId}`).emit('stream:viewer_joined', { channelId, user, streamOwnerSocketId });
+    });
+
+    socket.on('stream:viewer_left', ({ channelId, user, streamOwnerSocketId }) => {
+      io.to(`voice_${channelId}`).emit('stream:viewer_left', { channelId, user, streamOwnerSocketId });
+    });
+
+    // ==========================================
     // VOICE CHANNELS & SCREEN SHARING (WebRTC)
     // ==========================================
     socket.on('voice:join', ({ channelId, user, isMuted, isDeafened, isVideoOn, isScreenSharing }) => {
-      // Leave any existing voice room first
       leaveCurrentVoiceRoom(socket);
 
       if (!voiceRooms.has(channelId)) {
@@ -116,17 +202,15 @@ function initSocket(io) {
         isSpeaking: false
       };
 
-      // Get existing participants in this room to return to the joiner
-      const existingParticipants = Array.from(room.values());
-
       room.set(socket.id, participantData);
       socketVoiceRoom.set(socket.id, channelId);
       socket.join(`voice_${channelId}`);
 
-      // 1. Reply to joining user with current participants
+      // 1. Reply to joining user with all participants in room including themselves
+      const allParticipants = Array.from(room.values());
       socket.emit('voice:room_users', {
         channelId,
-        users: existingParticipants
+        users: allParticipants
       });
 
       // 2. Notify other room members that a new user joined

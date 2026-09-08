@@ -1,390 +1,754 @@
 {
   "users": [
     {
-      "id": "user_otavio",
-      "username": "Otávio",
-      "discriminator": "0001",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "id": "user_50cbd5b9",
+      "email": "otaviofranciscofarina13@gmail.com",
+      "username": "OFx",
+      "discriminator": "5271",
+      "password": "372edc0d605f4352686c156f1244739c:a0edbf519fabb9366f5066504a9d2808dff116e34a7531f967d382721d30ee797d09fa981540310a58b3f9dbb34e02cf1e5dec8de789aebbc07477df13e9d42f",
+      "avatar": "https://media1.tenor.com/m/4ymuSQ2cdTQAAAAd/crocodilo-jamal.gif",
+      "avatar_history": [
+        "https://media1.tenor.com/m/4ymuSQ2cdTQAAAAd/crocodilo-jamal.gif",
+        "/uploads/file-1788636213054-143193719.jpg"
+      ],
       "status": "online",
-      "custom_status": "Codando o Concord 🚀",
-      "created_at": "2026-09-05T01:45:51.963Z"
+      "custom_status": "Os D",
+      "created_at": "2026-09-05T19:23:35.029Z",
+      "status_preference": "online"
     },
     {
-      "id": "user_alex",
-      "username": "AlexDev",
-      "discriminator": "1337",
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-      "status": "idle",
-      "custom_status": "Compilando TypeScript...",
-      "created_at": "2026-09-05T01:45:51.963Z"
+      "id": "user_053057d8",
+      "email": "tester_5490@test.com",
+      "username": "Tester_5490",
+      "discriminator": "6396",
+      "password": "a274304743d7102062f3f2b90e54889e:9b8fe3a1624c15a242f7203af57439207d87bdaee4b89342b2ed9813cc93e2ea230b6f35deb272ef67c9db20f466c745b9a2d4262312001cb39a92fab68820f6",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Tester_5490&backgroundColor=ED4245&textColor=ffffff",
+      "avatar_history": [
+        "https://api.dicebear.com/7.x/initials/svg?seed=Tester_5490&backgroundColor=ED4245&textColor=ffffff"
+      ],
+      "status": "offline",
+      "custom_status": "No Concord 🚀",
+      "created_at": "2026-09-05T19:41:55.778Z"
     },
     {
-      "id": "user_bia",
-      "username": "BiaGamer",
-      "discriminator": "2048",
-      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
-      "status": "dnd",
-      "custom_status": "Ao vivo na Twitch 🎮",
-      "created_at": "2026-09-05T01:45:51.963Z"
+      "id": "user_7f127692",
+      "email": "tester_5078@test.com",
+      "username": "Tester_5078",
+      "discriminator": "5966",
+      "password": "898d9835cbd1baecf06f4f77e902dfd8:416d9efc32af96d592621c0819787f00192d845b8b2c046c44c7dd51076506fd8830c27b46c2384f52b1d55797ee3e629e6bb6013b8ab094141c82a0c62a8862",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Tester_5078&backgroundColor=ED4245&textColor=ffffff",
+      "avatar_history": [
+        "https://api.dicebear.com/7.x/initials/svg?seed=Tester_5078&backgroundColor=ED4245&textColor=ffffff"
+      ],
+      "status": "offline",
+      "custom_status": "No Concord 🚀",
+      "created_at": "2026-09-05T19:42:17.926Z"
     },
     {
-      "id": "user_carlos",
-      "username": "CarlosUI",
-      "discriminator": "4096",
-      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
-      "status": "online",
-      "custom_status": "Ajustando pixels no Figma 🎨",
-      "created_at": "2026-09-05T01:45:51.963Z"
+      "id": "user_12071697",
+      "email": "rafinha.catalano2020.b3@gmail.com",
+      "username": "Pedal",
+      "discriminator": "9919",
+      "password": "1907598c86ed84e2921a2f493a3224b4:bc4b9237f7de8d3cf662d55b418a0df8499ebf22b19fd0906536b3f8872aafc8f1c1304b4fe4e1512c165bca633b999667b225503087296d4f8777d0717c479f",
+      "avatar": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmcxc3l2cGVuMzBsdWlrMWRveGt3bGp3bWduZzQzZmF4MHRiaTQ4NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/epph2xo3WdTuKRuqr5/giphy.webp",
+      "avatar_history": [
+        "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmcxc3l2cGVuMzBsdWlrMWRveGt3bGp3bWduZzQzZmF4MHRiaTQ4NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/epph2xo3WdTuKRuqr5/giphy.webp",
+        "https://giphy.com/gifs/YoshimuraUSA-pedals-yoshimuracycling-chilao-epph2xo3WdTuKRuqr5",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CN6JCB9FFDe1OphrTTPWp_TmuLY8igXi8NorJn8nDw&s=10",
+        "https://static01.nyt.com/images/2020/01/28/multimedia/28xp-memekid3/28cp-memekid3-articleLarge.jpg?quality=75&auto=webp&disable=upscale",
+        "https://api.dicebear.com/7.x/initials/svg?seed=Pedal&backgroundColor=5865F2&textColor=ffffff"
+      ],
+      "status": "offline",
+      "custom_status": "No Concord 🚀",
+      "created_at": "2026-09-05T20:39:02.237Z",
+      "status_preference": "online"
+    },
+    {
+      "id": "user_c11b8177",
+      "email": "gabrielloredo446@gmail.com",
+      "username": "gLv",
+      "discriminator": "7974",
+      "password": "914332be3e7972a129309617526188ff:0fc239a8a8145396b48d175b1ce3fb44b26fea86730ac44ee24245d50c0dfec8657bb7370f1b188f8797eeae509d7cd9a2823574bd53c860f68eff00587cd707",
+      "avatar": "https://catatau.xyz/IMG/f573.gif",
+      "avatar_history": [
+        "https://catatau.xyz/IMG/f573.gif",
+        "https://api.dicebear.com/7.x/initials/svg?seed=gLv&backgroundColor=EB459E&textColor=ffffff"
+      ],
+      "status": "offline",
+      "custom_status": "No Concord 🚀",
+      "created_at": "2026-09-05T21:56:39.483Z",
+      "status_preference": "online"
+    },
+    {
+      "id": "user_e9c36204",
+      "email": "engenheiro_1788646708858@concord.io",
+      "username": "EngenheiroConcord",
+      "discriminator": "7056",
+      "password": "3e3e354bae9a5d622dae6f6c0307fbae:4d2ea594ab82ec9b4907cc0573b7d57b94bee6124b1ee3f2e2b3eb0d2871376cf132c21592312636408d683c1c366f366cfbb800b07d6dcf018a20b519ce1438",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=EngenheiroConcord&backgroundColor=ED4245&textColor=ffffff",
+      "avatar_history": [
+        "https://api.dicebear.com/7.x/initials/svg?seed=EngenheiroConcord&backgroundColor=ED4245&textColor=ffffff"
+      ],
+      "status": "offline",
+      "status_preference": "dnd",
+      "custom_status": "No Discord nunca mais 🚀",
+      "created_at": "2026-09-05T22:18:28.919Z"
     }
   ],
   "servers": [
     {
-      "id": "srv_concord_hub",
-      "name": "Concord Hub Oficial",
-      "icon": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80",
-      "owner_id": "user_otavio",
-      "invite_code": "concord-oficial",
-      "created_at": "2026-09-05T01:45:51.963Z",
+      "id": "srv_fbb12c55",
+      "name": "Alecrim",
+      "icon": "https://media1.tenor.com/m/4ymuSQ2cdTQAAAAd/crocodilo-jamal.gif",
+      "owner_id": "user_50cbd5b9",
+      "invite_code": "concord-zcm46b",
+      "created_at": "2026-09-05T20:35:33.311Z",
       "categories": [
         {
-          "id": "cat_hub_text",
-          "server_id": "srv_concord_hub",
+          "id": "cat_text_7781a499",
+          "server_id": "srv_fbb12c55",
           "name": "CANAIS DE TEXTO",
           "position": 0,
           "channels": [
             {
-              "id": "ch_hub_geral",
-              "server_id": "srv_concord_hub",
-              "category_id": "cat_hub_text",
-              "name": "geral",
-              "type": "text",
-              "topic": "Bate-papo geral da comunidade Concord",
-              "position": 0,
-              "created_at": "2026-09-05T01:45:51.963Z"
-            },
-            {
-              "id": "ch_hub_dev",
-              "server_id": "srv_concord_hub",
-              "category_id": "cat_hub_text",
-              "name": "desenvolvimento",
-              "type": "text",
-              "topic": "Discussões sobre WebRTC, Socket.io e React",
-              "position": 1,
-              "created_at": "2026-09-05T01:45:51.963Z"
-            },
-            {
-              "id": "ch_hub_clips",
-              "server_id": "srv_concord_hub",
-              "category_id": "cat_hub_text",
-              "name": "clips-e-telas",
-              "type": "text",
-              "topic": "Compartilhe suas telas, artes e capturas!",
-              "position": 2,
-              "created_at": "2026-09-05T01:45:51.963Z"
-            }
-          ]
-        },
-        {
-          "id": "cat_hub_voice",
-          "server_id": "srv_concord_hub",
-          "name": "CANAIS DE VOZ & TRANSMISSÃO",
-          "position": 1,
-          "channels": [
-            {
-              "id": "ch_hub_voice1",
-              "server_id": "srv_concord_hub",
-              "category_id": "cat_hub_voice",
-              "name": "Sala de Reunião & Tela",
-              "type": "voice",
-              "topic": "Canal de voz com compartilhamento de tela HD",
-              "position": 0,
-              "created_at": "2026-09-05T01:45:51.963Z"
-            },
-            {
-              "id": "ch_hub_voice2",
-              "server_id": "srv_concord_hub",
-              "category_id": "cat_hub_voice",
-              "name": "Lounge & Games",
-              "type": "voice",
-              "topic": "Bate-papo descontraído e streaming",
-              "position": 1,
-              "created_at": "2026-09-05T01:45:51.963Z"
-            }
-          ]
-        }
-      ],
-      "members": [
-        {
-          "server_id": "srv_concord_hub",
-          "user_id": "user_otavio",
-          "role": "owner",
-          "joined_at": "2026-09-05T01:45:51.963Z"
-        },
-        {
-          "server_id": "srv_concord_hub",
-          "user_id": "user_alex",
-          "role": "admin",
-          "joined_at": "2026-09-05T01:45:51.963Z"
-        },
-        {
-          "server_id": "srv_concord_hub",
-          "user_id": "user_bia",
-          "role": "member",
-          "joined_at": "2026-09-05T01:45:51.963Z"
-        },
-        {
-          "server_id": "srv_concord_hub",
-          "user_id": "user_carlos",
-          "role": "member",
-          "joined_at": "2026-09-05T01:45:51.963Z"
-        }
-      ]
-    },
-    {
-      "id": "srv_dev_pair",
-      "name": "Dev & Pair Programming",
-      "icon": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=150&auto=format&fit=crop&q=80",
-      "owner_id": "user_alex",
-      "invite_code": "dev-pair-2026",
-      "created_at": "2026-09-05T01:45:51.963Z",
-      "categories": [
-        {
-          "id": "cat_dev_text",
-          "server_id": "srv_dev_pair",
-          "name": "DISCUSSÃO TÉCNICA",
-          "position": 0,
-          "channels": [
-            {
-              "id": "ch_dev_geral",
-              "server_id": "srv_dev_pair",
-              "category_id": "cat_dev_text",
-              "name": "code-review",
-              "type": "text",
-              "topic": "Revisões de PRs e snippets",
-              "position": 0,
-              "created_at": "2026-09-05T01:45:51.963Z"
-            }
-          ]
-        },
-        {
-          "id": "cat_dev_voice",
-          "server_id": "srv_dev_pair",
-          "name": "PAIR PROGRAMMING",
-          "position": 1,
-          "channels": [
-            {
-              "id": "ch_dev_voice1",
-              "server_id": "srv_dev_pair",
-              "category_id": "cat_dev_voice",
-              "name": "Pair Programming 1 (Screen)",
-              "type": "voice",
-              "topic": "Transmita seu editor ou terminal para pair programming",
-              "position": 0,
-              "created_at": "2026-09-05T01:45:51.963Z"
-            }
-          ]
-        }
-      ],
-      "members": [
-        {
-          "server_id": "srv_dev_pair",
-          "user_id": "user_otavio",
-          "role": "member",
-          "joined_at": "2026-09-05T01:45:51.963Z"
-        },
-        {
-          "server_id": "srv_dev_pair",
-          "user_id": "user_alex",
-          "role": "owner",
-          "joined_at": "2026-09-05T01:45:51.963Z"
-        },
-        {
-          "server_id": "srv_dev_pair",
-          "user_id": "user_carlos",
-          "role": "member",
-          "joined_at": "2026-09-05T01:45:51.963Z"
-        }
-      ]
-    },
-    {
-      "id": "srv_7949bfbf",
-      "name": "Servidor de Jogos & Screen",
-      "icon": null,
-      "owner_id": "user_otavio",
-      "invite_code": "concord-hy6rf6",
-      "created_at": "2026-09-05T01:50:10.886Z",
-      "categories": [
-        {
-          "id": "cat_text_0fb1e66b",
-          "server_id": "srv_7949bfbf",
-          "name": "CANAIS DE TEXTO",
-          "position": 0,
-          "channels": [
-            {
-              "id": "ch_geral_ec75aa53",
-              "server_id": "srv_7949bfbf",
-              "category_id": "cat_text_0fb1e66b",
-              "name": "geral",
+              "id": "ch_geral_20816a4e",
+              "server_id": "srv_fbb12c55",
+              "category_id": "cat_text_7781a499",
+              "name": "𝙶𝙴𝚁𝙰𝙻",
               "type": "text",
               "topic": "Canal geral de conversas",
               "position": 0,
-              "created_at": "2026-09-05T01:50:10.886Z"
+              "created_at": "2026-09-05T20:35:33.311Z"
             }
           ]
         },
         {
-          "id": "cat_voice_098f8cd4",
-          "server_id": "srv_7949bfbf",
+          "id": "cat_voice_e96ec2d8",
+          "server_id": "srv_fbb12c55",
           "name": "CANAIS DE VOZ",
           "position": 1,
           "channels": [
             {
-              "id": "ch_voice_da771bd8",
-              "server_id": "srv_7949bfbf",
-              "category_id": "cat_voice_098f8cd4",
-              "name": "Geral (Voz & Tela)",
+              "id": "ch_voice_8d5fc8e3",
+              "server_id": "srv_fbb12c55",
+              "category_id": "cat_voice_e96ec2d8",
+              "name": "𝙲𝙰𝙻𝙻 𝙶𝙴𝚁𝙰𝙻",
               "type": "voice",
               "topic": "Converse e compartilhe tela",
               "position": 0,
-              "created_at": "2026-09-05T01:50:10.890Z"
+              "created_at": "2026-09-05T20:35:33.311Z"
             }
           ]
         }
       ],
       "members": [
         {
-          "server_id": "srv_7949bfbf",
-          "user_id": "user_otavio",
+          "server_id": "srv_fbb12c55",
+          "user_id": "user_50cbd5b9",
           "role": "owner",
-          "joined_at": "2026-09-05T01:50:10.890Z"
+          "joined_at": "2026-09-05T20:35:33.311Z"
         },
         {
-          "server_id": "srv_7949bfbf",
-          "user_id": "user_bia",
+          "server_id": "srv_fbb12c55",
+          "user_id": "user_12071697",
           "role": "member",
-          "joined_at": "2026-09-05T01:50:14.656Z"
+          "joined_at": "2026-09-05T20:41:13.190Z"
+        },
+        {
+          "server_id": "srv_fbb12c55",
+          "user_id": "user_c11b8177",
+          "role": "member",
+          "joined_at": "2026-09-05T22:09:34.861Z"
+        }
+      ]
+    },
+    {
+      "id": "srv_d85c8944",
+      "name": "Comunidade Alfa",
+      "icon": null,
+      "owner_id": "user_e9c36204",
+      "invite_code": "concord-7w6kqj",
+      "created_at": "2026-09-05T22:18:34.012Z",
+      "categories": [
+        {
+          "id": "cat_text_5cd86b62",
+          "server_id": "srv_d85c8944",
+          "name": "CANAIS DE TEXTO",
+          "position": 0,
+          "channels": [
+            {
+              "id": "ch_geral_75b31a93",
+              "server_id": "srv_d85c8944",
+              "category_id": "cat_text_5cd86b62",
+              "name": "geral",
+              "type": "text",
+              "topic": "Canal geral de conversas",
+              "position": 0,
+              "created_at": "2026-09-05T22:18:34.012Z"
+            }
+          ]
+        },
+        {
+          "id": "cat_voice_a23d6892",
+          "server_id": "srv_d85c8944",
+          "name": "CANAIS DE VOZ",
+          "position": 1,
+          "channels": [
+            {
+              "id": "ch_voice_830bce03",
+              "server_id": "srv_d85c8944",
+              "category_id": "cat_voice_a23d6892",
+              "name": "Geral (Voz & Tela)",
+              "type": "voice",
+              "topic": "Converse e compartilhe tela",
+              "position": 0,
+              "created_at": "2026-09-05T22:18:34.012Z"
+            }
+          ]
+        }
+      ],
+      "members": [
+        {
+          "server_id": "srv_d85c8944",
+          "user_id": "user_e9c36204",
+          "role": "owner",
+          "joined_at": "2026-09-05T22:18:34.012Z"
+        }
+      ]
+    },
+    {
+      "id": "srv_531a3704",
+      "name": "Eu e Momoi",
+      "icon": "https://i.pinimg.com/originals/8f/7f/6c/8f7f6cb2d4157966c1011ec7540fbd29.gif",
+      "owner_id": "user_50cbd5b9",
+      "invite_code": "concord-8pwp8i",
+      "created_at": "2026-09-08T03:37:19.892Z",
+      "categories": [
+        {
+          "id": "cat_text_c94dad82",
+          "server_id": "srv_531a3704",
+          "name": "CANAIS DE TEXTO",
+          "position": 0,
+          "channels": [
+            {
+              "id": "ch_geral_821b7f83",
+              "server_id": "srv_531a3704",
+              "category_id": "cat_text_c94dad82",
+              "name": "geral",
+              "type": "text",
+              "topic": "Canal geral de conversas",
+              "position": 0,
+              "created_at": "2026-09-08T03:37:19.892Z"
+            }
+          ]
+        },
+        {
+          "id": "cat_voice_25c1667a",
+          "server_id": "srv_531a3704",
+          "name": "CANAIS DE VOZ",
+          "position": 1,
+          "channels": [
+            {
+              "id": "ch_voice_4a5a0d70",
+              "server_id": "srv_531a3704",
+              "category_id": "cat_voice_25c1667a",
+              "name": "Geral (Voz & Tela)",
+              "type": "voice",
+              "topic": "Converse e compartilhe tela",
+              "position": 0,
+              "created_at": "2026-09-08T03:37:19.892Z"
+            }
+          ]
+        }
+      ],
+      "members": [
+        {
+          "server_id": "srv_531a3704",
+          "user_id": "user_50cbd5b9",
+          "role": "owner",
+          "joined_at": "2026-09-08T03:37:19.892Z"
         }
       ]
     }
   ],
+  "channels": [],
   "messages": [
     {
-      "id": "msg_1",
-      "channel_id": "ch_hub_geral",
-      "author_id": "user_otavio",
-      "content": "Bem-vindos ao **Concord**! 🚀 O sistema de voz, vídeo e compartilhamento de tela em tempo real já está 100% ativo.",
-      "attachments": [],
-      "reactions": [
-        {
-          "emoji": "🔥",
-          "count": 2,
-          "users": [
-            "user_alex",
-            "user_carlos"
-          ]
-        },
-        {
-          "emoji": "🚀",
-          "count": 3,
-          "users": [
-            "user_otavio",
-            "user_alex",
-            "user_bia"
-          ]
-        }
-      ],
-      "created_at": "2026-09-05T00:45:51.963Z"
-    },
-    {
-      "id": "msg_2",
-      "channel_id": "ch_hub_geral",
-      "author_id": "user_alex",
-      "content": "Muito bom! Testei o canal de voz `Sala de Reunião & Tela` e o compartilhamento de tela com WebRTC funcionou liso com baixíssima latência.",
-      "attachments": [],
-      "reactions": [
-        {
-          "emoji": "💯",
-          "count": 1,
-          "users": [
-            "user_otavio"
-          ]
-        }
-      ],
-      "created_at": "2026-09-05T01:15:51.964Z"
-    },
-    {
-      "id": "msg_3",
-      "channel_id": "ch_hub_geral",
-      "author_id": "user_carlos",
-      "content": "A interface no padrão dark oficial do Discord com cores fiéis ficou espetacular! Abram em abas diferentes para testar as chamadas e o streaming de tela simultâneo.",
-      "attachments": [],
-      "reactions": [
-        {
-          "emoji": "❤️",
-          "count": 2,
-          "users": [
-            "user_otavio",
-            "user_alex"
-          ]
-        }
-      ],
-      "created_at": "2026-09-05T01:30:51.964Z"
-    },
-    {
-      "id": "msg_072aef0f-0075-4666-af48-0a3d5431b504",
-      "channel_id": "ch_hub_geral",
-      "author_id": "user_otavio",
-      "content": "Mensagem de teste automatizada via API",
+      "id": "msg_08098f81-88de-4670-9bba-92186affce11",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Salve",
       "attachments": [],
       "reply_to_id": null,
       "reactions": [],
-      "created_at": "2026-09-05T01:50:07.222Z"
+      "created_at": "2026-09-05T22:09:45.646Z"
+    },
+    {
+      "id": "msg_34e2d675-2a78-42f3-abfc-c71a1261e7ca",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "@Pedal ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:39:23.014Z"
+    },
+    {
+      "id": "msg_9c3e634e-7a02-47c9-85d7-fc4048dcd8c8",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Gay",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:39:24.953Z"
+    },
+    {
+      "id": "msg_1808c159-b056-408a-8a2b-bb7e1f7c4ae8",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Fale comigo",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:39:32.242Z"
+    },
+    {
+      "id": "msg_a234650f-f459-41a6-9bf0-1de4639a4354",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "@Pedal ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:39:54.532Z"
+    },
+    {
+      "id": "msg_8e8c496c-21e9-475b-a98b-f27c11a56073",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Opa",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:40:01.227Z"
+    },
+    {
+      "id": "msg_1ecadf65-ee12-42ba-8176-d84030eb8ed8",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "@OFx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:40:14.199Z"
+    },
+    {
+      "id": "msg_ae73caf2-0c47-4b5a-8c91-822aee239e76",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "chupa ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:40:20.827Z"
+    },
+    {
+      "id": "msg_1458c6bf-3036-4205-9390-53ce1f9c1c6d",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "@OFx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:40:33.086Z"
+    },
+    {
+      "id": "msg_745091ed-20b4-4aa1-8d6d-cf5e46c824bd",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "@OFx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:40:34.826Z"
+    },
+    {
+      "id": "msg_8294d900-2990-467a-ae7f-e8390c6bfcd1",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "@OFx @todos ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:40:38.746Z"
+    },
+    {
+      "id": "msg_31356cf6-6c9a-4a6d-845e-9e1303a8e1e8",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Chupa o Bagúi @Pedal ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-05T22:40:40.244Z"
+    },
+    {
+      "id": "msg_b5ec19b8-d10b-4ece-a50d-66bc3a922993",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "@Pedal ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T00:16:39.283Z"
+    },
+    {
+      "id": "msg_b3f7621c-a51d-4ca9-90e8-698e03dc77e4",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "@OFx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T00:17:18.093Z"
+    },
+    {
+      "id": "msg_948341c8-5e32-4d24-881a-c8f9d3186efe",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Opa",
+      "attachments": [],
+      "reply_to_id": "msg_319310ba-e026-4cfb-87f3-4112888a5ae5",
+      "reactions": [],
+      "created_at": "2026-09-06T00:18:03.831Z"
+    },
+    {
+      "id": "msg_76ae3150-1504-42cd-aef2-cd54e566764d",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "f",
+      "attachments": [],
+      "reply_to_id": "msg_319310ba-e026-4cfb-87f3-4112888a5ae5",
+      "reactions": [],
+      "created_at": "2026-09-06T00:18:04.205Z"
+    },
+    {
+      "id": "msg_7090818f-2e5d-42de-a239-e295249a2ce9",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Cala boca, puta",
+      "attachments": [],
+      "reply_to_id": "msg_76ae3150-1504-42cd-aef2-cd54e566764d",
+      "reactions": [],
+      "created_at": "2026-09-06T02:08:31.019Z",
+      "edited_at": "2026-09-06T02:08:54.056Z"
+    },
+    {
+      "id": "msg_9743600f-0b27-43f6-a9cb-c71102c67a93",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "Merda",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T02:28:02.732Z",
+      "is_pinned": true
+    },
+    {
+      "id": "msg_b1aaa642-e9ed-4603-a40f-9c6ef93f7bd0",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Caceta kkkk",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T02:28:15.256Z"
+    },
+    {
+      "id": "msg_f7271c83-2c51-4d1a-8f03-f63c0101fcd8",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "Saí fora ",
+      "attachments": [],
+      "reply_to_id": "msg_7090818f-2e5d-42de-a239-e295249a2ce9",
+      "reactions": [],
+      "created_at": "2026-09-06T02:28:22.270Z"
+    },
+    {
+      "id": "msg_0b4596b9-bcf5-4064-9118-8d334a783931",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Meu fone descarregou ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [
+        {
+          "emoji": "🔥",
+          "count": 1,
+          "users": [
+            "user_12071697"
+          ]
+        }
+      ],
+      "created_at": "2026-09-06T02:28:31.423Z",
+      "is_pinned": true
+    },
+    {
+      "id": "msg_d8de20e9-e0bf-4982-a286-9b72075c7dc8",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Para de reagir mcc",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T02:28:43.138Z"
+    },
+    {
+      "id": "msg_8c3f9f01-99bc-492f-b41f-d0796b378381",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Mas seguinte dedão ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T02:28:57.033Z"
+    },
+    {
+      "id": "msg_3aa21618-b48e-4ccd-bd45-28bfc5927438",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Vou mimir agr",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T02:29:02.273Z"
+    },
+    {
+      "id": "msg_411c6a77-3d01-497c-ad1c-48db80f8272a",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "",
+      "attachments": [
+        {
+          "id": "0.8426680393179198",
+          "name": "17886617345142929694647613746307.jpg",
+          "url": "/uploads/file-1788661743939-568106876.jpg",
+          "size": 6553998,
+          "type": "image/jpeg"
+        }
+      ],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T02:29:05.698Z"
+    },
+    {
+      "id": "msg_a08d78ac-51e3-4137-98d6-b5b9a3b3fd0e",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "Não dá pra evitar foto ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-06T02:29:27.091Z"
     }
   ],
   "direct_channels": [
     {
-      "id": "dm_otavio_alex",
+      "id": "dm_ba0afff5",
       "members": [
-        "user_otavio",
-        "user_alex"
+        "user_50cbd5b9",
+        "user_12071697"
       ],
-      "created_at": "2026-09-05T01:45:51.964Z",
-      "updated_at": "2026-09-05T01:45:51.964Z"
+      "created_at": "2026-09-05T20:40:05.251Z",
+      "updated_at": "2026-09-06T02:10:08.979Z"
     },
     {
-      "id": "dm_otavio_bia",
+      "id": "dm_4a884427",
       "members": [
-        "user_otavio",
-        "user_bia"
+        "user_50cbd5b9",
+        "user_c11b8177"
       ],
-      "created_at": "2026-09-05T01:45:51.964Z",
-      "updated_at": "2026-09-05T01:45:51.964Z"
+      "created_at": "2026-09-05T22:08:37.660Z",
+      "updated_at": "2026-09-05T22:09:12.361Z"
     }
   ],
   "direct_messages": [
     {
-      "id": "dm_msg_1",
-      "channel_id": "dm_otavio_alex",
-      "author_id": "user_alex",
-      "content": "E aí Otávio! Bora testar a call privada e o compartilhamento de tela 1-a-1?",
+      "id": "dm_msg_b4715d3f-3ad1-4bfa-9138-ee5ec58b3fec",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_50cbd5b9",
+      "content": "Bixa",
       "attachments": [],
-      "created_at": "2026-09-05T01:35:51.964Z"
+      "created_at": "2026-09-05T20:40:11.444Z"
     },
     {
-      "id": "dm_msg_2",
-      "channel_id": "dm_otavio_alex",
-      "author_id": "user_otavio",
-      "content": "Bora! Só clicar no botão de iniciar chamada telefônica no topo deste chat privado.",
+      "id": "dm_msg_2ee25849-8b1e-49f1-8f07-fced09cac43f",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_50cbd5b9",
+      "content": "Gay",
       "attachments": [],
-      "created_at": "2026-09-05T01:40:51.964Z"
+      "created_at": "2026-09-05T20:40:21.621Z"
     },
     {
-      "id": "dm_msg_3",
-      "channel_id": "dm_otavio_bia",
-      "author_id": "user_bia",
-      "content": "Opa Otávio, quando for abrir call de games me chama pra transmitir o gameplay ao vivo!",
+      "id": "dm_msg_fd1d5ded-67cf-4d6c-b27c-c78b4202bd99",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_12071697",
+      "content": "seu viado ",
       "attachments": [],
-      "created_at": "2026-09-05T01:43:51.964Z"
+      "created_at": "2026-09-05T20:40:21.740Z"
+    },
+    {
+      "id": "dm_msg_8d5eb0c1-1c1d-417b-8f0d-f3c5819dd591",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_50cbd5b9",
+      "content": "Boiola",
+      "attachments": [],
+      "created_at": "2026-09-05T20:40:26.335Z"
+    },
+    {
+      "id": "dm_msg_de45dec8-983a-4c9d-8427-ca68bdfe1f3c",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_50cbd5b9",
+      "content": "concord-zcm46b",
+      "attachments": [],
+      "created_at": "2026-09-05T20:40:35.470Z"
+    },
+    {
+      "id": "dm_msg_9ce3c429-01ca-4749-998d-b8ce14af7a34",
+      "channel_id": "dm_4a884427",
+      "author_id": "user_50cbd5b9",
+      "content": "Bixa",
+      "attachments": [],
+      "created_at": "2026-09-05T22:08:43.641Z"
+    },
+    {
+      "id": "dm_msg_fc6f2963-e194-4857-a42b-7dabf3515a11",
+      "channel_id": "dm_4a884427",
+      "author_id": "user_c11b8177",
+      "content": "gay",
+      "attachments": [],
+      "created_at": "2026-09-05T22:08:47.909Z"
+    },
+    {
+      "id": "dm_msg_8ee94dbf-0e17-42a3-a7b1-eca6dc46d075",
+      "channel_id": "dm_4a884427",
+      "author_id": "user_50cbd5b9",
+      "content": "concord-zcm46b",
+      "attachments": [],
+      "created_at": "2026-09-05T22:09:12.361Z"
+    },
+    {
+      "id": "dm_msg_6fb1226d-50dd-40b5-ba89-403cb6f8c6c3",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_50cbd5b9",
+      "content": "↪️ **Mensagem Encaminhada de @OFx:**\n> Opa",
+      "attachments": [],
+      "created_at": "2026-09-06T00:27:41.530Z"
+    },
+    {
+      "id": "dm_msg_073b8d6a-dc66-487f-a8d8-c2b480f72e6c",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_12071697",
+      "content": "@OFx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-06T02:09:51.321Z"
+    },
+    {
+      "id": "dm_msg_3623e914-de6f-4887-8321-6e596e7122a1",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_12071697",
+      "content": "ff",
+      "attachments": [],
+      "reply_to_id": "dm_msg_073b8d6a-dc66-487f-a8d8-c2b480f72e6c",
+      "created_at": "2026-09-06T02:09:58.838Z"
+    },
+    {
+      "id": "dm_msg_d80efc0c-85cf-418f-b1af-5a6d3116fa87",
+      "channel_id": "dm_ba0afff5",
+      "author_id": "user_12071697",
+      "content": "link",
+      "attachments": [],
+      "reply_to_id": "dm_msg_de45dec8-983a-4c9d-8427-ca68bdfe1f3c",
+      "created_at": "2026-09-06T02:10:08.979Z",
+      "edited_at": "2026-09-06T02:10:24.526Z",
+      "is_pinned": false
     }
-  ]
+  ],
+  "friend_requests": [
+    {
+      "id": "freq_f222e0bf",
+      "from_id": "user_50cbd5b9",
+      "to_id": "user_12071697",
+      "status": "accepted",
+      "created_at": "2026-09-05T20:39:24.873Z"
+    },
+    {
+      "id": "freq_bab433c6",
+      "from_id": "user_50cbd5b9",
+      "to_id": "user_c11b8177",
+      "status": "accepted",
+      "created_at": "2026-09-05T22:08:15.511Z"
+    }
+  ],
+  "tokens": {
+    "04aa40227e057b7e2825f5cbe540226d1b544325ff61fa91f064132c57a84525": "user_50cbd5b9",
+    "513d8094ddf60504767ed1542c719057f605000f118561197e4c954db1e38871": "user_053057d8",
+    "6f7c0443b187d1ab9261b6140c3863aa4df59a7c962bf266597bfcd851160ac5": "user_7f127692",
+    "2d33475561199340911baa2e27f227ab6648940ee04ab3d22ed2f39bb8e8525b": "user_50cbd5b9",
+    "f8d44a389cd9733e7f6b7fc673f91ff424be198c4c6a6c9de2824872bdb097a5": "user_12071697",
+    "2e84798a1a415d563bf3ada4874a81864555b6e4a58158c7c8c72d40278e3bdd": "user_c11b8177",
+    "fb6522503ffa39adb61ec68e28a880c79695d8439c4c6464af534a05ecb99a94": "user_50cbd5b9",
+    "95e7e30e10e5a304025cf583f998d4dc6dcfe01485e196ab407cd2b1223c05e8": "user_e9c36204",
+    "261efa902dcc69e52534e43d88d290198a319d47c1de5a4a60ddaf82e8ae03cf": "user_12071697",
+    "e6ed55c8e37a4220bb977f3333c817c3d1d1fcc436fb616818944e30dd9e75a4": "user_50cbd5b9",
+    "89d26e89d7a5d5f7bd735e1e575a643370d86fa01ff49913ed261cbf96b2e996": "user_12071697",
+    "2650af9a001d9350998c2cbcaf8b4cb1547823ced78aba75dbdc7688c5227798": "user_12071697",
+    "fd259f6ff8abae7fa91f3b39dfa86a7861cb1731d7124ffd73b046b11bae6870": "user_50cbd5b9",
+    "297774985616a0f4d651578f29991023e61ccef9fcdd25951f0ddf8a51f3869a": "user_50cbd5b9",
+    "e1113f1dffffe5827a1d56ccc677fbb29d58b6273af34e53e2d9b7af55ae36e7": "user_50cbd5b9",
+    "718e4fe2a0925e8d9f8a1d86ed0b03f7e4a7752288771516f40ac69a7bb30442": "user_50cbd5b9"
+  },
+  "friends": {
+    "user_50cbd5b9": [
+      "user_12071697",
+      "user_c11b8177"
+    ],
+    "user_053057d8": [],
+    "user_7f127692": [],
+    "user_12071697": [
+      "user_50cbd5b9"
+    ],
+    "user_c11b8177": [
+      "user_50cbd5b9"
+    ],
+    "user_e9c36204": []
+  }
 }

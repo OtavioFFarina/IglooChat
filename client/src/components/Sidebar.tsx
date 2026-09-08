@@ -14,10 +14,14 @@ import {
   Copy, 
   Check, 
   Search, 
-  X 
+  X,
+  Settings,
+  LogOut,
+  Trash2
 } from 'lucide-react';
 import { UserControls } from './UserControls';
 import { VoiceConnectionCard } from './VoiceConnectionCard';
+import { ChannelContextMenu } from './ChannelContextMenu';
 
 export const Sidebar: React.FC = () => {
   const {
@@ -28,6 +32,10 @@ export const Sidebar: React.FC = () => {
     selectChannel,
     selectDM,
     openCreateChannelModal,
+    openServerSettings,
+    deleteServer,
+    leaveServer,
+    friendRequests,
     joinVoiceChannel,
     currentVoiceChannel,
     channelVoiceStates,
@@ -38,13 +46,34 @@ export const Sidebar: React.FC = () => {
     isScreenSharing,
     isSpeaking,
     allUsers,
-    selectServer
+    selectServer,
+    openUserContextMenu,
+    setActiveStageView,
+    setIsMobileNavOpen,
+    channelContextMenu,
+    openChannelContextMenu,
+    closeChannelContextMenu
   } = useConcord();
 
   const [isServerMenuOpen, setIsServerMenuOpen] = useState(false);
   const [copiedInvite, setCopiedInvite] = useState(false);
   const [collapsedCategories, setCollapsedCategories] = useState<{ [id: string]: boolean }>({});
   const [searchFriend, setSearchFriend] = useState('');
+
+  const handleSelectChannel = (channel: any) => {
+    selectChannel(channel);
+    setIsMobileNavOpen(false);
+  };
+
+  const handleSelectDM = (dm: any) => {
+    selectDM(dm);
+    setIsMobileNavOpen(false);
+  };
+
+  const handleSelectFriends = () => {
+    selectDM(null);
+    setIsMobileNavOpen(false);
+  };
 
   const toggleCategory = (catId: string) => {
     setCollapsedCategories(prev => ({ ...prev, [catId]: !prev[catId] }));
@@ -60,9 +89,22 @@ export const Sidebar: React.FC = () => {
   // Build real-time map of users in each voice channel
   const getChannelUsers = (channelId: string) => {
     if (currentVoiceChannel?.id === channelId) {
-      // Return active participants in current client's voice session
-      return voiceParticipants.map(p => {
-        if (p.user.id === currentUser.id) {
+      // Return active participants in current client's voice session (guaranteeing local user is included!)
+      const list = [...voiceParticipants];
+      if (currentUser && !list.some(p => p.user.id === currentUser.id)) {
+        list.push({
+          socketId: 'local',
+          user: currentUser,
+          channelId,
+          isMuted,
+          isDeafened,
+          isVideoOn: false,
+          isScreenSharing,
+          isSpeaking
+        });
+      }
+      return list.map(p => {
+        if (currentUser && p.user.id === currentUser.id) {
           return {
             ...p,
             isMuted,
@@ -130,6 +172,47 @@ export const Sidebar: React.FC = () => {
                   <span>Criar Canal</span>
                 </button>
 
+                <button
+                  onClick={() => {
+                    openServerSettings(currentServer);
+                    setIsServerMenuOpen(false);
+                  }}
+                  className="w-full flex items-center space-x-2 px-2.5 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded transition"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Configurações do Servidor</span>
+                </button>
+
+                <div className="h-[1px] bg-[#232428] my-1" />
+
+                {currentServer.owner_id === currentUser?.id ? (
+                  <button
+                    onClick={async () => {
+                      if (window.confirm(`Tem certeza que deseja excluir permanentemente o servidor "${currentServer.name}"?`)) {
+                        await deleteServer(currentServer.id);
+                        setIsServerMenuOpen(false);
+                      }
+                    }}
+                    className="w-full flex items-center space-x-2 px-2.5 py-2 text-xs font-semibold text-discord-red hover:bg-discord-red hover:text-white rounded transition"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Excluir Servidor</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={async () => {
+                      if (window.confirm(`Deseja realmente sair do servidor "${currentServer.name}"?`)) {
+                        await leaveServer(currentServer.id);
+                        setIsServerMenuOpen(false);
+                      }
+                    }}
+                    className="w-full flex items-center space-x-2 px-2.5 py-2 text-xs font-semibold text-discord-red hover:bg-discord-red hover:text-white rounded transition"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sair do Servidor</span>
+                  </button>
+                )}
+
                 <div className="px-2.5 py-1.5 bg-[#1e1f22] rounded text-[11px] text-discord-muted flex items-center justify-between">
                   <span>Código de Convite:</span>
                   <span className="font-mono font-bold text-white bg-[#2b2d31] px-1.5 py-0.5 rounded">
@@ -182,7 +265,11 @@ export const Sidebar: React.FC = () => {
                           return (
                             <button
                               key={channel.id}
-                              onClick={() => selectChannel(channel)}
+                              onClick={() => handleSelectChannel(channel)}
+                              onContextMenu={(e) => {
+                                e.preventDefault();
+                                openChannelContextMenu(channel, e.clientX, e.clientY);
+                              }}
                               className={`w-full flex items-center space-x-2 px-2 py-1.5 rounded-[4px] text-sm group transition ${
                                 isTextActive
                                   ? 'bg-[#35373c] text-white font-medium'
@@ -199,7 +286,11 @@ export const Sidebar: React.FC = () => {
                         return (
                           <div key={channel.id} className="space-y-1">
                             <button
-                              onClick={() => selectChannel(channel)}
+                              onClick={() => handleSelectChannel(channel)}
+                              onContextMenu={(e) => {
+                                e.preventDefault();
+                                openChannelContextMenu(channel, e.clientX, e.clientY);
+                              }}
                               className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[4px] text-sm group transition ${
                                 isVoiceConnected
                                   ? 'bg-[#23a55a]/15 text-discord-green font-medium'
@@ -231,25 +322,41 @@ export const Sidebar: React.FC = () => {
                                   return (
                                     <div
                                       key={p.socketId}
-                                      className="flex items-center justify-between py-1 px-2 rounded hover:bg-[#35373c]/40 text-xs text-discord-normal"
+                                      onContextMenu={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        openUserContextMenu(p.user, e.clientX, e.clientY);
+                                      }}
+                                      onClick={() => {
+                                        if (currentVoiceChannel?.id === channel.id) {
+                                          setActiveStageView('voice');
+                                        }
+                                      }}
+                                      className="flex items-center justify-between py-1 px-2 rounded hover:bg-[#35373c]/50 text-xs text-[#dbdee1] hover:text-white cursor-pointer group transition-colors select-none"
+                                      title="Clique para abrir palco • Botão direito para opções"
                                     >
                                       <div className="flex items-center space-x-2 truncate">
-                                        <div className="relative">
+                                        <div className="relative flex-shrink-0">
                                           <img
                                             src={p.user.avatar}
                                             alt={p.user.username}
                                             className={`w-5 h-5 rounded-full object-cover transition-all ${
-                                              isUserSpeaking ? 'ring-2 ring-discord-green scale-105' : ''
+                                              isUserSpeaking ? 'ring-2 ring-discord-green scale-105 shadow-[0_0_8px_#23a55a]' : ''
                                             }`}
                                           />
                                         </div>
-                                        <span className="truncate font-medium">{p.user.username}</span>
+                                        <span className="truncate font-medium flex items-center space-x-1">
+                                          <span>{p.user.username}</span>
+                                          {currentUser && p.user.id === currentUser.id && (
+                                            <span className="text-[10px] text-discord-muted font-normal">(Você)</span>
+                                          )}
+                                        </span>
                                       </div>
 
-                                      <div className="flex items-center space-x-1 text-discord-muted">
+                                      <div className="flex items-center space-x-1.5 text-discord-muted flex-shrink-0">
                                         {/* Red AO VIVO (LIVE) Screen Share Tag */}
                                         {p.isScreenSharing && (
-                                          <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-discord-red text-white tracking-wider flex items-center space-x-0.5">
+                                          <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-discord-red text-white tracking-wider flex items-center space-x-0.5 animate-pulse shadow-sm">
                                             <Tv className="w-2.5 h-2.5" />
                                             <span>AO VIVO</span>
                                           </span>
@@ -291,15 +398,22 @@ export const Sidebar: React.FC = () => {
           <div className="flex-1 overflow-y-auto px-2 py-3 space-y-4">
             {/* Friends Tab Button */}
             <button
-              onClick={() => selectDM(null)}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-[4px] text-sm font-medium transition ${
+              onClick={handleSelectFriends}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-[4px] text-sm font-medium transition ${
                 currentDM === null
                   ? 'bg-[#35373c] text-white'
                   : 'text-discord-normal hover:bg-[#35373c]/50 hover:text-white'
               }`}
             >
-              <Users className="w-5 h-5 text-discord-muted" />
-              <span>Amigos</span>
+              <div className="flex items-center space-x-3">
+                <Users className="w-5 h-5 text-discord-muted" />
+                <span>Amigos</span>
+              </div>
+              {friendRequests?.incoming && friendRequests.incoming.length > 0 && (
+                <span className="bg-discord-red text-white text-[11px] font-extrabold px-1.5 py-0.2 rounded-full shadow-sm">
+                  {friendRequests.incoming.length}
+                </span>
+              )}
             </button>
 
             {/* Direct Messages List */}
@@ -322,7 +436,7 @@ export const Sidebar: React.FC = () => {
                 return (
                   <button
                     key={dm.id}
-                    onClick={() => selectDM(dm)}
+                    onClick={() => handleSelectDM(dm)}
                     className={`w-full flex items-center space-x-3 px-2 py-2 rounded-[4px] group transition ${
                       isActive
                         ? 'bg-[#35373c] text-white'
@@ -361,6 +475,15 @@ export const Sidebar: React.FC = () => {
 
       {/* User Controls pinned at bottom */}
       <UserControls />
+
+      {/* Channel Context Menu */}
+      {channelContextMenu && (
+        <ChannelContextMenu
+          channel={channelContextMenu.channel}
+          position={{ x: channelContextMenu.x, y: channelContextMenu.y }}
+          onClose={closeChannelContextMenu}
+        />
+      )}
     </aside>
   );
 };

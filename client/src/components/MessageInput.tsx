@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useConcord } from '../context/ConcordContext';
-import { PlusCircle, Smile, Send, X, Image as ImageIcon, FileText } from 'lucide-react';
-import { Attachment } from '../types';
+import { PlusCircle, Smile, Send, X, Image as ImageIcon, FileText, AtSign } from 'lucide-react';
+import { Attachment, User } from '../types';
 
 interface MessageInputProps {
   placeholder: string;
@@ -10,18 +10,157 @@ interface MessageInputProps {
 
 const EMOJI_LIST = ['🔥', '🚀', '❤️', '👍', '😂', '🎉', '🎮', '💻', '✨', '⚡', '🤖', '👀', '💯', '👏'];
 
+interface MentionOption {
+  id: string;
+  name: string;
+  label: string;
+  description?: string;
+  isSpecial?: boolean;
+  user?: User;
+}
+
 export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend }) => {
+  const { currentServer, currentDM, allUsers, currentUser, replyToMessage, setReplyToMessage } = useConcord();
   const [content, setContent] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  // Mention system state
+  const [showMentionMenu, setShowMentionMenu] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState('');
+  const [mentionStartIndex, setMentionStartIndex] = useState(-1);
+  const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const mentionMenuRef = useRef<HTMLDivElement>(null);
+
+  // Compute available users for mentions
+  const candidateUsers: User[] = React.useMemo(() => {
+    if (currentServer) {
+      const serverUserIds = new Set(currentServer.members.map(m => m.user_id));
+      return allUsers.filter(u => serverUserIds.has(u.id));
+    }
+    if (currentDM) {
+      return [currentDM.recipient];
+    }
+    return allUsers;
+  }, [currentServer, currentDM, allUsers]);
+
+  // Special role broadcast mentions
+  const broadcastMentions: MentionOption[] = [
+    { id: 'todos', name: 'todos', label: '@todos', description: 'Notifica todas as pessoas neste canal', isSpecial: true },
+    { id: 'everyone', name: 'everyone', label: '@everyone', description: 'Notifica todas as pessoas neste canal', isSpecial: true },
+    { id: 'aqui', name: 'aqui', label: '@aqui', description: 'Notifica apenas os membros atualmente online', isSpecial: true },
+    { id: 'here', name: 'here', label: '@here', description: 'Notifica apenas os membros atualmente online', isSpecial: true }
+  ];
+
+  // Filtered mention options based on query
+  const mentionOptions: MentionOption[] = React.useMemo(() => {
+    if (!showMentionMenu) return [];
+    const q = mentionQuery.toLowerCase();
+
+    const matchedBroadcasts = (currentServer ? broadcastMentions : []).filter(b =>
+      b.name.toLowerCase().startsWith(q)
+    );
+
+    const matchedUsers: MentionOption[] = candidateUsers
+      .filter(u => u.username.toLowerCase().includes(q))
+      .map(u => ({
+        id: u.id,
+        name: u.username,
+        label: `@${u.username}`,
+        description: `#${u.discriminator}`,
+        isSpecial: false,
+        user: u
+      }));
+
+    return [...matchedBroadcasts, ...matchedUsers];
+  }, [showMentionMenu, mentionQuery, candidateUsers, currentServer]);
+
+  // Keep selected index within bounds
+  useEffect(() => {
+    if (selectedMentionIndex >= mentionOptions.length) {
+      setSelectedMentionIndex(0);
+    }
+  }, [mentionOptions.length]);
+
+  const insertMention = (option: MentionOption) => {
+    if (mentionStartIndex < 0) return;
+    const before = content.slice(0, mentionStartIndex);
+    const cursorPos = textareaRef.current?.selectionStart || content.length;
+    const after = content.slice(cursorPos);
+    const replacement = `@${option.name} `;
+    const newContent = before + replacement + after;
+
+    setContent(newContent);
+    setShowMentionMenu(false);
+
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        const newCursor = before.length + replacement.length;
+        textareaRef.current.setSelectionRange(newCursor, newCursor);
+      }
+    }, 10);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (showMentionMenu && mentionOptions.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedMentionIndex(i => (i + 1) % mentionOptions.length);
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedMentionIndex(i => (i - 1 + mentionOptions.length) % mentionOptions.length);
+        return;
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        insertMention(mentionOptions[selectedMentionIndex]);
+        return;
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setShowMentionMenu(false);
+        return;
+      }
+    }
+
+    if (e.key === 'Escape' && replyToMessage) {
+      e.preventDefault();
+      setReplyToMessage(null);
+      return;
+    }
+
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setContent(val);
+    e.target.style.height = 'auto';
+    e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+
+    const cursorPos = (typeof e.target.selectionStart === 'number' && e.target.selectionStart > 0)
+      ? e.target.selectionStart
+      : val.length;
+    const textBeforeCursor = val.slice(0, cursorPos);
+    const match = textBeforeCursor.match(/@([a-zA-Z0-9_\u00C0-\u00FF-]*)$/);
+
+    if (match) {
+      setMentionQuery(match[1]);
+      setMentionStartIndex(match.index!);
+      setShowMentionMenu(true);
+      setSelectedMentionIndex(0);
+    } else {
+      setShowMentionMenu(false);
     }
   };
 
@@ -32,6 +171,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
     setContent('');
     setAttachments([]);
     setShowEmojiPicker(false);
+    setShowMentionMenu(false);
     await onSend(sendText, sendAtts);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -91,6 +231,91 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
         accept="image/*,video/*,application/pdf,text/*"
       />
 
+      {/* Reply Preview Bar */}
+      {replyToMessage && (
+        <div className="flex items-center justify-between px-3 py-1.5 bg-[#2b2d31] rounded-t-lg border border-b-0 border-[#232428] text-xs select-none animate-in fade-in slide-in-from-bottom-2 duration-150">
+          <div className="flex items-center space-x-2 truncate">
+            <span className="text-discord-muted">Respondendo a</span>
+            <span className="font-semibold text-discord-header truncate">
+              @{replyToMessage.author?.username || 'Usuário'}
+            </span>
+            <span className="text-discord-muted truncate max-w-xs sm:max-w-md italic">
+              "{replyToMessage.content}"
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setReplyToMessage(null)}
+            className="p-1 text-discord-muted hover:text-white rounded hover:bg-[#35373c] transition flex-shrink-0"
+            title="Cancelar resposta (Esc)"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Mention Autocomplete Popover */}
+      {showMentionMenu && mentionOptions.length > 0 && (
+        <div
+          ref={mentionMenuRef}
+          className="absolute bottom-full mb-2 left-4 right-4 bg-[#2b2d31] border border-[#1f2023] rounded-lg shadow-2xl overflow-hidden z-50 max-h-64 flex flex-col"
+        >
+          <div className="px-3 py-1.5 bg-[#1e1f22] text-[11px] font-bold text-discord-muted uppercase tracking-wider border-b border-[#232428] flex items-center justify-between">
+            <span>Membros e Menções</span>
+            <span className="text-[10px] font-normal lowercase text-discord-muted">TAB ou ENTER para selecionar</span>
+          </div>
+          <div className="overflow-y-auto p-1.5 space-y-0.5 scrollbar-thin">
+            {mentionOptions.map((opt, index) => {
+              const isSelected = index === selectedMentionIndex;
+              return (
+                <button
+                  key={opt.id + opt.name}
+                  onClick={() => insertMention(opt)}
+                  onMouseEnter={() => setSelectedMentionIndex(index)}
+                  className={`w-full text-left flex items-center space-x-2.5 px-2.5 py-1.5 rounded-md transition ${
+                    isSelected
+                      ? 'bg-discord-blurple text-white font-medium'
+                      : 'text-discord-header hover:bg-[#35373c]'
+                  }`}
+                >
+                  {opt.isSpecial ? (
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      isSelected ? 'bg-white/20 text-white' : 'bg-[#1e1f22] text-discord-blurple'
+                    }`}>
+                      <AtSign className="w-4 h-4" />
+                    </div>
+                  ) : opt.user ? (
+                    <div className="relative flex-shrink-0">
+                      <img
+                        src={opt.user.avatar}
+                        alt={opt.user.username}
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+                      <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-[#2b2d31] ${
+                        opt.user.status === 'online' ? 'bg-discord-green' :
+                        opt.user.status === 'idle' ? 'bg-discord-amber' :
+                        opt.user.status === 'dnd' ? 'bg-discord-red' : 'bg-discord-gray'
+                      }`} />
+                    </div>
+                  ) : null}
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="font-semibold text-sm truncate">{opt.label}</span>
+                      {opt.description && (
+                        <span className={`text-xs truncate ${isSelected ? 'text-white/80' : 'text-discord-muted'}`}>
+                          {opt.description}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Emoji Picker Popover */}
       {showEmojiPicker && (
         <div className="absolute bottom-20 right-6 bg-[#111214] border border-[#2b2d31] rounded-xl p-3 shadow-2xl z-50 w-64">
@@ -110,7 +335,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
       )}
 
       {/* Input Container */}
-      <div className="bg-discord-input rounded-lg flex flex-col p-2.5 focus-within:ring-1 focus-within:ring-discord-blurple transition border border-transparent focus-within:border-discord-blurple/50 shadow-inner">
+      <div className={`bg-discord-input flex flex-col p-2.5 focus-within:ring-1 focus-within:ring-discord-blurple transition border border-transparent focus-within:border-discord-blurple/50 shadow-inner ${
+        replyToMessage ? 'rounded-b-lg rounded-t-none' : 'rounded-lg'
+      }`}>
         {/* Attachment Preview Chips */}
         {attachments.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-2 p-2 bg-[#2b2d31] rounded-md">
@@ -152,11 +379,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
             ref={textareaRef}
             rows={1}
             value={content}
-            onChange={(e) => {
-              setContent(e.target.value);
-              e.target.style.height = 'auto';
-              e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
-            }}
+            onChange={handleChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className="flex-1 bg-transparent text-discord-header placeholder-discord-muted text-sm resize-none focus:outline-none scrollbar-thin max-h-32"
