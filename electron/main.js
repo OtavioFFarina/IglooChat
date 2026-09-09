@@ -13,6 +13,10 @@ if (process.platform === 'linux') {
   app.commandLine.appendSwitch('enable-features', 'WebRTCPipeWireCapturer');
 }
 
+// Bypass autoplay gesture restrictions so voice & sound effects play uninterrupted
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+app.commandLine.appendSwitch('disable-features', 'PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies');
+
 /**
  * Checks if a given HTTP/HTTPS URL is accessible
  */
@@ -279,24 +283,32 @@ async function createWindow() {
   // Mostra tela de splash enquanto verifica/inicia o servidor
   mainWindow.loadURL(getLoadingHtml());
 
-  // Enable system audio capture for screen sharing on supported platforms
-  if (process.platform === 'win32' || process.platform === 'darwin') {
-    session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
-      desktopCapturer.getSources({ types: ['screen', 'window'] }).then((sources) => {
-        if (sources && sources.length > 0) {
-          callback({
-            video: sources[0],
-            audio: 'loopback'
-          });
-        } else {
-          callback({});
-        }
-      }).catch(err => {
-        console.error('[Electron] Erro ao capturar fontes de desktop:', err);
+  // Automatically grant audio, video, microphone, and screen-sharing permissions
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    callback(true);
+  });
+  session.defaultSession.setPermissionCheckHandler((webContents, permission) => {
+    return true;
+  });
+
+  // Enable system screen & window capture across all desktop platforms
+  session.defaultSession.setDisplayMediaRequestHandler(async (request, callback) => {
+    try {
+      const types = process.platform === 'linux' ? ['screen'] : ['screen', 'window'];
+      const sources = await desktopCapturer.getSources({ types, fetchWindowIcons: false });
+      if (sources && sources.length > 0) {
+        callback({
+          video: sources[0],
+          audio: (process.platform === 'win32' || process.platform === 'darwin') ? 'loopback' : undefined
+        });
+      } else {
         callback({});
-      });
-    });
-  }
+      }
+    } catch (err) {
+      console.error('[Electron] Erro em setDisplayMediaRequestHandler:', err);
+      callback({});
+    }
+  });
 
   // Handle connection errors gracefully
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {

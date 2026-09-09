@@ -699,8 +699,8 @@ export const VoiceStage: React.FC = () => {
           {/* SCREEN SHARING BUTTON */}
           <button
             onClick={toggleScreenShare}
-            title={isScreenSharing ? 'Parar Compartilhamento de Tela' : 'Compartilhar sua Tela'}
-            className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-full font-semibold text-xs transition flex items-center space-x-1.5 sm:space-x-2 shadow-lg ${
+            title={isScreenSharing ? 'Parar Transmissão de Tela' : 'Transmitir Tela'}
+            className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-full font-bold text-xs transition flex items-center space-x-1.5 sm:space-x-2 shadow-lg flex-shrink-0 ${
               isScreenSharing
                 ? 'bg-discord-green text-white hover:bg-emerald-600 ring-2 ring-emerald-400/50'
                 : 'bg-discord-blurple text-white hover:bg-discord-blurple-hover'
@@ -709,12 +709,12 @@ export const VoiceStage: React.FC = () => {
             {isScreenSharing ? (
               <>
                 <MonitorOff className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
-                <span className="hidden xs:inline">Parar Tela</span>
+                <span className="text-xs font-bold">Parar</span>
               </>
             ) : (
               <>
                 <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden xs:inline">Compartilhar Tela</span>
+                <span className="text-xs font-bold">Transmitir Tela</span>
               </>
             )}
           </button>

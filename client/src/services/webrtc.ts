@@ -164,20 +164,16 @@ export class WebRTCManager {
     this.noiseSuppressionEnabled = enabled;
     try { localStorage.setItem('igloochat_noise_suppression', enabled ? 'true' : 'false'); } catch (e) {}
 
-    // Instantly adjust DSP filters and gate gain if active
-    if (this.dspAudioCtx) {
-      const now = this.dspAudioCtx.currentTime;
-      if (this.dspLowpass) {
-        this.dspLowpass.frequency.setTargetAtTime(enabled ? 7000 : 20000, now, 0.05);
-      }
-      if (this.dspHighpass) {
-        this.dspHighpass.frequency.setTargetAtTime(enabled ? 95 : 40, now, 0.05);
-      }
-      if (this.dspGateGain) {
-        if (!enabled) {
-          this.dspGateGain.gain.setTargetAtTime(1.0, now, 0.01);
-        }
-      }
+    if (this.rawAudioStream) {
+      this.rawAudioStream.getAudioTracks().forEach(track => {
+        try {
+          track.applyConstraints({
+            noiseSuppression: enabled,
+            echoCancellation: true,
+            autoGainControl: !enabled
+          });
+        } catch (e) {}
+      });
     }
   }
 
@@ -209,79 +205,31 @@ export class WebRTCManager {
       });
 
       this.rawAudioStream = stream;
+      this.localAudioStream = stream;
 
-      // Setup Web Audio API DSP Noise Gate and Vocal Equalization
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      this.dspAudioCtx = new AudioCtx();
-      if (this.dspAudioCtx.state === 'suspended') {
-        await this.dspAudioCtx.resume().catch(() => {});
+      // Setup Web Audio API Analyser purely for Real-Time RMS VAD & UI Green Speaking Ring
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) {
+          this.dspAudioCtx = new AudioCtx();
+          if (this.dspAudioCtx.state === 'suspended') {
+            await this.dspAudioCtx.resume().catch(() => {});
+          }
+
+          this.dspSource = this.dspAudioCtx.createMediaStreamSource(stream);
+          this.analyser = this.dspAudioCtx.createAnalyser();
+          this.analyser.fftSize = 512;
+          this.analyser.smoothingTimeConstant = 0.2;
+          this.dspSource.connect(this.analyser);
+
+          // Start Voice Activity Detection Loop
+          this.startDSPNoiseGateLoop();
+        }
+      } catch (audioCtxErr) {
+        console.warn('[WebRTC] Web Audio Analyser init note:', audioCtxErr);
       }
 
-      // Hidden audio element to keep audio stream active and clocking in Chromium
-      if (!this.vadAudioPrime) {
-        this.vadAudioPrime = document.createElement('audio');
-        this.vadAudioPrime.muted = true;
-      }
-      this.vadAudioPrime.srcObject = stream;
-      this.vadAudioPrime.play().catch(() => {});
-
-      this.dspSource = this.dspAudioCtx.createMediaStreamSource(stream);
-
-      // 1. High-Pass Filter at 95 Hz (eliminates desk rumble, AC hum, low frequency thuds)
-      this.dspHighpass = this.dspAudioCtx.createBiquadFilter();
-      this.dspHighpass.type = 'highpass';
-      this.dspHighpass.frequency.value = this.noiseSuppressionEnabled ? 95 : 40;
-      this.dspHighpass.Q.value = 0.707;
-
-      // 2. Notch Filter at 60 Hz (removes electrical mains buzz)
-      this.dspNotch = this.dspAudioCtx.createBiquadFilter();
-      this.dspNotch.type = 'notch';
-      this.dspNotch.frequency.value = 60;
-      this.dspNotch.Q.value = 3.0;
-
-      // 3. Dynamics Compressor (evens out vocal levels, gives broadcast clarity)
-      this.dspCompressor = this.dspAudioCtx.createDynamicsCompressor();
-      this.dspCompressor.threshold.value = -24;
-      this.dspCompressor.knee.value = 12;
-      this.dspCompressor.ratio.value = 3;
-      this.dspCompressor.attack.value = 0.003;
-      this.dspCompressor.release.value = 0.25;
-
-      // 4. Low-Pass Filter at 7000 Hz (eliminates high-frequency fan hiss, keyboard clatter, mouse clicks)
-      this.dspLowpass = this.dspAudioCtx.createBiquadFilter();
-      this.dspLowpass.type = 'lowpass';
-      this.dspLowpass.frequency.value = this.noiseSuppressionEnabled ? 7000 : 20000;
-      this.dspLowpass.Q.value = 0.707;
-
-      // 5. Noise Gate Gain Node
-      this.dspGateGain = this.dspAudioCtx.createGain();
-      this.dspGateGain.gain.value = 1.0;
-
-      // 6. Analyser for Real-Time RMS VAD & Noise Detection
-      this.analyser = this.dspAudioCtx.createAnalyser();
-      this.analyser.fftSize = 512;
-      this.analyser.smoothingTimeConstant = 0.15;
-
-      // 7. MediaStream Destination (processed stream for WebRTC transmission)
-      this.dspDestination = this.dspAudioCtx.createMediaStreamDestination();
-
-      // Connect DSP chain: source -> highpass -> notch -> compressor -> lowpass -> gateGain -> destination
-      this.dspSource.connect(this.dspHighpass);
-      this.dspHighpass.connect(this.dspNotch);
-      this.dspNotch.connect(this.dspCompressor);
-      this.dspCompressor.connect(this.dspLowpass);
-      this.dspLowpass.connect(this.dspGateGain);
-      this.dspGateGain.connect(this.dspDestination);
-
-      // Analyser branch for RMS level calculation (post-compressor for steady metering)
-      this.dspCompressor.connect(this.analyser);
-
-      this.localAudioStream = this.dspDestination.stream;
-
-      // Start Noise Gate & VAD Loop
-      this.startDSPNoiseGateLoop();
-
-      // Transmit processed audio to existing WebRTC peers
+      // Transmit native microphone stream with hardware AEC directly to peers
       this.addTracksToPeers(this.localAudioStream, this.peers, 'camera');
 
       return this.localAudioStream;
@@ -296,10 +244,10 @@ export class WebRTCManager {
 
     const dataArray = new Uint8Array(this.analyser.fftSize);
     let hangoverCounter = 0;
-    const HANGOVER_TICKS = 8; // ~280ms hold time to preserve word endings
+    const HANGOVER_TICKS = 6; // ~210ms hold time to preserve word endings
 
     this.vadInterval = setInterval(() => {
-      if (!this.analyser || !this.dspAudioCtx || !this.dspGateGain) return;
+      if (!this.analyser || !this.dspAudioCtx) return;
 
       this.analyser.getByteTimeDomainData(dataArray);
 
@@ -312,14 +260,13 @@ export class WebRTCManager {
       this.currentMicLevel = Math.min(100, Math.round(rms * 400));
 
       // Continuously adapt ambient room noise floor during quiet moments
-      if (rms < 0.035) {
+      if (rms < 0.03) {
         this.ambientNoiseFloor = this.ambientNoiseFloor * 0.95 + rms * 0.05;
       }
 
       // Dynamic sensitivity threshold
-      // Scale: 0 (most sensitive) to 100 (gate opens only for strong speaking)
-      const sensitivityMultiplier = 1.3 + (this.micSensitivity / 100) * 2.5;
-      const minThreshold = 0.007 + (this.micSensitivity / 100) * 0.03;
+      const sensitivityMultiplier = 1.2 + (this.micSensitivity / 100) * 2.0;
+      const minThreshold = 0.005 + (this.micSensitivity / 100) * 0.025;
       const effectiveThreshold = Math.max(this.ambientNoiseFloor * sensitivityMultiplier, minThreshold);
 
       const isVoiceEnergy = rms > effectiveThreshold;
@@ -332,15 +279,6 @@ export class WebRTCManager {
 
       const activeSpeaking = hangoverCounter > 0;
 
-      // Handle Noise Gate Attenuation
-      if (this.noiseSuppressionEnabled) {
-        const targetGain = activeSpeaking ? 1.0 : 0.0001; // -80dB downward expansion for pure silence
-        const timeConstant = activeSpeaking ? 0.005 : 0.035; // Fast 5ms attack, smooth 35ms decay
-        this.dspGateGain.gain.setTargetAtTime(targetGain, this.dspAudioCtx.currentTime, timeConstant);
-      } else {
-        this.dspGateGain.gain.setTargetAtTime(1.0, this.dspAudioCtx.currentTime, 0.01);
-      }
-
       if (this.isSpeaking !== activeSpeaking) {
         this.isSpeaking = activeSpeaking;
         this.callbacks.onSpeakingChanged(activeSpeaking);
@@ -352,11 +290,6 @@ export class WebRTCManager {
     if (this.vadInterval) {
       clearInterval(this.vadInterval);
       this.vadInterval = null;
-    }
-
-    if (this.vadAudioPrime) {
-      this.vadAudioPrime.pause();
-      this.vadAudioPrime.srcObject = null;
     }
 
     if (this.rawAudioStream) {
@@ -442,73 +375,82 @@ export class WebRTCManager {
     try {
       if (this.localScreenStream) return this.localScreenStream;
 
-      let stream: MediaStream;
+      let stream: MediaStream | null = null;
       const igloochatDesktop = (window as any).igloochatDesktop;
+      const isMobile = typeof navigator !== 'undefined' && (
+        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        ('ontouchstart' in window && window.innerWidth < 768)
+      );
 
-      // High-fidelity immersion audio settings:
-      // Enables WebRTC AEC and restrictOwnAudio so call audio (voices of peers) played
-      // by IglooChat is subtracted from desktop capture, preventing the echo of the viewer's voice.
-      const screenAudioConstraints = {
-        echoCancellation: true,            // Built-in WebRTC AEC cancels audio played by IglooChat (peers' voices)
-        restrictOwnAudio: true,            // W3C/Chromium constraint: filters out audio produced by the app itself
-        suppressLocalAudioPlayback: false, // Ensures local speaker/headphone playback continues uninterrupted for streamer
-        autoGainControl: false,            // Preserves music/game dynamic range
-        noiseSuppression: false,           // Preserves game sound effects & music fidelity
-        channelCount: 2                    // High fidelity stereo audio
-      };
-
-      // If running inside Electron desktop app, capture native system sources with loopback audio
-      if (igloochatDesktop && typeof igloochatDesktop.getScreenSources === 'function') {
-        const sources = await igloochatDesktop.getScreenSources();
-        const primarySource = sources && sources.length > 0 ? sources[0] : null;
-        if (primarySource && primarySource.id) {
-          stream = await (navigator.mediaDevices as any).getUserMedia({
-            audio: {
-              mandatory: {
-                chromeMediaSource: 'desktop',
-                echoCancellation: true
-              },
-              optional: [
-                { echoCancellation: true },
-                { googEchoCancellation: true },
-                { googAutoGainControl: false },
-                { googNoiseSuppression: false },
-                { restrictOwnAudio: true }
-              ]
-            },
-            video: {
-              mandatory: {
-                chromeMediaSource: 'desktop',
-                chromeMediaSourceId: primarySource.id,
-                minWidth: 1280,
-                maxWidth: 1920,
-                minHeight: 720,
-                maxHeight: 1080,
-                frameRate: { ideal: 30, max: 60 }
-              }
-            }
-          });
-        } else {
-          // Fallback to standard getDisplayMedia if no desktop source returned
+      if (isMobile) {
+        // Mobile browsers (Android Chrome, iOS Safari) strictly support pure video getDisplayMedia
+        try {
           stream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: false
+          });
+        } catch (mErr) {
+          console.warn('[WebRTC] Mobile getDisplayMedia with constraints failed, trying basic:', mErr);
+          stream = await (navigator.mediaDevices as any).getDisplayMedia();
+        }
+      } else {
+        // Desktop / Electron: try with high-fidelity system audio capture first
+        const screenAudioConstraints = {
+          echoCancellation: true,            // Built-in WebRTC AEC cancels audio played by IglooChat
+          restrictOwnAudio: true,            // W3C/Chromium constraint: filters out audio produced by the app itself
+          suppressLocalAudioPlayback: false, // Ensures local speaker/headphone playback continues uninterrupted for streamer
+          autoGainControl: false,            // Preserves music/game dynamic range
+          noiseSuppression: false,           // Preserves game sound effects & music fidelity
+          channelCount: 2                    // High fidelity stereo audio
+        };
+
+        try {
+          stream = await (navigator.mediaDevices as any).getDisplayMedia({
             video: {
               frameRate: { ideal: 30, max: 60 }
             },
             audio: screenAudioConstraints,
             systemAudio: 'include',
             selfBrowserSurface: 'exclude'
-          } as any);
+          });
+        } catch (desktopErr) {
+          console.warn('[WebRTC] getDisplayMedia com áudio falhou, tentando modo compatível apenas vídeo:', desktopErr);
+          try {
+            stream = await navigator.mediaDevices.getDisplayMedia({
+              video: {
+                frameRate: { ideal: 30, max: 60 }
+              },
+              audio: false
+            });
+          } catch (basicErr) {
+            // If running inside Electron desktop app with getScreenSources fallback
+            if (igloochatDesktop && typeof igloochatDesktop.getScreenSources === 'function') {
+              const sources = await igloochatDesktop.getScreenSources();
+              const primarySource = sources && sources.length > 0 ? sources[0] : null;
+              if (primarySource && primarySource.id) {
+                stream = await (navigator.mediaDevices as any).getUserMedia({
+                  audio: false,
+                  video: {
+                    mandatory: {
+                      chromeMediaSource: 'desktop',
+                      chromeMediaSourceId: primarySource.id,
+                      minWidth: 1280,
+                      maxWidth: 1920,
+                      minHeight: 720,
+                      maxHeight: 1080,
+                      frameRate: { ideal: 30, max: 60 }
+                    }
+                  }
+                });
+              }
+            }
+            if (!stream) throw basicErr;
+          }
         }
-      } else {
-        // Standard Web Browser Screen Capture
-        stream = await navigator.mediaDevices.getDisplayMedia({
-          video: {
-            frameRate: { ideal: 30, max: 60 }
-          },
-          audio: screenAudioConstraints,
-          systemAudio: 'include',
-          selfBrowserSurface: 'exclude'
-        } as any);
+      }
+
+      if (!stream) {
+        throw new Error('Nenhuma stream de tela capturada');
       }
 
       this.localScreenStream = stream;

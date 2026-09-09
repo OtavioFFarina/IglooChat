@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { useIglooChat } from '../context/IglooChatContext';
 import { 
   Hash, 
   Phone, 
+  PhoneOff,
   Video, 
   Users, 
   Smile, 
@@ -11,6 +12,8 @@ import {
   ExternalLink,
   Tv,
   Radio, 
+  Monitor,
+  MonitorOff,
   Download,
   Menu,
   Pin,
@@ -40,6 +43,9 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
     startDirectCall,
     currentVoiceChannel,
     setActiveStageView,
+    toggleScreenShare,
+    isScreenSharing,
+    leaveVoiceChannel,
     openMessageContextMenu,
     messageContextMenu,
     closeMessageContextMenu,
@@ -52,6 +58,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
     openDownloadModal
   } = useIglooChat();
 
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -60,10 +67,12 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState<string>('');
 
-  // Auto scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  // Auto scroll to bottom instantly when entering a channel or when messages arrive (no smooth scroll animation jumping up)
+  useLayoutEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [currentChannel?.id, currentDM?.id, messages]);
 
   const formatTimestamp = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -266,8 +275,68 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
         </div>
       </header>
 
+      {/* Active Voice Call Floating Banner (Quick Screen Share & Stage Access) */}
+      {currentVoiceChannel && (
+        <div className="bg-[#23a55a]/15 border-b border-[#23a55a]/30 px-3 py-2 flex items-center justify-between z-20 flex-shrink-0 animate-fadeIn">
+          <div 
+            onClick={() => setActiveStageView('voice')}
+            className="flex items-center space-x-2 cursor-pointer flex-1 min-w-0 group"
+          >
+            <span className="w-2 h-2 rounded-full bg-discord-green animate-pulse" />
+            <div className="truncate">
+              <span className="text-xs font-bold text-discord-green mr-1">Voz Conectada:</span>
+              <span className="text-xs font-medium text-white group-hover:underline">{currentVoiceChannel.name}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-1.5 flex-shrink-0">
+            {/* Quick Screen Share Toggle directly on mobile/desktop */}
+            <button
+              onClick={toggleScreenShare}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1 shadow-sm ${
+                isScreenSharing
+                  ? 'bg-discord-green text-white hover:bg-emerald-600'
+                  : 'bg-discord-blurple text-white hover:bg-discord-blurple-hover'
+              }`}
+              title={isScreenSharing ? "Parar Compartilhamento de Tela" : "Compartilhar Tela"}
+            >
+              {isScreenSharing ? (
+                <>
+                  <MonitorOff className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-bold">Parar Tela</span>
+                </>
+              ) : (
+                <>
+                  <Monitor className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-bold">Transmitir Tela</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveStageView('voice')}
+              className="p-1.5 rounded-lg bg-discord-darker hover:bg-discord-darkhover text-discord-header text-xs font-semibold transition flex items-center space-x-1"
+              title="Abrir Palco da Call"
+            >
+              <Tv className="w-3.5 h-3.5 text-discord-green" />
+            </button>
+
+            <button
+              onClick={leaveVoiceChannel}
+              className="p-1.5 rounded-lg bg-discord-darker hover:bg-discord-red/20 text-discord-muted hover:text-discord-red transition"
+              title="Desconectar da Voz"
+            >
+              <PhoneOff className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-2 scrollbar-thin scrollbar-thumb-discord-floating">
+      <div 
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-2 scrollbar-thin scrollbar-thumb-discord-floating"
+      >
         {/* Welcome Channel Banner */}
         <div className="pt-6 pb-4 border-b border-discord-floating">
           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-discord-darker flex items-center justify-center text-discord-header mb-3">

@@ -1218,9 +1218,7 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const res = await fetch(`/api/servers?userId=${currentUser.id}`, { headers: getAuthHeaders() });
       const data = await res.json();
       setServers(data);
-      if (data.length > 0 && !currentServer && !currentDM) {
-        selectServer(data[0]);
-      }
+      // Opens by default on the Friends (DMs) page instead of forcing the first server
     } catch (e) {
       console.error('Failed to fetch servers', e);
     }
@@ -1243,7 +1241,7 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const data = await res.json();
       setMessages(data);
     } catch (e) {
-      console.error('Failed to fetch channel messages', e);
+      console.error('Failed to fetch messages', e);
     }
   };
 
@@ -1263,21 +1261,36 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setCurrentDM(null);
 
     if (server) {
+      // Find and select first text channel immediately so chat switches with zero delay
+      const immediateChannel = server.categories
+        ?.flatMap((c: any) => c.channels || [])
+        ?.find((ch: any) => ch.type === 'text');
+
+      if (immediateChannel) {
+        selectChannel(immediateChannel);
+      } else {
+        setCurrentChannel(null);
+        setMessages([]);
+      }
+
       try {
         const res = await fetch(`/api/servers/${server.id}`, { headers: getAuthHeaders() });
         const fullServer = await res.json();
         setCurrentServer(fullServer);
 
         const firstTextChannel = fullServer.categories
-          .flatMap((c: any) => c.channels)
-          .find((ch: any) => ch.type === 'text');
+          ?.flatMap((c: any) => c.channels || [])
+          ?.find((ch: any) => ch.type === 'text');
 
-        if (firstTextChannel) {
+        if (firstTextChannel && (!currentChannel || currentChannel.server_id !== server.id)) {
           selectChannel(firstTextChannel);
         }
       } catch (e) {
         console.error('Failed to load server details', e);
       }
+    } else {
+      setCurrentChannel(null);
+      setMessages([]);
     }
   };
 
@@ -1286,6 +1299,7 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (currentChannel) {
         socket.emit('channel:leave', currentChannel.id);
       }
+      setMessages([]); // Clean slate immediately so old messages don't flash or animate
       setCurrentChannel(channel);
       setActiveStageView('chat');
       socket.emit('channel:join', channel.id);
