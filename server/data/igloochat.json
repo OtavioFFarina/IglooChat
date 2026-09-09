@@ -101,13 +101,14 @@
       "username": "Piroquinha",
       "discriminator": "6195",
       "password": "534aa46780e82355c51a46d9d51568b0:0354dd4f79e52dc801d7f7c8f7b87f951a3481c6ff49184f50562bca797b26a1159b3a1fc872faca854fdff055916c93fb01557bf801c1f78b476566b9a5f3d6",
-      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Piroquinha&backgroundColor=5865F2&textColor=ffffff",
+      "avatar": "https://i.pinimg.com/736x/04/a1/2b/04a12be1ff77ca43998ae739ca752b6e.jpg",
       "avatar_history": [
+        "https://i.pinimg.com/736x/04/a1/2b/04a12be1ff77ca43998ae739ca752b6e.jpg",
         "https://api.dicebear.com/7.x/initials/svg?seed=Piroquinha&backgroundColor=5865F2&textColor=ffffff"
       ],
       "status": "online",
       "status_preference": "online",
-      "custom_status": "No IglooChat 🚀",
+      "custom_status": "E us D com TI com 171",
       "created_at": "2026-09-08T22:42:00.877Z",
       "theme": "midnight"
     }
@@ -116,7 +117,7 @@
     {
       "id": "srv_fbb12c55",
       "name": "Alecrim",
-      "icon": "https://media1.tenor.com/m/4ymuSQ2cdTQAAAAd/crocodilo-jamal.gif",
+      "icon": "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2w1MHVtancyOG1mOWxubjU2c3hub2Q3dXhqaGVqMHIycG5uNjA2MiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xaXeUTlzApTfwL2uor/giphy.webp",
       "owner_id": "user_50cbd5b9",
       "invite_code": "igloochat-zcm46b",
       "created_at": "2026-09-05T20:35:33.311Z",
@@ -587,7 +588,15 @@
         }
       ],
       "reply_to_id": null,
-      "reactions": [],
+      "reactions": [
+        {
+          "emoji": "🔥",
+          "count": 1,
+          "users": [
+            "user_3c019e39"
+          ]
+        }
+      ],
       "created_at": "2026-09-06T02:29:05.698Z"
     },
     {
@@ -644,6 +653,17 @@
       "reply_to_id": null,
       "reactions": [],
       "created_at": "2026-09-08T22:44:31.563Z"
+    },
+    {
+      "id": "msg_8db73c89-90cd-4936-aa3a-cb6147e11625",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "@Piroquinha ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-09T02:54:07.030Z"
     }
   ],
   "direct_channels": [
@@ -872,7 +892,8 @@
     "35a47126612429baf7076ab128d0b2ca1c9d009f8752e455c52b29f6682e3f8b": "user_12071697",
     "bc9c98ac9d48efa6ff67c8a7cb7d0c2beef1bb6d51822702301136c6179e4355": "user_50cbd5b9",
     "301fe65bb948e66e86bd58d731db78c15b41ce9642997a0a8500c93afa96fd65": "user_3c019e39",
-    "a380ca1b8f324c0104e3cef86df11b85ce973b9ab19653f713e7782685966f5c": "user_3c019e39"
+    "a380ca1b8f324c0104e3cef86df11b85ce973b9ab19653f713e7782685966f5c": "user_3c019e39",
+    "d727cb509a7d982ca7433f501782dce74dc380f6e66188fd38d0522ad0573d0c": "user_50cbd5b9"
   },
   "friends": {
     "user_50cbd5b9": [

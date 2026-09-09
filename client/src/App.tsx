@@ -18,7 +18,8 @@ import { UserProfileModal } from './components/UserProfileModal';
 import { RemoteAudioContainer } from './components/RemoteAudioContainer';
 import { MentionNotificationBanner } from './components/MentionNotificationBanner';
 import { DownloadAppModal } from './components/DownloadAppModal';
-import { X, ChevronRight } from 'lucide-react';
+import { MobileScreenNoticeModal } from './components/MobileScreenNoticeModal';
+import { X } from 'lucide-react';
 
 const IglooChatApp: React.FC = () => {
   const {
@@ -43,6 +44,7 @@ const IglooChatApp: React.FC = () => {
     isMobileNavOpen,
     setIsMobileNavOpen,
     isDownloadModalOpen,
+    isMobileScreenNoticeOpen,
     appearanceSettings
   } = useIglooChat();
 
@@ -249,18 +251,6 @@ const IglooChatApp: React.FC = () => {
         aria-hidden="true"
       />
 
-      {/* Mobile Quick Edge Pull Tab */}
-      {!isMobileNavOpen && (
-        <button
-          onClick={() => setIsMobileNavOpen(true)}
-          className="fixed left-0 top-1/2 -translate-y-1/2 z-30 md:hidden bg-discord-darker/90 hover:bg-discord-blurple text-discord-header hover:text-white py-3 px-1 rounded-r-xl shadow-2xl border border-l-0 border-discord-floating active:scale-95 transition-all flex items-center justify-center group"
-          title="Puxar Servidores e Canais"
-          aria-label="Abrir Menu de Servidores"
-        >
-          <ChevronRight className="w-3.5 h-3.5 text-discord-muted group-hover:text-white animate-pulse group-hover:translate-x-0.5 transition-transform" />
-        </button>
-      )}
-
       {/* 1 & 2. Navigation Drawer (ServerRail + Sidebar) */}
       <div 
         ref={drawerRef}
@@ -343,6 +333,7 @@ const IglooChatApp: React.FC = () => {
         />
       )}
       {isDownloadModalOpen && <DownloadAppModal />}
+      {isMobileScreenNoticeOpen && <MobileScreenNoticeModal />}
 
       {/* Top Center Mention Notification Banner Toast */}
       <MentionNotificationBanner />

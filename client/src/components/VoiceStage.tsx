@@ -682,12 +682,12 @@ export const VoiceStage: React.FC = () => {
       <div className={`h-16 sm:h-20 flex items-center justify-center z-30 pb-2 px-2 flex-shrink-0 transition-opacity duration-300 ${
         isFullscreen ? (showControls ? 'opacity-100' : 'opacity-0 pointer-events-none') : 'opacity-100'
       }`}>
-        <div className="bg-discord-floating/95 backdrop-blur-md px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl shadow-2xl border border-discord-darkhover flex items-center space-x-2 sm:space-x-3 max-w-full overflow-x-auto scrollbar-none">
+        <div className="bg-discord-floating/95 backdrop-blur-md px-2.5 sm:px-4 py-1.5 sm:py-2.5 rounded-2xl shadow-2xl border border-discord-darkhover flex items-center justify-center space-x-1.5 sm:space-x-3 max-w-fit mx-auto">
           {/* Camera Button */}
           <button
             onClick={toggleVideo}
             title={isVideoOn ? 'Desligar Câmera' : 'Ligar Câmera'}
-            className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
+            className={`p-2.5 sm:p-3 rounded-full transition flex-shrink-0 flex items-center justify-center ${
               isVideoOn 
                 ? 'bg-white text-discord-darkest hover:bg-gray-200 shadow-md' 
                 : 'bg-discord-darker text-discord-header hover:bg-discord-darkhover'
@@ -700,7 +700,7 @@ export const VoiceStage: React.FC = () => {
           <button
             onClick={toggleScreenShare}
             title={isScreenSharing ? 'Parar Transmissão de Tela' : 'Transmitir Tela'}
-            className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-full font-bold text-xs transition flex items-center space-x-1.5 sm:space-x-2 shadow-lg flex-shrink-0 ${
+            className={`p-2.5 sm:px-4 sm:py-2.5 rounded-full font-bold text-xs transition flex items-center justify-center space-x-1.5 sm:space-x-2 shadow-lg flex-shrink-0 ${
               isScreenSharing
                 ? 'bg-discord-green text-white hover:bg-emerald-600 ring-2 ring-emerald-400/50'
                 : 'bg-discord-blurple text-white hover:bg-discord-blurple-hover'
@@ -709,12 +709,12 @@ export const VoiceStage: React.FC = () => {
             {isScreenSharing ? (
               <>
                 <MonitorOff className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
-                <span className="text-xs font-bold">Parar</span>
+                <span className="hidden sm:inline text-xs font-bold">Parar</span>
               </>
             ) : (
               <>
                 <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-xs font-bold">Transmitir Tela</span>
+                <span className="hidden sm:inline text-xs font-bold">Transmitir Tela</span>
               </>
             )}
           </button>
@@ -723,7 +723,7 @@ export const VoiceStage: React.FC = () => {
           <button
             onClick={toggleMute}
             title={isMuted ? 'Desmutar Microfone' : 'Mutar Microfone'}
-            className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
+            className={`p-2.5 sm:p-3 rounded-full transition flex-shrink-0 flex items-center justify-center ${
               isMuted 
                 ? 'bg-discord-red text-white hover:bg-red-600' 
                 : 'bg-discord-darker text-discord-header hover:bg-discord-darkhover'
@@ -736,7 +736,7 @@ export const VoiceStage: React.FC = () => {
           <button
             onClick={toggleDeafen}
             title={isDeafened ? 'Ativar Som' : 'Ensurdecer'}
-            className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
+            className={`p-2.5 sm:p-3 rounded-full transition flex-shrink-0 flex items-center justify-center ${
               isDeafened 
                 ? 'bg-discord-red text-white hover:bg-red-600' 
                 : 'bg-discord-darker text-discord-header hover:bg-discord-darkhover'
@@ -749,7 +749,7 @@ export const VoiceStage: React.FC = () => {
           <button
             onClick={toggleNoiseSuppression}
             title={isNoiseSuppressionEnabled ? 'Supressão de Ruído Ativada (Krisp)' : 'Supressão de Ruído Desativada'}
-            className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
+            className={`p-2.5 sm:p-3 rounded-full transition flex-shrink-0 flex items-center justify-center ${
               isNoiseSuppressionEnabled
                 ? 'bg-discord-green/20 text-discord-green border border-discord-green/40 hover:bg-discord-green/30'
                 : 'bg-discord-darker text-discord-muted hover:text-white hover:bg-discord-darkhover'
@@ -758,13 +758,13 @@ export const VoiceStage: React.FC = () => {
             <AudioWaveform className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
-          <div className="w-[1px] h-6 bg-discord-darkhover" />
+          <div className="w-[1px] h-6 bg-discord-darkhover flex-shrink-0" />
 
           {/* Disconnect Red Button */}
           <button
             onClick={leaveVoiceChannel}
             title="Desconectar da Chamada"
-            className="p-2.5 sm:p-3 rounded-full bg-discord-red hover:bg-red-600 text-white transition flex items-center justify-center shadow-lg"
+            className="p-2.5 sm:p-3 rounded-full bg-discord-red hover:bg-red-600 text-white transition flex-shrink-0 flex items-center justify-center shadow-lg"
           >
             <PhoneOff className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>

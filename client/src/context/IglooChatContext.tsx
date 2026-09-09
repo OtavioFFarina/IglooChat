@@ -128,6 +128,10 @@ interface IglooChatContextType {
   openDownloadModal: () => void;
   closeDownloadModal: () => void;
 
+  // Mobile Screen Share Notice Modal
+  isMobileScreenNoticeOpen: boolean;
+  setIsMobileScreenNoticeOpen: (open: boolean) => void;
+
   // Profile modal
   profileModalUser: User | null;
   openProfileModal: (user: User) => void;
@@ -416,6 +420,9 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState<boolean>(false);
   const openDownloadModal = () => setIsDownloadModalOpen(true);
   const closeDownloadModal = () => setIsDownloadModalOpen(false);
+
+  // Mobile Screen Share Notice Modal
+  const [isMobileScreenNoticeOpen, setIsMobileScreenNoticeOpen] = useState<boolean>(false);
 
   // Noise Suppression
   const [isNoiseSuppressionEnabled, setIsNoiseSuppressionEnabled] = useState<boolean>(() => {
@@ -1462,12 +1469,35 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         socket.emit('voice:state_change', { isScreenSharing: false });
       }
     } else {
-      const stream = await rtcManagerRef.current?.startScreenShare();
-      if (stream) {
-        setIsScreenSharing(true);
-        setLocalScreenStream(stream);
-        if (currentVoiceChannel) {
-          socket.emit('voice:state_change', { isScreenSharing: true });
+      const isMobile = typeof navigator !== 'undefined' && (
+        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        ('ontouchstart' in window && window.innerWidth < 768)
+      );
+
+      if (!navigator.mediaDevices || typeof (navigator.mediaDevices as any).getDisplayMedia !== 'function') {
+        if (isMobile) {
+          setIsMobileScreenNoticeOpen(true);
+        } else {
+          alert('Seu navegador não possui suporte para compartilhamento de tela.');
+        }
+        return;
+      }
+
+      try {
+        const stream = await rtcManagerRef.current?.startScreenShare();
+        if (stream) {
+          setIsScreenSharing(true);
+          setLocalScreenStream(stream);
+          if (currentVoiceChannel) {
+            socket.emit('voice:state_change', { isScreenSharing: true });
+          }
+        } else if (isMobile) {
+          setIsMobileScreenNoticeOpen(true);
+        }
+      } catch (err) {
+        console.warn('Screen share error:', err);
+        if (isMobile) {
+          setIsMobileScreenNoticeOpen(true);
         }
       }
     }
@@ -2042,6 +2072,8 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         isDownloadModalOpen,
         openDownloadModal,
         closeDownloadModal,
+        isMobileScreenNoticeOpen,
+        setIsMobileScreenNoticeOpen,
         updateChannel,
         deleteChannel,
         channelContextMenu,
