@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Concord — Script de Atualização Contínua em Produção (Zero Downtime)
+# IglooChat — Script de Atualização Contínua em Produção (Zero Downtime)
 # ==============================================================================
 
 set -e
@@ -9,7 +9,7 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR"
 
 echo "=========================================================="
-echo "🚀 Iniciando Atualização Contínua do Concord..."
+echo "🚀 Iniciando Atualização Contínua do IglooChat..."
 echo "=========================================================="
 
 echo "📥 Puxando últimas alterações do Git..."
@@ -28,7 +28,7 @@ cd ..
 
 echo "🔄 Recarregando processo com PM2..."
 if command -v pm2 >/dev/null 2>&1; then
-  pm2 reload concord-backend || pm2 start server/index.js --name "concord-backend"
+  pm2 reload igloochat-backend || pm2 start server/index.js --name "igloochat-backend"
   pm2 save
   echo "✅ PM2 recarregado com sucesso!"
 else
@@ -36,5 +36,5 @@ else
 fi
 
 echo "=========================================================="
-echo "🎉 Concord atualizado e operacional!"
+echo "🎉 IglooChat atualizado e operacional!"
 echo "=========================================================="

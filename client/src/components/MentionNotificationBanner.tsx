@@ -1,5 +1,5 @@
 import React from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { AtSign, X, MessageSquare } from 'lucide-react';
 
 export const MentionNotificationBanner: React.FC = () => {
@@ -11,7 +11,7 @@ export const MentionNotificationBanner: React.FC = () => {
     selectChannel, 
     selectDM, 
     directChannels 
-  } = useConcord();
+  } = useIglooChat();
 
   if (!mentionNotifications || mentionNotifications.length === 0) return null;
 
@@ -48,7 +48,7 @@ export const MentionNotificationBanner: React.FC = () => {
         <div
           key={notif.id}
           onClick={() => handleClick(notif)}
-          className="pointer-events-auto w-full bg-[#111214]/95 hover:bg-[#1e1f22] backdrop-blur-md border border-[#f0b232]/70 rounded-xl shadow-[0_10px_30px_rgba(240,178,50,0.25)] p-3 flex items-center space-x-3 cursor-pointer transition-all transform hover:scale-[1.02] active:scale-[0.99] animate-in fade-in slide-in-from-top-4 duration-300"
+          className="pointer-events-auto w-full bg-discord-floating/95 hover:bg-discord-darkhover backdrop-blur-md border border-[#f0b232]/70 rounded-xl shadow-[0_10px_30px_rgba(240,178,50,0.25)] p-3 flex items-center space-x-3 cursor-pointer transition-all transform hover:scale-[1.02] active:scale-[0.99] animate-in fade-in slide-in-from-top-4 duration-300"
         >
           {/* Server Icon or DM Avatar */}
           <div className="relative flex-shrink-0">

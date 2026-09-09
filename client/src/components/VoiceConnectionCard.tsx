@@ -1,5 +1,5 @@
 import React from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { PhoneOff, Monitor, Radio, Info } from 'lucide-react';
 
 export const VoiceConnectionCard: React.FC = () => {
@@ -11,12 +11,12 @@ export const VoiceConnectionCard: React.FC = () => {
     isScreenSharing,
     setActiveStageView,
     activeStageView
-  } = useConcord();
+  } = useIglooChat();
 
   if (!currentVoiceChannel) return null;
 
   return (
-    <div className="bg-discord-floating border-t border-[#1a1b1e] px-3 py-2 select-none flex-shrink-0">
+    <div className="bg-discord-floating border-t border-discord-darkest px-3 py-2 select-none flex-shrink-0">
       <div className="flex items-center justify-between">
         {/* Left: Status & Channel Link */}
         <div 
@@ -39,7 +39,7 @@ export const VoiceConnectionCard: React.FC = () => {
           <button
             onClick={toggleScreenShare}
             title={isScreenSharing ? "Parar Transmissão de Tela" : "Compartilhar Tela"}
-            className={`p-1.5 rounded hover:bg-[#35373c] transition ${
+            className={`p-1.5 rounded hover:bg-discord-darkhover transition ${
               isScreenSharing 
                 ? 'text-discord-green bg-[#23a55a]/10 hover:bg-[#23a55a]/20' 
                 : 'text-discord-muted hover:text-discord-header'
@@ -52,7 +52,7 @@ export const VoiceConnectionCard: React.FC = () => {
           <button
             onClick={leaveVoiceChannel}
             title="Desconectar do Canal de Voz"
-            className="p-1.5 rounded hover:bg-[#35373c] text-discord-muted hover:text-discord-red transition"
+            className="p-1.5 rounded hover:bg-discord-darkhover text-discord-muted hover:text-discord-red transition"
           >
             <PhoneOff className="w-4 h-4" />
           </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { User } from '../types';
 import { MessageSquare, Phone, UserPlus } from 'lucide-react';
 
@@ -13,7 +13,7 @@ export const MemberList: React.FC = () => {
     openDMWithUser,
     startDirectCall,
     openUserContextMenu
-  } = useConcord();
+  } = useIglooChat();
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [friendStatusMsg, setFriendStatusMsg] = useState<string | null>(null);
@@ -45,7 +45,7 @@ export const MemberList: React.FC = () => {
   return (
     <aside 
       aria-label="Lista de Membros"
-      className="w-60 h-full bg-discord-darker hidden lg:flex flex-col flex-shrink-0 select-none border-l border-[#1a1b1e] p-3 overflow-y-auto scrollbar-thin relative"
+      className="w-60 h-full bg-discord-darker hidden lg:flex flex-col flex-shrink-0 select-none border-l border-discord-darkest p-3 overflow-y-auto scrollbar-thin relative"
     >
       {/* Online Section */}
       <div className="mb-4">
@@ -61,7 +61,7 @@ export const MemberList: React.FC = () => {
                 e.preventDefault();
                 openUserContextMenu(user, e.clientX, e.clientY);
               }}
-              className="w-full flex items-center space-x-2.5 px-2 py-1.5 rounded hover:bg-[#35373c] text-left group transition"
+              className="w-full flex items-center space-x-2.5 px-2 py-1.5 rounded hover:bg-discord-darkhover text-left group transition"
             >
               <div className="relative flex-shrink-0">
                 <img src={user.avatar} alt={user.username} className="w-8 h-8 rounded-full object-cover" />
@@ -95,7 +95,7 @@ export const MemberList: React.FC = () => {
                   e.preventDefault();
                   openUserContextMenu(user, e.clientX, e.clientY);
                 }}
-                className="w-full flex items-center space-x-2.5 px-2 py-1.5 rounded hover:bg-[#35373c] text-left group transition"
+                className="w-full flex items-center space-x-2.5 px-2 py-1.5 rounded hover:bg-discord-darkhover text-left group transition"
               >
                 <div className="relative flex-shrink-0">
                   <img src={user.avatar} alt={user.username} className="w-8 h-8 rounded-full object-cover grayscale" />
@@ -114,16 +114,16 @@ export const MemberList: React.FC = () => {
 
       {/* User Profile Popover Modal */}
       {selectedUser && (
-        <div className="absolute right-64 top-12 w-64 bg-[#111214] border border-[#232428] rounded-xl shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95">
+        <div className="absolute right-64 top-12 w-64 bg-discord-floating border border-discord-darkhover rounded-xl shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95">
           <div className="h-14 -mx-4 -mt-4 bg-discord-blurple rounded-t-xl mb-3 relative">
             <div className="absolute -bottom-4 left-4">
               <div className="relative">
                 <img
                   src={selectedUser.avatar}
                   alt={selectedUser.username}
-                  className="w-14 h-14 rounded-full border-4 border-[#111214] object-cover"
+                  className="w-14 h-14 rounded-full border-4 border-discord-floating object-cover"
                 />
-                <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-[#111214] ${getStatusDot(selectedUser.status)}`} />
+                <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-discord-floating ${getStatusDot(selectedUser.status)}`} />
               </div>
             </div>
           </div>
@@ -132,7 +132,7 @@ export const MemberList: React.FC = () => {
             <div className="font-bold text-base text-white">{selectedUser.username}</div>
             <div className="text-xs text-discord-muted">#{selectedUser.discriminator}</div>
             {selectedUser.custom_status && (
-              <div className="text-xs text-discord-normal mt-2 bg-[#1e1f22] p-2 rounded border border-[#2b2d31]">
+              <div className="text-xs text-discord-normal mt-2 bg-discord-darkest p-2 rounded border border-discord-floating">
                 {selectedUser.custom_status}
               </div>
             )}
@@ -150,7 +150,7 @@ export const MemberList: React.FC = () => {
                       }
                       setTimeout(() => setFriendStatusMsg(null), 3000);
                     }}
-                    className="w-full flex items-center justify-center space-x-2 bg-[#2b2d31] hover:bg-[#35373c] text-white py-1.5 px-3 rounded text-xs font-semibold transition"
+                    className="w-full flex items-center justify-center space-x-2 bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-white py-1.5 px-3 rounded text-xs font-semibold transition"
                   >
                     <UserPlus className="w-3.5 h-3.5 text-discord-green" />
                     <span>{friendStatusMsg || 'Adicionar Amigo'}</span>

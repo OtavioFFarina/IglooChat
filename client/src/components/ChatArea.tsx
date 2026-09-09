@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { 
   Hash, 
   Phone, 
@@ -50,7 +50,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
     appearanceSettings,
     toggleMobileNav,
     openDownloadModal
-  } = useConcord();
+  } = useIglooChat();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
@@ -118,7 +118,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
     return parts.map((part, index) => {
       if (part.startsWith('`') && part.endsWith('`')) {
         return (
-          <code key={index} className="bg-[#1e1f22] px-1.5 py-0.5 rounded text-xs font-mono text-[#e6e6e6]">
+          <code key={index} className="bg-discord-darkest px-1.5 py-0.5 rounded text-xs font-mono text-discord-header">
             {part.slice(1, -1)}
           </code>
         );
@@ -180,14 +180,14 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
       className="flex-1 h-full bg-discord-dark flex flex-col relative select-text overflow-hidden"
     >
       {/* Top Header Bar */}
-      <header className="h-12 px-3 sm:px-4 bg-discord-dark border-b border-[#1f2023] flex items-center justify-between flex-shrink-0 z-10 select-none shadow-sm">
+      <header className="h-12 px-3 sm:px-4 bg-discord-dark border-b border-discord-darkest flex items-center justify-between flex-shrink-0 z-10 select-none shadow-sm">
         {/* Left: Mobile Drawer Trigger & Channel Info */}
         <div className="flex items-center space-x-2 truncate">
           {/* Hamburger Menu on Mobile */}
           <button
             onClick={toggleMobileNav}
             title="Abrir Menu de Servidores e Canais"
-            className="md:hidden p-1.5 rounded hover:bg-[#35373c] text-discord-header transition flex-shrink-0"
+            className="md:hidden p-1.5 rounded hover:bg-discord-darkhover text-discord-header transition flex-shrink-0"
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -205,13 +205,13 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
               <Hash className="w-5 h-5 text-discord-muted flex-shrink-0" />
               <span className="font-bold text-sm text-discord-header truncate">{currentChannel.name}</span>
               {currentChannel.topic && (
-                <div className="hidden lg:flex items-center space-x-2 border-l border-[#3f4147] pl-3 ml-2 truncate">
+                <div className="hidden lg:flex items-center space-x-2 border-l border-discord-floating pl-3 ml-2 truncate">
                   <span className="text-xs text-discord-muted truncate">{currentChannel.topic}</span>
                 </div>
               )}
             </div>
           ) : (
-            <span className="font-bold text-sm text-discord-header">Concord</span>
+            <span className="font-bold text-sm text-discord-header">IglooChat</span>
           )}
         </div>
 
@@ -221,7 +221,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
           <button
             onClick={openDownloadModal}
             title="Baixar Aplicativo para PC ou Celular"
-            className="p-1.5 rounded hover:bg-[#35373c] hover:text-white transition flex items-center space-x-1 text-xs"
+            className="p-1.5 rounded hover:bg-discord-darkhover hover:text-white transition flex items-center space-x-1 text-xs"
           >
             <Download className="w-4 h-4 text-discord-blurple" />
             <span className="hidden sm:inline font-semibold">Baixar App</span>
@@ -232,7 +232,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
             <button
               onClick={() => startDirectCall(currentDM.recipient)}
               title="Iniciar Chamada Privada (Voz, Vídeo & Tela)"
-              className="p-1.5 rounded hover:bg-[#35373c] hover:text-discord-header transition flex items-center space-x-1"
+              className="p-1.5 rounded hover:bg-discord-darkhover hover:text-discord-header transition flex items-center space-x-1"
             >
               <Phone className="w-4 h-4 text-discord-green" />
               <span className="hidden lg:inline text-xs font-semibold">Chamada</span>
@@ -257,7 +257,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
               onClick={onToggleMemberList}
               title={isMemberListOpen ? 'Ocultar Lista de Membros' : 'Exibir Lista de Membros'}
               className={`p-1.5 rounded transition ${
-                isMemberListOpen ? 'text-discord-header bg-[#35373c]' : 'hover:bg-[#35373c] hover:text-discord-header'
+                isMemberListOpen ? 'text-discord-header bg-discord-darkhover' : 'hover:bg-discord-darkhover hover:text-discord-header'
               }`}
             >
               <Users className="w-4 h-4" />
@@ -267,10 +267,10 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
       </header>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-2 scrollbar-thin scrollbar-thumb-[#1e1f22]">
+      <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-2 scrollbar-thin scrollbar-thumb-discord-floating">
         {/* Welcome Channel Banner */}
-        <div className="pt-6 pb-4 border-b border-[#2b2d31]">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2b2d31] flex items-center justify-center text-discord-header mb-3">
+        <div className="pt-6 pb-4 border-b border-discord-floating">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-discord-darker flex items-center justify-center text-discord-header mb-3">
             {currentDM ? <span className="text-3xl font-bold">@</span> : <Hash className="w-8 h-8 sm:w-10 sm:h-10" />}
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-discord-header">
@@ -310,9 +310,9 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
               {showDaySeparator && (
                 <div className="relative my-4 flex items-center justify-center select-none">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-[#3f4147]/40" />
+                    <div className="w-full border-t border-discord-floating" />
                   </div>
-                  <span className="relative bg-[#313338] px-3 py-0.5 text-[11px] font-bold text-discord-muted rounded-full shadow-sm">
+                  <span className="relative bg-discord-dark px-3 py-0.5 text-[11px] font-bold text-discord-muted rounded-full shadow-sm border border-discord-floating/30">
                     {formatDayDivider(msg.created_at)}
                   </span>
                 </div>
@@ -348,7 +348,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                     className="flex items-center space-x-1.5 text-xs text-discord-muted mb-1 ml-9 sm:ml-10 cursor-pointer hover:text-white transition group/reply select-none"
                     title="Clique para ir até a mensagem original"
                   >
-                    <div className="w-6 h-3 border-l-2 border-t-2 border-[#4e5058] rounded-tl-md -ml-5 mr-1 flex-shrink-0" />
+                    <div className="w-6 h-3 border-l-2 border-t-2 border-discord-muted/40 rounded-tl-md -ml-5 mr-1 flex-shrink-0" />
                     <img
                       src={msg.reply_to.author?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
                       alt=""
@@ -366,12 +366,12 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                 <div className="flex w-full">
                   {/* Floating Quick Action Buttons on Hover */}
                   {hoveredMessageId === msg.id && !isBeingEdited && (
-                    <div className="absolute right-2 sm:right-4 -top-3.5 bg-[#2b2d31] border border-[#232428] rounded-md shadow-lg flex items-center px-1 py-0.5 z-20 space-x-1">
+                    <div className="absolute right-2 sm:right-4 -top-3.5 bg-discord-darker border border-discord-floating rounded-md shadow-lg flex items-center px-1 py-0.5 z-20 space-x-1">
                       {QUICK_REACTIONS.slice(0, 4).map(emoji => (
                         <button
                           key={emoji}
                           onClick={() => addReaction(msg.id, emoji)}
-                          className="p-1 hover:bg-[#35373c] rounded text-xs transition hover:scale-125"
+                          className="p-1 hover:bg-discord-darkhover rounded text-xs transition hover:scale-125"
                         >
                           {emoji}
                         </button>
@@ -379,7 +379,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                       <button
                         onClick={() => setReplyToMessage(msg)}
                         title="Responder"
-                        className="p-1 hover:bg-[#35373c] rounded text-discord-muted hover:text-white transition"
+                        className="p-1 hover:bg-discord-darkhover rounded text-discord-muted hover:text-white transition"
                       >
                         <Reply className="w-3.5 h-3.5" />
                       </button>
@@ -389,7 +389,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                           openMessageContextMenu(msg, rect.right, rect.bottom);
                         }}
                         title="Mais opções (botão direito)"
-                        className="p-1 hover:bg-[#35373c] rounded text-discord-muted hover:text-white transition"
+                        className="p-1 hover:bg-discord-darkhover rounded text-discord-muted hover:text-white transition"
                       >
                         <MoreVertical className="w-3.5 h-3.5" />
                       </button>
@@ -457,7 +457,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                           }
                         }}
                         rows={2}
-                        className="w-full bg-[#1e1f22] text-sm text-white p-2.5 rounded-lg border border-discord-blurple focus:outline-none resize-none"
+                        className="w-full bg-discord-darkest text-sm text-white p-2.5 rounded-lg border border-discord-blurple focus:outline-none resize-none"
                       />
                       <div className="flex items-center space-x-2 text-xs">
                         <span className="text-discord-muted">escape para <button onClick={handleCancelEdit} className="text-discord-blurple hover:underline">cancelar</button> • enter para <button onClick={() => handleSaveEdit(msg.id)} className="text-discord-blurple hover:underline">salvar</button></span>
@@ -488,7 +488,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                             <div
                               key={att.id || att.url}
                               onClick={() => setPreviewImage(att.url)}
-                              className="relative max-w-sm rounded-lg overflow-hidden border border-[#2b2d31] cursor-pointer group/img shadow-md hover:border-discord-blurple transition"
+                              className="relative max-w-sm rounded-lg overflow-hidden border border-discord-floating cursor-pointer group/img shadow-md hover:border-discord-blurple transition"
                             >
                               <img src={att.url} alt={att.name} className="max-h-64 object-cover" />
                               <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition">
@@ -505,7 +505,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                             download={att.name}
                             target="_blank"
                             rel="noreferrer"
-                            className="flex items-center space-x-2 bg-[#2b2d31] hover:bg-[#35373c] p-2.5 rounded-md border border-[#1e1f22] text-xs text-white transition max-w-xs"
+                            className="flex items-center space-x-2 bg-discord-darker hover:bg-discord-darkhover p-2.5 rounded-md border border-discord-floating text-xs text-white transition max-w-xs"
                           >
                             <Download className="w-4 h-4 text-discord-blurple" />
                             <span className="truncate">{att.name}</span>
@@ -527,7 +527,7 @@ export const ChatArea: React.FC<{ onToggleMemberList: () => void; isMemberListOp
                             className={`flex items-center space-x-1 px-2 py-0.5 rounded-md border text-xs transition ${
                               userReacted
                                 ? 'bg-discord-blurple/20 border-discord-blurple text-discord-blurple'
-                                : 'bg-[#2b2d31] border-transparent hover:bg-[#35373c] text-discord-normal'
+                                : 'bg-discord-darker border-discord-floating/40 hover:bg-discord-darkhover text-discord-normal'
                             }`}
                           >
                             <span>{r.emoji}</span>

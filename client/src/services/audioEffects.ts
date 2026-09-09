@@ -1,4 +1,4 @@
-// Concord Harmonic Audio Synthesizer via Web Audio API
+// IglooChat Harmonic Audio Synthesizer via Web Audio API
 
 class AudioManager {
   private ctx: AudioContext | null = null;

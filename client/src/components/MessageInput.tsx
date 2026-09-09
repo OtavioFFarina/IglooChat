@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { PlusCircle, Smile, Send, X, Image as ImageIcon, FileText, AtSign } from 'lucide-react';
 import { Attachment, User } from '../types';
 
@@ -20,7 +20,7 @@ interface MentionOption {
 }
 
 export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend }) => {
-  const { currentServer, currentDM, allUsers, currentUser, replyToMessage, setReplyToMessage } = useConcord();
+  const { currentServer, currentDM, allUsers, currentUser, replyToMessage, setReplyToMessage } = useIglooChat();
   const [content, setContent] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -233,7 +233,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
 
       {/* Reply Preview Bar */}
       {replyToMessage && (
-        <div className="flex items-center justify-between px-3 py-1.5 bg-[#2b2d31] rounded-t-lg border border-b-0 border-[#232428] text-xs select-none animate-in fade-in slide-in-from-bottom-2 duration-150">
+        <div className="flex items-center justify-between px-3 py-1.5 bg-discord-darker rounded-t-lg border border-b-0 border-discord-floating text-xs select-none animate-in fade-in slide-in-from-bottom-2 duration-150">
           <div className="flex items-center space-x-2 truncate">
             <span className="text-discord-muted">Respondendo a</span>
             <span className="font-semibold text-discord-header truncate">
@@ -246,7 +246,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
           <button
             type="button"
             onClick={() => setReplyToMessage(null)}
-            className="p-1 text-discord-muted hover:text-white rounded hover:bg-[#35373c] transition flex-shrink-0"
+            className="p-1 text-discord-muted hover:text-white rounded hover:bg-discord-darkhover transition flex-shrink-0"
             title="Cancelar resposta (Esc)"
           >
             <X className="w-3.5 h-3.5" />
@@ -258,9 +258,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
       {showMentionMenu && mentionOptions.length > 0 && (
         <div
           ref={mentionMenuRef}
-          className="absolute bottom-full mb-2 left-4 right-4 bg-[#2b2d31] border border-[#1f2023] rounded-lg shadow-2xl overflow-hidden z-50 max-h-64 flex flex-col"
+          className="absolute bottom-full mb-2 left-4 right-4 bg-discord-darker border border-discord-floating rounded-lg shadow-2xl overflow-hidden z-50 max-h-64 flex flex-col"
         >
-          <div className="px-3 py-1.5 bg-[#1e1f22] text-[11px] font-bold text-discord-muted uppercase tracking-wider border-b border-[#232428] flex items-center justify-between">
+          <div className="px-3 py-1.5 bg-discord-darkest text-[11px] font-bold text-discord-muted uppercase tracking-wider border-b border-discord-floating flex items-center justify-between">
             <span>Membros e Menções</span>
             <span className="text-[10px] font-normal lowercase text-discord-muted">TAB ou ENTER para selecionar</span>
           </div>
@@ -275,12 +275,12 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
                   className={`w-full text-left flex items-center space-x-2.5 px-2.5 py-1.5 rounded-md transition ${
                     isSelected
                       ? 'bg-discord-blurple text-white font-medium'
-                      : 'text-discord-header hover:bg-[#35373c]'
+                      : 'text-discord-header hover:bg-discord-darkhover'
                   }`}
                 >
                   {opt.isSpecial ? (
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-[#1e1f22] text-discord-blurple'
+                      isSelected ? 'bg-white/20 text-white' : 'bg-discord-darkest text-discord-blurple'
                     }`}>
                       <AtSign className="w-4 h-4" />
                     </div>
@@ -291,7 +291,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
                         alt={opt.user.username}
                         className="w-7 h-7 rounded-full object-cover"
                       />
-                      <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-[#2b2d31] ${
+                      <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-discord-darker ${
                         opt.user.status === 'online' ? 'bg-discord-green' :
                         opt.user.status === 'idle' ? 'bg-discord-amber' :
                         opt.user.status === 'dnd' ? 'bg-discord-red' : 'bg-discord-gray'
@@ -318,14 +318,14 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
 
       {/* Emoji Picker Popover */}
       {showEmojiPicker && (
-        <div className="absolute bottom-20 right-6 bg-[#111214] border border-[#2b2d31] rounded-xl p-3 shadow-2xl z-50 w-64">
-          <div className="text-xs font-bold text-discord-muted uppercase mb-2">Emojis Concord</div>
+        <div className="absolute bottom-20 right-6 bg-discord-floating border border-discord-darkhover rounded-xl p-3 shadow-2xl z-50 w-64">
+          <div className="text-xs font-bold text-discord-muted uppercase mb-2">Emojis IglooChat</div>
           <div className="grid grid-cols-7 gap-1.5 text-xl">
             {EMOJI_LIST.map(emoji => (
               <button
                 key={emoji}
                 onClick={() => addEmoji(emoji)}
-                className="p-1 hover:bg-[#35373c] rounded text-center transition hover:scale-125"
+                className="p-1 hover:bg-discord-darkhover rounded text-center transition hover:scale-125"
               >
                 {emoji}
               </button>
@@ -340,11 +340,11 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
       }`}>
         {/* Attachment Preview Chips */}
         {attachments.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2 p-2 bg-[#2b2d31] rounded-md">
+          <div className="flex flex-wrap gap-2 mb-2 p-2 bg-discord-darker rounded-md">
             {attachments.map((att, idx) => (
               <div
                 key={att.id}
-                className="flex items-center space-x-2 bg-[#1e1f22] px-2.5 py-1.5 rounded text-xs text-white border border-[#35373c]"
+                className="flex items-center space-x-2 bg-discord-darkest px-2.5 py-1.5 rounded text-xs text-white border border-discord-floating"
               >
                 {att.type.startsWith('image/') ? (
                   <ImageIcon className="w-4 h-4 text-discord-blurple" />
@@ -369,7 +369,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
             title="Enviar um arquivo ou imagem"
-            className="text-discord-muted hover:text-white transition p-1 rounded-full hover:bg-[#2b2d31]"
+            className="text-discord-muted hover:text-white transition p-1 rounded-full hover:bg-discord-darkhover"
           >
             <PlusCircle className="w-5 h-5" />
           </button>
@@ -389,7 +389,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
           <button
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             title="Adicionar Emoji"
-            className="text-discord-muted hover:text-white transition p-1 rounded-full hover:bg-[#2b2d31]"
+            className="text-discord-muted hover:text-white transition p-1 rounded-full hover:bg-discord-darkhover"
           >
             <Smile className="w-5 h-5" />
           </button>

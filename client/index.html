@@ -2,12 +2,31 @@
 <html lang="pt-BR" class="dark h-full">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366F1'/><stop offset='50%25' stop-color='%235865F2'/><stop offset='100%25' stop-color='%2338BDF8'/></linearGradient></defs><path fill='url(%23g)' d='M68 22 C 55 12, 35 14, 24 25 C 11 38, 11 62, 24 75 C 35 86, 55 88, 68 78 C 73 74, 73 67, 68 63 C 64 59, 58 60, 54 64 C 45 71, 33 69, 26 62 C 18 53, 18 37, 26 28 C 33 21, 45 19, 54 26 C 58 30, 64 31, 68 27 C 73 23, 73 16, 68 22 Z'/><path fill='url(%23g)' d='M74 38 L88 50 L74 62 C 70 65, 65 62, 65 57 L65 43 C 65 38, 70 35, 74 38 Z'/><circle cx='44' cy='50' r='4.5' fill='%23FFFFFF'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Concord | Voz, Vídeo, Compartilhamento de Tela e Chat</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%2338BDF8'/><stop offset='50%25' stop-color='%232563EB'/><stop offset='100%25' stop-color='%236366F1'/></linearGradient></defs><path fill='url(%23g)' d='M50 16 C28 16 14 34 14 56 C14 66 18 74 24 78 L16 90 L32 84 C37 86 43 87 50 87 C72 87 86 69 86 56 C86 34 72 16 50 16 Z'/><path stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-opacity='0.75' d='M28 40 Q50 34 72 40 M20 58 Q50 50 80 58 M50 17 L50 36 M38 38 L38 53 M62 38 L62 53 M27 57 L27 75'/><path fill='%230F172A' stroke='%23FFFFFF' stroke-width='2' stroke-opacity='0.9' d='M46 87 L46 64 C46 58 64 58 64 64 L64 87 Z'/><circle cx='55' cy='76' r='3.5' fill='%2338BDF8'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>IglooChat | Voz, Vídeo, Compartilhamento de Tela e Chat</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem('igloochat_theme');
+          if (!t) {
+            var a = localStorage.getItem('igloochat_appearance');
+            if (a) {
+              var parsed = JSON.parse(a);
+              if (parsed && parsed.theme) t = parsed.theme;
+            }
+          }
+          if (t) {
+            document.documentElement.setAttribute('data-theme', t);
+          } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body class="h-full bg-discord-darkest text-discord-normal overflow-hidden select-none font-sans">
     <div id="root" class="h-full w-full"></div>

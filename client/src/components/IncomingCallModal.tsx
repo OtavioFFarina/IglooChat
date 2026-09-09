@@ -1,15 +1,15 @@
 import React from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { Phone, PhoneOff, Video, Tv } from 'lucide-react';
 
 export const IncomingCallModal: React.FC = () => {
-  const { directCall, acceptDirectCall, rejectDirectCall } = useConcord();
+  const { directCall, acceptDirectCall, rejectDirectCall } = useIglooChat();
 
   if (!directCall || directCall.status !== 'incoming') return null;
 
   return (
     <div className="fixed top-6 right-6 z-50 animate-in slide-in-from-top-6 duration-300">
-      <div className="bg-[#111214] border-2 border-discord-blurple rounded-2xl p-4 shadow-2xl w-80 flex flex-col items-center select-none">
+      <div className="bg-discord-floating border-2 border-discord-blurple rounded-2xl p-4 shadow-2xl w-80 flex flex-col items-center select-none">
         {/* Caller Avatar with pulsing ring */}
         <div className="relative mb-3">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-discord-blurple">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { X, Search, Hash, AtSign, Send, Check } from 'lucide-react';
 
 export const ForwardMessageModal: React.FC = () => {
@@ -10,7 +10,7 @@ export const ForwardMessageModal: React.FC = () => {
     servers, 
     directChannels,
     friends 
-  } = useConcord();
+  } = useIglooChat();
 
   const [search, setSearch] = useState('');
   const [forwardingTargetId, setForwardingTargetId] = useState<string | null>(null);
@@ -46,9 +46,9 @@ export const ForwardMessageModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none animate-in fade-in duration-200">
-      <div className="bg-[#313338] border border-[#232428] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+      <div className="bg-discord-dark border border-discord-floating rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
         {/* Header */}
-        <div className="p-4 border-b border-[#232428] flex items-center justify-between">
+        <div className="p-4 border-b border-discord-floating flex items-center justify-between">
           <div>
             <h3 className="text-white font-bold text-base">Encaminhar Mensagem</h3>
             <p className="text-discord-muted text-xs mt-0.5">Selecione onde deseja compartilhar esta mensagem</p>
@@ -62,7 +62,7 @@ export const ForwardMessageModal: React.FC = () => {
         </div>
 
         {/* Message Snippet Preview */}
-        <div className="mx-4 my-3 p-3 bg-[#1e1f22] rounded-xl border border-[#2b2d31] text-xs">
+        <div className="mx-4 my-3 p-3 bg-discord-darkest rounded-xl border border-discord-floating text-xs">
           <div className="font-bold text-white mb-1 flex items-center space-x-1.5">
             <span className="text-discord-blurple">@</span>
             <span>{forwardTargetMessage.author?.username}</span>
@@ -81,7 +81,7 @@ export const ForwardMessageModal: React.FC = () => {
               placeholder="Buscar amigos ou canais..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#1e1f22] text-sm text-white pl-9 pr-3 py-2 rounded-lg border border-transparent focus:border-discord-blurple outline-none transition placeholder:text-discord-muted"
+              className="w-full bg-discord-darkest text-sm text-white pl-9 pr-3 py-2 rounded-lg border border-discord-floating focus:border-discord-blurple outline-none transition placeholder:text-discord-muted"
             />
           </div>
         </div>
@@ -100,7 +100,7 @@ export const ForwardMessageModal: React.FC = () => {
                 {filteredChannels.map(({ serverName, channel }) => (
                   <div
                     key={channel.id}
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-[#2b2d31] transition"
+                    className="flex items-center justify-between p-2 rounded-lg hover:bg-discord-darkhover transition"
                   >
                     <div className="flex items-center space-x-2.5 truncate">
                       <Hash className="w-4 h-4 text-discord-muted flex-shrink-0" />
@@ -135,7 +135,7 @@ export const ForwardMessageModal: React.FC = () => {
                 {filteredDMs.map(dm => (
                   <div
                     key={dm.id}
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-[#2b2d31] transition"
+                    className="flex items-center justify-between p-2 rounded-lg hover:bg-discord-darkhover transition"
                   >
                     <div className="flex items-center space-x-2.5 truncate">
                       <img
@@ -163,7 +163,7 @@ export const ForwardMessageModal: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-[#2b2d31] border-t border-[#232428] flex justify-end">
+        <div className="p-3 bg-discord-darker border-t border-discord-floating flex justify-end">
           <button
             onClick={closeForwardModal}
             className="px-4 py-1.5 rounded text-xs font-medium text-discord-normal hover:underline"

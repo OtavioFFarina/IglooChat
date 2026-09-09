@@ -46,7 +46,7 @@ app.use((req, res, next) => {
     return res.sendFile(indexPath);
   }
   res.json({
-    name: 'Concord API Server',
+    name: 'IglooChat API Server',
     status: 'online',
     port: PORT,
     endpoints: {
@@ -71,7 +71,7 @@ initSocket(io);
 
 server.listen(PORT, () => {
   console.log(`=========================================`);
-  console.log(` Concord Server running at: http://localhost:${PORT}`);
+  console.log(` IglooChat Server running at: http://localhost:${PORT}`);
   console.log(` API Endpoint: http://localhost:${PORT}/api`);
   console.log(` Uploads: http://localhost:${PORT}/uploads`);
   console.log(` WebRTC Gateway: Active on Socket.IO`);

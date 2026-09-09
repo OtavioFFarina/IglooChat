@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { 
   Mic, 
   MicOff, 
@@ -19,17 +19,36 @@ import {
   MessageSquare,
   AudioWaveform,
   Play,
-  Download
+  Download,
+  Menu
 } from 'lucide-react';
 
 interface StreamVideoProps {
   stream: MediaStream | null;
   className?: string;
   mirrored?: boolean;
+  onAspectRatioChange?: (isPortrait: boolean, ratio: number) => void;
 }
 
-const StreamVideo: React.FC<StreamVideoProps> = ({ stream, className = '', mirrored = false }) => {
+const StreamVideo: React.FC<StreamVideoProps> = ({ 
+  stream, 
+  className = '', 
+  mirrored = false,
+  onAspectRatioChange
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const checkDimensions = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const w = video.videoWidth;
+    const h = video.videoHeight;
+    if (w > 0 && h > 0) {
+      const isPortrait = h > w;
+      const ratio = w / h;
+      onAspectRatioChange?.(isPortrait, ratio);
+    }
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -38,13 +57,28 @@ const StreamVideo: React.FC<StreamVideoProps> = ({ stream, className = '', mirro
     video.srcObject = stream;
     const playVideo = () => {
       video.play().catch(e => console.warn('[StreamVideo] Autoplay note:', e));
+      checkDimensions();
     };
 
     playVideo();
 
+    video.onloadedmetadata = checkDimensions;
+    video.onresize = checkDimensions;
+
     stream.getVideoTracks().forEach(track => {
       track.onunmute = playVideo;
+      const settings = track.getSettings?.();
+      if (settings && settings.width && settings.height) {
+        onAspectRatioChange?.(settings.height > settings.width, settings.width / settings.height);
+      }
     });
+
+    return () => {
+      if (video) {
+        video.onloadedmetadata = null;
+        video.onresize = null;
+      }
+    };
   }, [stream]);
 
   if (!stream) return null;
@@ -90,8 +124,9 @@ export const VoiceStage: React.FC = () => {
     streamAudioSettings,
     setStreamVolume,
     toggleStreamMute,
-    openDownloadModal
-  } = useConcord();
+    openDownloadModal,
+    toggleMobileNav
+  } = useIglooChat();
 
   const [layoutMode, setLayoutMode] = useState<'focus' | 'grid'>('focus');
   const [focusedSocketId, setFocusedSocketId] = useState<string | null>(null);
@@ -205,6 +240,33 @@ export const VoiceStage: React.FC = () => {
   const activeStreamVolume = activeStreamSetting ? (activeStreamSetting.volume ?? 100) : 100;
   const isActiveStreamMuted = activeStreamSetting ? activeStreamSetting.muted : false;
 
+  const [streamAspects, setStreamAspects] = useState<Record<string, { isPortrait: boolean; ratio: number }>>({});
+
+  const handleStreamAspectChange = (socketId: string, isPortrait: boolean, ratio: number) => {
+    setStreamAspects(prev => {
+      if (prev[socketId]?.isPortrait === isPortrait && Math.abs((prev[socketId]?.ratio || 0) - ratio) < 0.05) {
+        return prev;
+      }
+      return { ...prev, [socketId]: { isPortrait, ratio } };
+    });
+  };
+
+  const checkIsPortrait = (p: typeof allParticipants[0]) => {
+    if (!p.isVideoOn || !p.cameraStream) return false;
+    if (p.isScreenSharing) return false;
+
+    const tracked = streamAspects[p.socketId];
+    if (tracked) return tracked.isPortrait;
+
+    const videoTrack = p.cameraStream.getVideoTracks()[0];
+    const settings = videoTrack?.getSettings?.();
+    if (settings && settings.width && settings.height) {
+      return settings.height > settings.width;
+    }
+
+    return false;
+  };
+
   // Selected hero participant for focus mode when not sharing screen
   const heroParticipant = allParticipants.find(p => p.socketId === focusedSocketId)
     || allParticipants.find(p => !p.isLocal && p.isSpeaking)
@@ -218,6 +280,15 @@ export const VoiceStage: React.FC = () => {
     const isVideoDisabledLocally = !p.isLocal && userAudioSettings[p.user.id]?.videoDisabled;
     const showCamera = p.isVideoOn && p.cameraStream && !isVideoDisabledLocally;
     const isPeerWatchingScreen = p.isLocal ? true : isWatchingStream(p.socketId);
+    const isPortrait = checkIsPortrait(p);
+
+    const cardAspect = isSmall 
+      ? 'aspect-video' 
+      : hasScreen 
+      ? 'aspect-video' 
+      : isPortrait 
+      ? 'aspect-[9/16] sm:aspect-[3/4]' 
+      : 'aspect-video';
 
     return (
       <div
@@ -232,13 +303,13 @@ export const VoiceStage: React.FC = () => {
           e.stopPropagation();
           openUserContextMenu(p.user, e.clientX, e.clientY);
         }}
-        className={`relative aspect-video bg-[#1e1f22] rounded-xl overflow-hidden border transition-all duration-150 flex flex-col items-center justify-center shadow-lg group cursor-pointer ${
+        className={`relative ${cardAspect} bg-discord-darkest rounded-xl overflow-hidden border transition-all duration-200 flex flex-col items-center justify-center shadow-lg group cursor-pointer ${
           isSpeakingUser
             ? 'border-discord-green ring-2 ring-discord-green'
             : focusedSocketId === p.socketId && layoutMode === 'focus' && !isHero
             ? 'border-discord-blurple ring-2 ring-discord-blurple'
-            : 'border-[#2b2d31] hover:border-discord-blurple'
-        } ${isSmall ? 'h-full' : 'w-full'}`}
+            : 'border-discord-floating hover:border-discord-blurple'
+        } ${isSmall ? 'h-full flex-shrink-0' : 'w-full h-full'}`}
         title={`${p.user.username} - Clique com botão direito para opções`}
       >
         {/* If this participant is screen sharing */}
@@ -300,7 +371,8 @@ export const VoiceStage: React.FC = () => {
           <StreamVideo
             stream={p.cameraStream}
             mirrored={p.isLocal}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
+            onAspectRatioChange={(isPort, ratio) => handleStreamAspectChange(p.socketId, isPort, ratio)}
           />
         ) : (
           <div className="flex flex-col items-center justify-center">
@@ -338,17 +410,27 @@ export const VoiceStage: React.FC = () => {
     <div 
       ref={stageContainerRef}
       onMouseMove={handleMouseMove}
-      className="flex-1 h-full bg-[#111214] flex flex-col relative select-none overflow-hidden"
+      className="flex-1 h-full bg-discord-darkest flex flex-col relative select-none overflow-hidden"
     >
       {/* Top Header of Call Stage */}
-      <div className="h-12 px-3 sm:px-4 bg-[#111214]/90 backdrop-blur border-b border-[#1f2023] flex items-center justify-between z-20 flex-shrink-0">
+      <div className="h-12 px-3 sm:px-4 bg-discord-darkest/90 backdrop-blur border-b border-discord-floating flex items-center justify-between z-20 flex-shrink-0">
         <div className="flex items-center space-x-2 sm:space-x-3 truncate">
+          {/* Mobile Drawer Trigger */}
+          <button
+            onClick={toggleMobileNav}
+            title="Abrir Menu de Servidores e Canais"
+            className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-discord-darkhover text-discord-header transition flex-shrink-0 active:scale-95 flex items-center justify-center"
+            aria-label="Abrir Menu de Servidores"
+          >
+            <Menu className="w-5 h-5 text-discord-header" />
+          </button>
+
           <div className="flex items-center space-x-2 text-discord-header font-semibold text-sm truncate">
             <Radio className="w-4 h-4 text-discord-green animate-pulse flex-shrink-0" />
             <span className="truncate">{currentVoiceChannel?.name || 'Canal de Voz & Vídeo'}</span>
           </div>
 
-          <div className="hidden md:flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-[#23a55a]/10 border border-[#23a55a]/30 text-discord-green text-xs font-medium">
+          <div className="hidden md:flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-discord-green/10 border border-discord-green/30 text-discord-green text-xs font-medium">
             <span className="w-2 h-2 rounded-full bg-discord-green animate-ping" />
             <span>RTC Conectado • 1080p 60fps</span>
           </div>
@@ -358,8 +440,8 @@ export const VoiceStage: React.FC = () => {
           {/* Download App Button */}
           <button
             onClick={openDownloadModal}
-            className="px-2.5 py-1 rounded bg-[#5865F2] hover:bg-[#4752C4] text-white text-xs font-semibold flex items-center space-x-1.5 transition shadow mr-1"
-            title="Baixar Concord para Desktop / Mobile"
+            className="px-2.5 py-1 rounded bg-discord-blurple hover:bg-discord-blurple-hover text-white text-xs font-semibold flex items-center space-x-1.5 transition shadow mr-1"
+            title="Baixar IglooChat para Desktop / Mobile"
           >
             <Download className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Baixar App</span>
@@ -369,7 +451,7 @@ export const VoiceStage: React.FC = () => {
           <button
             onClick={() => setLayoutMode(layoutMode === 'focus' ? 'grid' : 'focus')}
             title={layoutMode === 'focus' ? 'Alternar para Modo Grade' : 'Alternar para Modo Foco'}
-            className="px-2.5 py-1 rounded bg-[#2b2d31] hover:bg-[#35373c] text-discord-header hover:text-white transition text-xs flex items-center space-x-1.5"
+            className="px-2.5 py-1 rounded bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-discord-header hover:text-white transition text-xs flex items-center space-x-1.5"
           >
             <LayoutGrid className="w-3.5 h-3.5" />
             <span className="font-medium hidden sm:inline">
@@ -381,7 +463,7 @@ export const VoiceStage: React.FC = () => {
           <button
             onClick={toggleGlobalFullscreen}
             title="Alternar Tela Cheia da Sala"
-            className="p-1.5 rounded hover:bg-[#35373c] text-discord-muted hover:text-white transition"
+            className="p-1.5 rounded hover:bg-discord-darkhover text-discord-muted hover:text-white transition"
           >
             <Maximize2 className="w-4 h-4" />
           </button>
@@ -390,7 +472,7 @@ export const VoiceStage: React.FC = () => {
           <button
             onClick={() => setActiveStageView('chat')}
             title="Minimizar Palco de Voz (Voltar ao Chat)"
-            className="p-1.5 rounded hover:bg-[#35373c] text-discord-muted hover:text-white transition flex items-center space-x-1"
+            className="p-1.5 rounded hover:bg-discord-darkhover text-discord-muted hover:text-white transition flex items-center space-x-1"
           >
             <MessageSquare className="w-4 h-4" />
             <span className="hidden sm:inline text-xs font-medium">Chat</span>
@@ -407,7 +489,7 @@ export const VoiceStage: React.FC = () => {
             <div 
               ref={screenTheatreRef}
               onMouseMove={handleMouseMove}
-              className={`flex-1 w-full max-h-[72vh] aspect-video relative bg-black rounded-xl overflow-hidden shadow-2xl border border-[#232428] flex items-center justify-center group ${
+              className={`flex-1 w-full max-h-[72vh] aspect-video relative bg-black rounded-xl overflow-hidden shadow-2xl border border-discord-floating flex items-center justify-center group ${
                 isFullscreen && !showControls ? 'cursor-none' : ''
               }`}
             >
@@ -540,8 +622,10 @@ export const VoiceStage: React.FC = () => {
         ) : layoutMode === 'focus' && heroParticipant ? (
           /* CASE 2: FOCUS MODE WITHOUT SCREEN SHARE (HERO + FILMSTRIP) */
           <div className="w-full h-full flex flex-col gap-2 sm:gap-3 items-center justify-center">
-            {/* Hero 16:9 widescreen card */}
-            <div className="flex-1 w-full max-w-4xl max-h-[70vh] aspect-video flex items-center justify-center">
+            {/* Hero card auto-adjusts to portrait if mobile or widescreen landscape if PC */}
+            <div className={`flex-1 w-auto max-h-[70vh] flex items-center justify-center ${
+              checkIsPortrait(heroParticipant) ? 'aspect-[9/16] sm:aspect-[3/4]' : 'w-full max-w-4xl aspect-video'
+            }`}>
               {renderParticipantTile(heroParticipant, false, true)}
             </div>
 
@@ -553,43 +637,41 @@ export const VoiceStage: React.FC = () => {
             )}
           </div>
         ) : (
-          /* CASE 3: DYNAMIC 16:9 GRID MODE (NO VERTICAL RECTANGLES) */
-          <div className="w-full h-full flex items-center justify-center p-1 sm:p-2 overflow-y-auto">
+          /* CASE 3: AUTO-ADJUSTING ADAPTIVE GRID FOR PC & MOBILE CAMERAS */
+          <div className="w-full h-full flex items-center justify-center p-2 sm:p-4 overflow-y-auto scrollbar-none">
             {allParticipants.length === 1 ? (
-              <div className="w-full max-w-3xl aspect-video mx-auto flex items-center justify-center">
+              <div className={`mx-auto flex items-center justify-center ${
+                checkIsPortrait(allParticipants[0])
+                  ? 'w-auto h-full max-h-[72vh] aspect-[9/16] sm:aspect-[3/4]'
+                  : 'w-full max-w-3xl aspect-video'
+              }`}>
                 {renderParticipantTile(allParticipants[0])}
               </div>
-            ) : allParticipants.length === 2 ? (
-              <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-center justify-center">
-                {allParticipants.map(p => (
-                  <div key={p.socketId} className="w-full aspect-video">
-                    {renderParticipantTile(p)}
-                  </div>
-                ))}
-              </div>
-            ) : allParticipants.length <= 4 ? (
-              <div className="w-full max-w-5xl grid grid-cols-2 gap-3 sm:gap-4 items-center justify-center">
-                {allParticipants.map(p => (
-                  <div key={p.socketId} className="w-full aspect-video">
-                    {renderParticipantTile(p)}
-                  </div>
-                ))}
-              </div>
-            ) : allParticipants.length <= 6 ? (
-              <div className="w-full max-w-6xl grid grid-cols-2 md:grid-cols-3 gap-3 items-center justify-center">
-                {allParticipants.map(p => (
-                  <div key={p.socketId} className="w-full aspect-video">
-                    {renderParticipantTile(p)}
-                  </div>
-                ))}
-              </div>
             ) : (
-              <div className="w-full max-w-6xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 items-center justify-center">
-                {allParticipants.map(p => (
-                  <div key={p.socketId} className="w-full aspect-video">
-                    {renderParticipantTile(p)}
-                  </div>
-                ))}
+              <div className="w-full h-full flex flex-wrap items-center justify-center content-center gap-3 sm:gap-4 max-w-6xl mx-auto">
+                {allParticipants.map(p => {
+                  const isPortrait = checkIsPortrait(p);
+                  const isScreen = p.isScreenSharing && p.screenStream;
+
+                  return (
+                    <div
+                      key={p.socketId}
+                      className={`flex items-center justify-center transition-all duration-200 ${
+                        isScreen
+                          ? 'w-full sm:w-auto flex-1 min-w-[280px] max-w-[640px] max-h-[38vh] sm:max-h-[48vh] md:max-h-[60vh] aspect-video'
+                          : isPortrait
+                          ? 'w-auto h-full max-h-[38vh] sm:max-h-[48vh] md:max-h-[60vh] aspect-[9/16] sm:aspect-[3/4] flex-shrink-0'
+                          : allParticipants.length === 2
+                          ? 'w-full sm:w-auto flex-1 min-w-[280px] max-w-[560px] max-h-[42vh] sm:max-h-[52vh] md:max-h-[65vh] aspect-video'
+                          : allParticipants.length <= 4
+                          ? 'w-full sm:w-auto flex-1 min-w-[240px] max-w-[480px] max-h-[36vh] sm:max-h-[46vh] aspect-video'
+                          : 'w-full sm:w-auto flex-1 min-w-[200px] max-w-[380px] max-h-[30vh] sm:max-h-[40vh] aspect-video'
+                      }`}
+                    >
+                      {renderParticipantTile(p)}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -600,15 +682,15 @@ export const VoiceStage: React.FC = () => {
       <div className={`h-16 sm:h-20 flex items-center justify-center z-30 pb-2 px-2 flex-shrink-0 transition-opacity duration-300 ${
         isFullscreen ? (showControls ? 'opacity-100' : 'opacity-0 pointer-events-none') : 'opacity-100'
       }`}>
-        <div className="bg-[#1e1f22]/95 backdrop-blur-md px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl shadow-2xl border border-[#2f3136] flex items-center space-x-2 sm:space-x-3 max-w-full overflow-x-auto">
+        <div className="bg-discord-floating/95 backdrop-blur-md px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl shadow-2xl border border-discord-darkhover flex items-center space-x-2 sm:space-x-3 max-w-full overflow-x-auto scrollbar-none">
           {/* Camera Button */}
           <button
             onClick={toggleVideo}
             title={isVideoOn ? 'Desligar Câmera' : 'Ligar Câmera'}
             className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
               isVideoOn 
-                ? 'bg-white text-[#1e1f22] hover:bg-gray-200 shadow-md' 
-                : 'bg-[#2b2d31] text-discord-header hover:bg-[#35373c]'
+                ? 'bg-white text-discord-darkest hover:bg-gray-200 shadow-md' 
+                : 'bg-discord-darker text-discord-header hover:bg-discord-darkhover'
             }`}
           >
             {isVideoOn ? <Video className="w-4 h-4 sm:w-5 sm:h-5" /> : <VideoOff className="w-4 h-4 sm:w-5 sm:h-5" />}
@@ -644,7 +726,7 @@ export const VoiceStage: React.FC = () => {
             className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
               isMuted 
                 ? 'bg-discord-red text-white hover:bg-red-600' 
-                : 'bg-[#2b2d31] text-discord-header hover:bg-[#35373c]'
+                : 'bg-discord-darker text-discord-header hover:bg-discord-darkhover'
             }`}
           >
             {isMuted ? <MicOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Mic className="w-4 h-4 sm:w-5 sm:h-5" />}
@@ -657,7 +739,7 @@ export const VoiceStage: React.FC = () => {
             className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
               isDeafened 
                 ? 'bg-discord-red text-white hover:bg-red-600' 
-                : 'bg-[#2b2d31] text-discord-header hover:bg-[#35373c]'
+                : 'bg-discord-darker text-discord-header hover:bg-discord-darkhover'
             }`}
           >
             {isDeafened ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Headphones className="w-4 h-4 sm:w-5 sm:h-5" />}
@@ -669,14 +751,14 @@ export const VoiceStage: React.FC = () => {
             title={isNoiseSuppressionEnabled ? 'Supressão de Ruído Ativada (Krisp)' : 'Supressão de Ruído Desativada'}
             className={`p-2.5 sm:p-3 rounded-full transition flex items-center justify-center ${
               isNoiseSuppressionEnabled
-                ? 'bg-[#23a55a]/20 text-discord-green border border-discord-green/40 hover:bg-[#23a55a]/30'
-                : 'bg-[#2b2d31] text-discord-muted hover:text-white hover:bg-[#35373c]'
+                ? 'bg-discord-green/20 text-discord-green border border-discord-green/40 hover:bg-discord-green/30'
+                : 'bg-discord-darker text-discord-muted hover:text-white hover:bg-discord-darkhover'
             }`}
           >
             <AudioWaveform className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
-          <div className="w-[1px] h-6 bg-[#35373c]" />
+          <div className="w-[1px] h-6 bg-discord-darkhover" />
 
           {/* Disconnect Red Button */}
           <button

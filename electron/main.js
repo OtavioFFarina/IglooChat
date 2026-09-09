@@ -61,10 +61,10 @@ async function waitForServer(urlStr, maxRetries = 25, delayMs = 250) {
  * Ensures a server instance is available to serve the application
  */
 async function ensureServerRunning() {
-  // 1. If explicit CONCORD_URL is provided, use it directly
-  if (process.env.CONCORD_URL) {
-    console.log(`[Electron] Usando CONCORD_URL customizada: ${process.env.CONCORD_URL}`);
-    return process.env.CONCORD_URL;
+  // 1. If explicit IGLOOCHAT_URL is provided, use it directly
+  if (process.env.IGLOOCHAT_URL) {
+    console.log(`[Electron] Usando IGLOOCHAT_URL customizada: ${process.env.IGLOOCHAT_URL}`);
+    return process.env.IGLOOCHAT_URL;
   }
 
   // 2. Check if Vite dev server is running on port 5173
@@ -75,7 +75,7 @@ async function ensureServerRunning() {
 
   // 3. Check if server is already running on port 3001
   if (await isUrlAlive('http://localhost:3001')) {
-    console.log('[Electron] Conectado ao Servidor Concord já ativo em http://localhost:3001');
+    console.log('[Electron] Conectado ao Servidor IglooChat já ativo em http://localhost:3001');
     return 'http://localhost:3001';
   }
 
@@ -94,7 +94,7 @@ async function ensureServerRunning() {
   }
 
   // 5. Spawn backend server automatically
-  console.log('[Electron] Servidor não detectado. Iniciando servidor Concord automaticamente...');
+  console.log('[Electron] Servidor não detectado. Iniciando servidor IglooChat automaticamente...');
   const rootDir = path.join(__dirname, '..');
   serverProcess = spawn('node', ['server/index.js'], {
     cwd: rootDir,
@@ -108,7 +108,7 @@ async function ensureServerRunning() {
 
   const isReady = await waitForServer('http://localhost:3001');
   if (isReady) {
-    console.log('[Electron] Servidor Concord pronto na porta 3001!');
+    console.log('[Electron] Servidor IglooChat pronto na porta 3001!');
   } else {
     console.warn('[Electron] O servidor demorou a responder, prosseguindo com a tentativa de conexão...');
   }
@@ -122,7 +122,7 @@ function getLoadingHtml() {
     <html>
       <head>
         <meta charset="utf-8">
-        <title>Concord</title>
+        <title>IglooChat</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -165,7 +165,7 @@ function getLoadingHtml() {
       </head>
       <body>
         <div class="spinner"></div>
-        <h2>Iniciando Concord Desktop...</h2>
+        <h2>Iniciando IglooChat Desktop...</h2>
         <p>Conectando ao serviço e preparando chamadas com áudio do sistema</p>
       </body>
     </html>
@@ -178,7 +178,7 @@ function getErrorHtml(targetUrl, errorDescription) {
     <html>
       <head>
         <meta charset="utf-8">
-        <title>Concord - Falha de Conexão</title>
+        <title>IglooChat - Falha de Conexão</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -248,7 +248,7 @@ function getErrorHtml(targetUrl, errorDescription) {
       <body>
         <div class="card">
           <div class="icon">🔌</div>
-          <h2>Não foi possível conectar ao Concord</h2>
+          <h2>Não foi possível conectar ao IglooChat</h2>
           <p>O servidor não respondeu (${errorDescription || 'conexão indisponível'}).</p>
           <div class="url-box">${targetUrl}</div>
           <button class="btn" onclick="window.location.href='${targetUrl}'">Tentar Novamente</button>
@@ -265,7 +265,7 @@ async function createWindow() {
     minWidth: 940,
     minHeight: 600,
     backgroundColor: '#1e1f22',
-    title: 'Concord',
+    title: 'IglooChat',
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -279,22 +279,24 @@ async function createWindow() {
   // Mostra tela de splash enquanto verifica/inicia o servidor
   mainWindow.loadURL(getLoadingHtml());
 
-  // Enable full system audio capture for screen sharing
-  session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
-    desktopCapturer.getSources({ types: ['screen', 'window'] }).then((sources) => {
-      if (sources && sources.length > 0) {
-        callback({
-          video: sources[0],
-          audio: 'loopback' // Habilita captura de áudio nativo do sistema
-        });
-      } else {
+  // Enable system audio capture for screen sharing on supported platforms
+  if (process.platform === 'win32' || process.platform === 'darwin') {
+    session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
+      desktopCapturer.getSources({ types: ['screen', 'window'] }).then((sources) => {
+        if (sources && sources.length > 0) {
+          callback({
+            video: sources[0],
+            audio: 'loopback'
+          });
+        } else {
+          callback({});
+        }
+      }).catch(err => {
+        console.error('[Electron] Erro ao capturar fontes de desktop:', err);
         callback({});
-      }
-    }).catch(err => {
-      console.error('[Electron] Erro ao capturar fontes de desktop:', err);
-      callback({});
+      });
     });
-  });
+  }
 
   // Handle connection errors gracefully
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
@@ -314,8 +316,13 @@ async function createWindow() {
 
 // IPC Handlers for desktopCapturer
 ipcMain.handle('desktop-capturer-get-sources', async (event, opts) => {
+  // On Linux (especially Wayland), enumerating window sources triggers xdg-desktop-portal conflicts
+  // Returning empty allows WebRTC to use native browser navigator.mediaDevices.getDisplayMedia seamlessly
+  if (process.platform === 'linux') {
+    return [];
+  }
   try {
-    const sources = await desktopCapturer.getSources(opts || { types: ['screen', 'window'], fetchWindowIcons: true });
+    const sources = await desktopCapturer.getSources(opts || { types: ['screen', 'window'], fetchWindowIcons: false });
     return (sources || []).map(s => ({
       id: s.id,
       name: s.name,
@@ -348,7 +355,7 @@ ipcMain.on('window-close', () => {
 // Finalizar processo do servidor iniciado pelo Electron ao fechar o app
 function cleanUp() {
   if (serverProcess) {
-    console.log('[Electron] Finalizando servidor Concord backend iniciado pelo desktop...');
+    console.log('[Electron] Finalizando servidor IglooChat backend iniciado pelo desktop...');
     try {
       serverProcess.kill('SIGTERM');
     } catch (e) {}

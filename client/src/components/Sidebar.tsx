@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { 
   Hash, 
   Volume2, 
@@ -53,7 +53,7 @@ export const Sidebar: React.FC = () => {
     channelContextMenu,
     openChannelContextMenu,
     closeChannelContextMenu
-  } = useConcord();
+  } = useIglooChat();
 
   const [isServerMenuOpen, setIsServerMenuOpen] = useState(false);
   const [copiedInvite, setCopiedInvite] = useState(false);
@@ -123,7 +123,7 @@ export const Sidebar: React.FC = () => {
   return (
     <aside 
       aria-label="Canais e Conversas"
-      className="w-60 h-full bg-discord-darker flex flex-col flex-shrink-0 select-none border-r border-[#1a1b1e]"
+      className="w-[calc(100vw-88px)] max-w-[240px] md:w-60 h-full bg-discord-darker flex flex-col flex-shrink-0 select-none border-r border-discord-darkest"
     >
       {/* ========================================================= */}
       {/* SERVER MODE */}
@@ -132,21 +132,31 @@ export const Sidebar: React.FC = () => {
         <>
           {/* Server Header Dropdown */}
           <div className="relative">
-            <button
-              onClick={() => setIsServerMenuOpen(!isServerMenuOpen)}
-              className="w-full h-12 px-4 flex items-center justify-between border-b border-[#1f2023] hover:bg-[#35373c]/50 transition text-discord-header font-bold text-sm shadow-sm"
-            >
-              <span className="truncate">{currentServer.name}</span>
-              <ChevronDown
-                className={`w-4 h-4 text-discord-muted transition-transform duration-200 ${
-                  isServerMenuOpen ? 'rotate-180' : ''
-                }`}
-              />
-            </button>
+            <div className="flex items-center border-b border-discord-darkest">
+              <button
+                onClick={() => setIsServerMenuOpen(!isServerMenuOpen)}
+                className="flex-1 h-12 px-3 sm:px-4 flex items-center justify-between hover:bg-discord-darkhover/50 transition text-discord-header font-bold text-sm shadow-sm min-w-0"
+              >
+                <span className="truncate">{currentServer.name}</span>
+                <ChevronDown
+                  className={`w-4 h-4 text-discord-muted transition-transform duration-200 ml-1 flex-shrink-0 ${
+                    isServerMenuOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+              <button
+                onClick={() => setIsMobileNavOpen(false)}
+                className="md:hidden p-2 mr-1.5 rounded hover:bg-white/10 text-discord-muted hover:text-white transition flex-shrink-0"
+                title="Fechar menu"
+                aria-label="Fechar menu"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
             {/* Server Dropdown Popover */}
             {isServerMenuOpen && (
-              <div className="absolute top-14 left-2 right-2 bg-[#111214] border border-[#232428] rounded-lg p-1.5 shadow-2xl z-50 space-y-1">
+              <div className="absolute top-14 left-2 right-2 bg-discord-floating border border-discord-darkest rounded-lg p-1.5 shadow-2xl z-50 space-y-1">
                 <button
                   onClick={() => {
                     copyInviteCode();
@@ -166,7 +176,7 @@ export const Sidebar: React.FC = () => {
                     openCreateChannelModal();
                     setIsServerMenuOpen(false);
                   }}
-                  className="w-full flex items-center space-x-2 px-2.5 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded transition"
+                  className="w-full flex items-center space-x-2 px-2.5 py-2 text-xs font-medium text-discord-normal hover:bg-discord-darkhover hover:text-white rounded transition"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Criar Canal</span>
@@ -177,13 +187,13 @@ export const Sidebar: React.FC = () => {
                     openServerSettings(currentServer);
                     setIsServerMenuOpen(false);
                   }}
-                  className="w-full flex items-center space-x-2 px-2.5 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded transition"
+                  className="w-full flex items-center space-x-2 px-2.5 py-2 text-xs font-medium text-discord-normal hover:bg-discord-darkhover hover:text-white rounded transition"
                 >
                   <Settings className="w-4 h-4" />
                   <span>Configurações do Servidor</span>
                 </button>
 
-                <div className="h-[1px] bg-[#232428] my-1" />
+                <div className="h-[1px] bg-discord-darkest my-1" />
 
                 {currentServer.owner_id === currentUser?.id ? (
                   <button
@@ -213,9 +223,9 @@ export const Sidebar: React.FC = () => {
                   </button>
                 )}
 
-                <div className="px-2.5 py-1.5 bg-[#1e1f22] rounded text-[11px] text-discord-muted flex items-center justify-between">
+                <div className="px-2.5 py-1.5 bg-discord-darkest rounded text-[11px] text-discord-muted flex items-center justify-between">
                   <span>Código de Convite:</span>
-                  <span className="font-mono font-bold text-white bg-[#2b2d31] px-1.5 py-0.5 rounded">
+                  <span className="font-mono font-bold text-discord-header bg-discord-darker px-1.5 py-0.5 rounded">
                     {currentServer.invite_code}
                   </span>
                 </div>
@@ -224,7 +234,7 @@ export const Sidebar: React.FC = () => {
           </div>
 
           {/* Server Channels Scroll Area */}
-          <div className="flex-1 overflow-y-auto px-2 py-3 space-y-4 scrollbar-thin scrollbar-thumb-[#1e1f22]">
+          <div className="flex-1 overflow-y-auto px-2 py-3 space-y-4 scrollbar-thin scrollbar-thumb-discord-floating">
             {currentServer.categories.map((category) => {
               const isCollapsed = !!collapsedCategories[category.id];
 
@@ -272,8 +282,8 @@ export const Sidebar: React.FC = () => {
                               }}
                               className={`w-full flex items-center space-x-2 px-2 py-1.5 rounded-[4px] text-sm group transition ${
                                 isTextActive
-                                  ? 'bg-[#35373c] text-white font-medium'
-                                  : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-discord-normal'
+                                  ? 'bg-discord-darkhover text-white font-medium'
+                                  : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-discord-normal'
                               }`}
                             >
                               <Hash className="w-4 h-4 flex-shrink-0 text-discord-muted group-hover:text-discord-normal" />
@@ -294,7 +304,7 @@ export const Sidebar: React.FC = () => {
                               className={`w-full flex items-center justify-between px-2 py-1.5 rounded-[4px] text-sm group transition ${
                                 isVoiceConnected
                                   ? 'bg-[#23a55a]/15 text-discord-green font-medium'
-                                  : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-discord-normal'
+                                  : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-discord-normal'
                               }`}
                             >
                               <div className="flex items-center space-x-2 truncate">
@@ -307,7 +317,7 @@ export const Sidebar: React.FC = () => {
                               </div>
 
                               {connectedUsers.length > 0 && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#1e1f22] text-discord-muted font-bold">
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-discord-darkest text-discord-muted font-bold">
                                   {connectedUsers.length}
                                 </span>
                               )}
@@ -330,9 +340,11 @@ export const Sidebar: React.FC = () => {
                                       onClick={() => {
                                         if (currentVoiceChannel?.id === channel.id) {
                                           setActiveStageView('voice');
+                                        } else {
+                                          handleSelectChannel(channel);
                                         }
                                       }}
-                                      className="flex items-center justify-between py-1 px-2 rounded hover:bg-[#35373c]/50 text-xs text-[#dbdee1] hover:text-white cursor-pointer group transition-colors select-none"
+                                      className="flex items-center justify-between py-1 px-2 rounded hover:bg-discord-darkhover/50 text-xs text-discord-normal hover:text-white cursor-pointer group transition-colors select-none"
                                       title="Clique para abrir palco • Botão direito para opções"
                                     >
                                       <div className="flex items-center space-x-2 truncate">
@@ -354,7 +366,6 @@ export const Sidebar: React.FC = () => {
                                       </div>
 
                                       <div className="flex items-center space-x-1.5 text-discord-muted flex-shrink-0">
-                                        {/* Red AO VIVO (LIVE) Screen Share Tag */}
                                         {p.isScreenSharing && (
                                           <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-discord-red text-white tracking-wider flex items-center space-x-0.5 animate-pulse shadow-sm">
                                             <Tv className="w-2.5 h-2.5" />
@@ -384,14 +395,22 @@ export const Sidebar: React.FC = () => {
         /* DIRECT MESSAGES / HOME MODE */
         /* ========================================================= */
         <>
-          {/* Search Button */}
-          <div className="p-3 border-b border-[#1f2023]">
+          {/* Search Button & Mobile Close Button */}
+          <div className="p-2 sm:p-3 border-b border-discord-darkest flex items-center space-x-1.5">
             <button
               onClick={() => {}}
-              className="w-full bg-[#1e1f22] text-discord-muted text-xs px-2.5 py-1.5 rounded flex items-center justify-between border border-[#232428] hover:border-[#35373c] transition"
+              className="flex-1 bg-discord-darkest text-discord-muted text-xs px-2.5 py-1.5 rounded flex items-center justify-between border border-discord-floating hover:border-discord-darkhover transition min-w-0"
             >
-              <span>Encontrar ou começar uma conversa</span>
-              <Search className="w-3.5 h-3.5" />
+              <span className="truncate">Buscar amigos ou DMs</span>
+              <Search className="w-3.5 h-3.5 flex-shrink-0 ml-1" />
+            </button>
+            <button
+              onClick={() => setIsMobileNavOpen(false)}
+              className="md:hidden p-1.5 rounded hover:bg-white/10 text-discord-muted hover:text-white transition flex-shrink-0"
+              title="Fechar menu"
+              aria-label="Fechar menu"
+            >
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -401,8 +420,8 @@ export const Sidebar: React.FC = () => {
               onClick={handleSelectFriends}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-[4px] text-sm font-medium transition ${
                 currentDM === null
-                  ? 'bg-[#35373c] text-white'
-                  : 'text-discord-normal hover:bg-[#35373c]/50 hover:text-white'
+                  ? 'bg-discord-darkhover text-white'
+                  : 'text-discord-normal hover:bg-discord-darkhover/50 hover:text-white'
               }`}
             >
               <div className="flex items-center space-x-3">
@@ -439,8 +458,8 @@ export const Sidebar: React.FC = () => {
                     onClick={() => handleSelectDM(dm)}
                     className={`w-full flex items-center space-x-3 px-2 py-2 rounded-[4px] group transition ${
                       isActive
-                        ? 'bg-[#35373c] text-white'
-                        : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-discord-normal'
+                        ? 'bg-discord-darkhover text-white'
+                        : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-discord-normal'
                     }`}
                   >
                     <div className="relative flex-shrink-0">

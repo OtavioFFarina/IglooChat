@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { X, Hash, Volume2 } from 'lucide-react';
 
 export const CreateChannelModal: React.FC = () => {
@@ -9,7 +9,7 @@ export const CreateChannelModal: React.FC = () => {
     createChannel,
     selectedCategoryId,
     currentServer
-  } = useConcord();
+  } = useIglooChat();
 
   const [type, setType] = useState<'text' | 'voice'>('text');
   const [name, setName] = useState('');
@@ -36,7 +36,7 @@ export const CreateChannelModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none">
-      <div className="bg-[#313338] border border-[#232428] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95">
+      <div className="bg-discord-dark border border-discord-floating rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95">
         <div className="p-6 pb-2 relative">
           <button
             onClick={closeCreateChannelModal}
@@ -60,8 +60,8 @@ export const CreateChannelModal: React.FC = () => {
                 onClick={() => setType('text')}
                 className={`p-3 rounded-lg border flex items-center space-x-3 cursor-pointer transition ${
                   type === 'text'
-                    ? 'bg-[#35373c] border-discord-blurple text-white'
-                    : 'bg-[#2b2d31] border-transparent text-discord-muted hover:bg-[#35373c]/50'
+                    ? 'bg-discord-darkhover border-discord-blurple text-white'
+                    : 'bg-discord-darker border-discord-floating/30 text-discord-muted hover:bg-discord-darkhover/50'
                 }`}
               >
                 <Hash className="w-6 h-6 text-discord-muted" />
@@ -76,8 +76,8 @@ export const CreateChannelModal: React.FC = () => {
                 onClick={() => setType('voice')}
                 className={`p-3 rounded-lg border flex items-center space-x-3 cursor-pointer transition ${
                   type === 'voice'
-                    ? 'bg-[#35373c] border-discord-green text-white'
-                    : 'bg-[#2b2d31] border-transparent text-discord-muted hover:bg-[#35373c]/50'
+                    ? 'bg-discord-darkhover border-discord-green text-white'
+                    : 'bg-discord-darker border-discord-floating/30 text-discord-muted hover:bg-discord-darkhover/50'
                 }`}
               >
                 <Volume2 className="w-6 h-6 text-discord-green" />
@@ -104,7 +104,7 @@ export const CreateChannelModal: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={type === 'text' ? 'novo-canal' : 'Sala de Voz e Tela'}
-                className="w-full bg-[#1e1f22] text-sm text-white pl-9 pr-3.5 py-2.5 rounded-lg border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                className="w-full bg-discord-darkest text-sm text-white pl-9 pr-3.5 py-2.5 rounded-lg border border-discord-floating focus:border-discord-blurple focus:outline-none"
               />
             </div>
           </div>
@@ -120,12 +120,12 @@ export const CreateChannelModal: React.FC = () => {
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="Ex: Discussões técnicas sobre o projeto"
-                className="w-full bg-[#1e1f22] text-sm text-white px-3.5 py-2.5 rounded-lg border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                className="w-full bg-discord-darkest text-sm text-white px-3.5 py-2.5 rounded-lg border border-discord-floating focus:border-discord-blurple focus:outline-none"
               />
             </div>
           )}
 
-          <div className="bg-[#2b2d31] -mx-6 -mb-6 p-4 flex justify-between items-center mt-6">
+          <div className="bg-discord-darker border-t border-discord-floating -mx-6 -mb-6 p-4 flex justify-between items-center mt-6">
             <button
               type="button"
               onClick={closeCreateChannelModal}

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { Server } from '../types';
 import { X, Upload, Copy, Check, Trash2, LogOut, ShieldAlert } from 'lucide-react';
 
@@ -9,7 +9,7 @@ interface ServerSettingsModalProps {
 }
 
 export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server, onClose }) => {
-  const { currentUser, updateServer, deleteServer, leaveServer } = useConcord();
+  const { currentUser, updateServer, deleteServer, leaveServer } = useIglooChat();
 
   const [name, setName] = useState(server.name);
   const [icon, setIcon] = useState(server.icon || '');
@@ -90,9 +90,9 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
 
   return (
     <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none animate-in fade-in">
-      <div className="bg-[#313338] border border-[#232428] rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95">
+      <div className="bg-discord-dark border border-discord-floating rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#232428]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-discord-floating">
           <h2 className="text-base font-bold text-white">Configurações do Servidor — {server.name}</h2>
           <button
             onClick={onClose}
@@ -110,7 +110,7 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
               Ícone do Servidor
             </label>
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full bg-[#1e1f22] border-2 border-discord-blurple flex items-center justify-center overflow-hidden flex-shrink-0 shadow-md">
+              <div className="w-16 h-16 rounded-full bg-discord-darkest border-2 border-discord-blurple flex items-center justify-center overflow-hidden flex-shrink-0 shadow-md">
                 {icon ? (
                   <img src={icon} alt="Server Icon" className="w-full h-full object-cover" />
                 ) : (
@@ -132,7 +132,7 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="bg-[#2b2d31] hover:bg-[#35373c] text-white text-xs px-3 py-1.5 rounded flex items-center space-x-2 transition font-medium"
+                  className="bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-white text-xs px-3 py-1.5 rounded flex items-center space-x-2 transition font-medium"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>{isUploading ? 'Enviando...' : 'Fazer Upload de Ícone'}</span>
@@ -144,12 +144,12 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
                     placeholder="Ou cole a URL de uma imagem..."
                     value={iconUrlInput}
                     onChange={(e) => setIconUrlInput(e.target.value)}
-                    className="flex-1 bg-[#1e1f22] text-xs text-white px-2.5 py-1 rounded border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                    className="flex-1 bg-discord-darkest text-xs text-white px-2.5 py-1 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={handleApplyUrl}
-                    className="bg-[#2b2d31] hover:bg-[#35373c] text-discord-header text-xs px-2.5 py-1 rounded transition"
+                    className="bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-discord-header text-xs px-2.5 py-1 rounded transition"
                   >
                     OK
                   </button>
@@ -168,7 +168,7 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-[#1e1f22] text-sm text-white px-3.5 py-2 rounded-lg border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+              className="w-full bg-discord-darkest text-sm text-white px-3.5 py-2 rounded-lg border border-discord-floating focus:border-discord-blurple focus:outline-none"
             />
           </div>
 
@@ -178,13 +178,13 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
               Código de Convite do Servidor
             </label>
             <div className="flex items-center space-x-2">
-              <div className="flex-1 bg-[#1e1f22] text-xs font-mono text-discord-header px-3 py-2 rounded border border-[#2b2d31]">
+              <div className="flex-1 bg-discord-darkest text-xs font-mono text-discord-header px-3 py-2 rounded border border-discord-floating">
                 {server.invite_code}
               </div>
               <button
                 type="button"
                 onClick={copyInvite}
-                className="bg-[#2b2d31] hover:bg-[#35373c] text-white text-xs px-3 py-2 rounded flex items-center space-x-1.5 transition"
+                className="bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-white text-xs px-3 py-2 rounded flex items-center space-x-1.5 transition"
               >
                 {copiedInvite ? <Check className="w-3.5 h-3.5 text-discord-green" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedInvite ? 'Copiado!' : 'Copiar'}</span>
@@ -193,7 +193,7 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-[#232428]">
+          <div className="flex items-center justify-between pt-4 border-t border-discord-floating">
             {isOwner ? (
               <button
                 type="button"
@@ -236,7 +236,7 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black/80 z-60 flex items-center justify-center p-4">
-            <div className="bg-[#313338] border border-discord-red/40 rounded-xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="bg-discord-dark border border-discord-red/40 rounded-xl p-6 max-w-md w-full space-y-4 shadow-2xl">
               <div className="flex items-center space-x-2 text-discord-red font-bold text-base">
                 <ShieldAlert className="w-5 h-5" />
                 <span>Excluir '{server.name}'</span>
@@ -253,7 +253,7 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
                   placeholder={server.name}
                   value={confirmName}
                   onChange={(e) => setConfirmName(e.target.value)}
-                  className="w-full bg-[#1e1f22] text-xs text-white px-3 py-2 rounded border border-[#2b2d31] focus:border-discord-red focus:outline-none"
+                  className="w-full bg-discord-darkest text-xs text-white px-3 py-2 rounded border border-discord-floating focus:border-discord-red focus:outline-none"
                 />
               </div>
               <div className="flex justify-end space-x-2 pt-2">

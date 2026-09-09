@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 
 interface SingleAudioPlayerProps {
   stream?: MediaStream | null;
@@ -20,6 +20,13 @@ const SingleAudioPlayer: React.FC<SingleAudioPlayerProps> = ({ stream, isMuted, 
 
     audio.muted = isMuted;
     audio.volume = isMuted ? 0 : Math.max(0, Math.min(1.0, volume));
+
+    try {
+      const outputId = localStorage.getItem('igloochat_audio_output_id');
+      if (outputId && typeof (audio as any).setSinkId === 'function') {
+        (audio as any).setSinkId(outputId).catch(() => {});
+      }
+    } catch (e) {}
 
     const playSafe = () => {
       audio.play().catch(e => {
@@ -61,7 +68,7 @@ export const RemoteAudioContainer: React.FC = () => {
     userAudioSettings,
     isWatchingStream,
     streamAudioSettings
-  } = useConcord();
+  } = useIglooChat();
 
   return (
     <div className="hidden pointer-events-none" aria-hidden="true">

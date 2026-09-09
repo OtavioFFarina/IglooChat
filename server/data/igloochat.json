@@ -14,7 +14,8 @@
       "status": "online",
       "custom_status": "Os D",
       "created_at": "2026-09-05T19:23:35.029Z",
-      "status_preference": "online"
+      "status_preference": "online",
+      "theme": "igloochat"
     },
     {
       "id": "user_053057d8",
@@ -27,7 +28,7 @@
         "https://api.dicebear.com/7.x/initials/svg?seed=Tester_5490&backgroundColor=ED4245&textColor=ffffff"
       ],
       "status": "offline",
-      "custom_status": "No Concord 🚀",
+      "custom_status": "No IglooChat 🚀",
       "created_at": "2026-09-05T19:41:55.778Z"
     },
     {
@@ -41,7 +42,7 @@
         "https://api.dicebear.com/7.x/initials/svg?seed=Tester_5078&backgroundColor=ED4245&textColor=ffffff"
       ],
       "status": "offline",
-      "custom_status": "No Concord 🚀",
+      "custom_status": "No IglooChat 🚀",
       "created_at": "2026-09-05T19:42:17.926Z"
     },
     {
@@ -59,7 +60,7 @@
         "https://api.dicebear.com/7.x/initials/svg?seed=Pedal&backgroundColor=5865F2&textColor=ffffff"
       ],
       "status": "offline",
-      "custom_status": "No Concord 🚀",
+      "custom_status": "No IglooChat 🚀",
       "created_at": "2026-09-05T20:39:02.237Z",
       "status_preference": "online"
     },
@@ -75,24 +76,40 @@
         "https://api.dicebear.com/7.x/initials/svg?seed=gLv&backgroundColor=EB459E&textColor=ffffff"
       ],
       "status": "offline",
-      "custom_status": "No Concord 🚀",
+      "custom_status": "No IglooChat 🚀",
       "created_at": "2026-09-05T21:56:39.483Z",
       "status_preference": "online"
     },
     {
       "id": "user_e9c36204",
-      "email": "engenheiro_1788646708858@concord.io",
-      "username": "EngenheiroConcord",
+      "email": "engenheiro_1788646708858@igloochat.io",
+      "username": "EngenheiroIglooChat",
       "discriminator": "7056",
       "password": "3e3e354bae9a5d622dae6f6c0307fbae:4d2ea594ab82ec9b4907cc0573b7d57b94bee6124b1ee3f2e2b3eb0d2871376cf132c21592312636408d683c1c366f366cfbb800b07d6dcf018a20b519ce1438",
-      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=EngenheiroConcord&backgroundColor=ED4245&textColor=ffffff",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=EngenheiroIglooChat&backgroundColor=ED4245&textColor=ffffff",
       "avatar_history": [
-        "https://api.dicebear.com/7.x/initials/svg?seed=EngenheiroConcord&backgroundColor=ED4245&textColor=ffffff"
+        "https://api.dicebear.com/7.x/initials/svg?seed=EngenheiroIglooChat&backgroundColor=ED4245&textColor=ffffff"
       ],
       "status": "offline",
       "status_preference": "dnd",
       "custom_status": "No Discord nunca mais 🚀",
       "created_at": "2026-09-05T22:18:28.919Z"
+    },
+    {
+      "id": "user_3c019e39",
+      "email": "pablogoncalvesdias839@gmail.com",
+      "username": "Piroquinha",
+      "discriminator": "6195",
+      "password": "534aa46780e82355c51a46d9d51568b0:0354dd4f79e52dc801d7f7c8f7b87f951a3481c6ff49184f50562bca797b26a1159b3a1fc872faca854fdff055916c93fb01557bf801c1f78b476566b9a5f3d6",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Piroquinha&backgroundColor=5865F2&textColor=ffffff",
+      "avatar_history": [
+        "https://api.dicebear.com/7.x/initials/svg?seed=Piroquinha&backgroundColor=5865F2&textColor=ffffff"
+      ],
+      "status": "online",
+      "status_preference": "online",
+      "custom_status": "No IglooChat 🚀",
+      "created_at": "2026-09-08T22:42:00.877Z",
+      "theme": "dark"
     }
   ],
   "servers": [
@@ -101,7 +118,7 @@
       "name": "Alecrim",
       "icon": "https://media1.tenor.com/m/4ymuSQ2cdTQAAAAd/crocodilo-jamal.gif",
       "owner_id": "user_50cbd5b9",
-      "invite_code": "concord-zcm46b",
+      "invite_code": "igloochat-zcm46b",
       "created_at": "2026-09-05T20:35:33.311Z",
       "categories": [
         {
@@ -159,6 +176,12 @@
           "user_id": "user_c11b8177",
           "role": "member",
           "joined_at": "2026-09-05T22:09:34.861Z"
+        },
+        {
+          "server_id": "srv_fbb12c55",
+          "user_id": "user_3c019e39",
+          "role": "member",
+          "joined_at": "2026-09-08T22:44:13.550Z"
         }
       ]
     },
@@ -167,7 +190,7 @@
       "name": "Comunidade Alfa",
       "icon": null,
       "owner_id": "user_e9c36204",
-      "invite_code": "concord-7w6kqj",
+      "invite_code": "igloochat-7w6kqj",
       "created_at": "2026-09-05T22:18:34.012Z",
       "categories": [
         {
@@ -221,7 +244,7 @@
       "name": "Eu e Momoi",
       "icon": "https://i.pinimg.com/originals/8f/7f/6c/8f7f6cb2d4157966c1011ec7540fbd29.gif",
       "owner_id": "user_50cbd5b9",
-      "invite_code": "concord-8pwp8i",
+      "invite_code": "igloochat-8pwp8i",
       "created_at": "2026-09-08T03:37:19.892Z",
       "categories": [
         {
@@ -577,6 +600,50 @@
       "reply_to_id": null,
       "reactions": [],
       "created_at": "2026-09-06T02:29:27.091Z"
+    },
+    {
+      "id": "msg_f31af159-072f-48a0-b31b-9f2dabf5e195",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "@OFx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-08T22:39:51.511Z"
+    },
+    {
+      "id": "msg_4af1f5c2-fa38-4297-b3e3-c6e4389a55c6",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "@Pedal ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-08T22:39:59.178Z"
+    },
+    {
+      "id": "msg_71161804-9e9c-4c4d-832c-0c9e50c4a01f",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_3c019e39",
+      "content": "@OFx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-08T22:44:21.826Z"
+    },
+    {
+      "id": "msg_b87f0293-5381-4169-8dd1-514386af6287",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "OOOBA",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-08T22:44:31.563Z"
     }
   ],
   "direct_channels": [
@@ -597,6 +664,17 @@
       ],
       "created_at": "2026-09-05T22:08:37.660Z",
       "updated_at": "2026-09-05T22:09:12.361Z"
+    },
+    {
+      "id": "dm_8f32a05d",
+      "members": [
+        "user_50cbd5b9",
+        "user_3c019e39"
+      ],
+      "user1_id": "user_50cbd5b9",
+      "user2_id": "user_3c019e39",
+      "created_at": "2026-09-08T22:43:07.599Z",
+      "updated_at": "2026-09-08T22:43:51.831Z"
     }
   ],
   "direct_messages": [
@@ -636,7 +714,7 @@
       "id": "dm_msg_de45dec8-983a-4c9d-8427-ca68bdfe1f3c",
       "channel_id": "dm_ba0afff5",
       "author_id": "user_50cbd5b9",
-      "content": "concord-zcm46b",
+      "content": "igloochat-zcm46b",
       "attachments": [],
       "created_at": "2026-09-05T20:40:35.470Z"
     },
@@ -660,7 +738,7 @@
       "id": "dm_msg_8ee94dbf-0e17-42a3-a7b1-eca6dc46d075",
       "channel_id": "dm_4a884427",
       "author_id": "user_50cbd5b9",
-      "content": "concord-zcm46b",
+      "content": "igloochat-zcm46b",
       "attachments": [],
       "created_at": "2026-09-05T22:09:12.361Z"
     },
@@ -700,6 +778,51 @@
       "created_at": "2026-09-06T02:10:08.979Z",
       "edited_at": "2026-09-06T02:10:24.526Z",
       "is_pinned": false
+    },
+    {
+      "id": "dm_msg_f2266716-3c12-4942-9547-4ea99843c44e",
+      "channel_id": "dm_8f32a05d",
+      "author_id": "user_50cbd5b9",
+      "content": "@Piroquinha ",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-08T22:43:15.093Z"
+    },
+    {
+      "id": "dm_msg_6cb7314e-6cb3-4a8f-97b6-1e7d0aba039d",
+      "channel_id": "dm_8f32a05d",
+      "author_id": "user_50cbd5b9",
+      "content": "Manja Rola",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-08T22:43:22.649Z"
+    },
+    {
+      "id": "dm_msg_c925b5d7-d4f0-4d9c-b0fa-94bd49b56e8c",
+      "channel_id": "dm_8f32a05d",
+      "author_id": "user_3c019e39",
+      "content": "Boaa",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-08T22:43:31.350Z"
+    },
+    {
+      "id": "dm_msg_fcf3e884-8256-432e-be35-7d072b2e07e4",
+      "channel_id": "dm_8f32a05d",
+      "author_id": "user_3c019e39",
+      "content": "Fioti",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-08T22:43:34.935Z"
+    },
+    {
+      "id": "dm_msg_3e5d03dc-d779-4813-8084-2163e28b8401",
+      "channel_id": "dm_8f32a05d",
+      "author_id": "user_50cbd5b9",
+      "content": "igloochat-zcm46b",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-08T22:43:51.831Z"
     }
   ],
   "friend_requests": [
@@ -716,6 +839,13 @@
       "to_id": "user_c11b8177",
       "status": "accepted",
       "created_at": "2026-09-05T22:08:15.511Z"
+    },
+    {
+      "id": "freq_5e99f333",
+      "from_id": "user_3c019e39",
+      "to_id": "user_50cbd5b9",
+      "status": "accepted",
+      "created_at": "2026-09-08T22:42:22.233Z"
     }
   ],
   "tokens": {
@@ -734,12 +864,21 @@
     "fd259f6ff8abae7fa91f3b39dfa86a7861cb1731d7124ffd73b046b11bae6870": "user_50cbd5b9",
     "297774985616a0f4d651578f29991023e61ccef9fcdd25951f0ddf8a51f3869a": "user_50cbd5b9",
     "e1113f1dffffe5827a1d56ccc677fbb29d58b6273af34e53e2d9b7af55ae36e7": "user_50cbd5b9",
-    "718e4fe2a0925e8d9f8a1d86ed0b03f7e4a7752288771516f40ac69a7bb30442": "user_50cbd5b9"
+    "718e4fe2a0925e8d9f8a1d86ed0b03f7e4a7752288771516f40ac69a7bb30442": "user_50cbd5b9",
+    "697455582e52b7a492b71e404165b440b3896ac66d7684dd956abd4321ab8744": "user_50cbd5b9",
+    "d46048a9474c007155c0c4f59b3a4f7bc07e477831360a3dd4124e71c75385c0": "user_50cbd5b9",
+    "8c0c5b6ee4e1231640de1abce2eb77096ba429adb31992572491df8d7c76af9c": "user_3c019e39",
+    "c0145a23c0be7c61751550589a2e5eb592b7ee61ba04925bdccf823ae2d5fdf0": "user_50cbd5b9",
+    "35a47126612429baf7076ab128d0b2ca1c9d009f8752e455c52b29f6682e3f8b": "user_12071697",
+    "bc9c98ac9d48efa6ff67c8a7cb7d0c2beef1bb6d51822702301136c6179e4355": "user_50cbd5b9",
+    "301fe65bb948e66e86bd58d731db78c15b41ce9642997a0a8500c93afa96fd65": "user_3c019e39",
+    "a380ca1b8f324c0104e3cef86df11b85ce973b9ab19653f713e7782685966f5c": "user_3c019e39"
   },
   "friends": {
     "user_50cbd5b9": [
       "user_12071697",
-      "user_c11b8177"
+      "user_c11b8177",
+      "user_3c019e39"
     ],
     "user_053057d8": [],
     "user_7f127692": [],
@@ -749,6 +888,9 @@
     "user_c11b8177": [
       "user_50cbd5b9"
     ],
-    "user_e9c36204": []
+    "user_e9c36204": [],
+    "user_3c019e39": [
+      "user_50cbd5b9"
+    ]
   }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { 
   Reply, 
   Edit3, 
@@ -36,7 +36,7 @@ export const MessageContextMenu: React.FC<MessageContextMenuProps> = ({
     pinMessage, 
     addReaction,
     openForwardModal
-  } = useConcord();
+  } = useIglooChat();
 
   const menuRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
@@ -125,15 +125,15 @@ export const MessageContextMenu: React.FC<MessageContextMenuProps> = ({
     <div
       ref={menuRef}
       style={{ top: `${pos.y}px`, left: `${pos.x}px` }}
-      className="fixed z-50 w-56 bg-[#111214] border border-[#232428] rounded-xl shadow-2xl p-1.5 select-none animate-in fade-in zoom-in-95 duration-150"
+      className="fixed z-50 w-56 bg-discord-floating border border-discord-darkhover rounded-xl shadow-2xl p-1.5 select-none animate-in fade-in zoom-in-95 duration-150"
     >
       {/* Quick Reactions Bar */}
-      <div className="flex items-center justify-between px-1 py-1 mb-1 border-b border-[#1f2023]">
+      <div className="flex items-center justify-between px-1 py-1 mb-1 border-b border-discord-darkest">
         {QUICK_REACTIONS.map(emoji => (
           <button
             key={emoji}
             onClick={() => handleReaction(emoji)}
-            className="p-1.5 hover:bg-[#35373c] rounded text-base hover:scale-125 transition active:scale-95"
+            className="p-1.5 hover:bg-discord-darkhover rounded text-base hover:scale-125 transition active:scale-95"
             title={`Reagir com ${emoji}`}
           >
             {emoji}
@@ -155,7 +155,7 @@ export const MessageContextMenu: React.FC<MessageContextMenuProps> = ({
         {canEdit && (
           <button
             onClick={handleEdit}
-            className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded-lg transition"
+            className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-normal hover:bg-discord-darkhover hover:text-white rounded-lg transition"
           >
             <Edit3 className="w-4 h-4" />
             <span>Editar Mensagem</span>
@@ -165,7 +165,7 @@ export const MessageContextMenu: React.FC<MessageContextMenuProps> = ({
         {/* Copy Text */}
         <button
           onClick={handleCopy}
-          className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded-lg transition"
+          className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-discord-normal hover:bg-discord-darkhover hover:text-white rounded-lg transition"
         >
           <div className="flex items-center space-x-2.5">
             <Copy className="w-4 h-4" />
@@ -177,7 +177,7 @@ export const MessageContextMenu: React.FC<MessageContextMenuProps> = ({
         {/* Forward */}
         <button
           onClick={handleForward}
-          className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded-lg transition"
+          className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-normal hover:bg-discord-darkhover hover:text-white rounded-lg transition"
         >
           <Forward className="w-4 h-4" />
           <span>Encaminhar Mensagem</span>
@@ -186,7 +186,7 @@ export const MessageContextMenu: React.FC<MessageContextMenuProps> = ({
         {/* Pin / Unpin */}
         <button
           onClick={handlePin}
-          className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded-lg transition"
+          className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-normal hover:bg-discord-darkhover hover:text-white rounded-lg transition"
         >
           <Pin className="w-4 h-4" />
           <span>{message.is_pinned ? 'Desafixar Mensagem' : 'Fixar Mensagem'}</span>
@@ -195,7 +195,7 @@ export const MessageContextMenu: React.FC<MessageContextMenuProps> = ({
         {/* Delete (if author or server owner) */}
         {canDelete && (
           <>
-            <div className="my-1 border-t border-[#1f2023]" />
+            <div className="my-1 border-t border-discord-darkest" />
             <button
               onClick={handleDelete}
               className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-red hover:bg-discord-red hover:text-white rounded-lg transition"

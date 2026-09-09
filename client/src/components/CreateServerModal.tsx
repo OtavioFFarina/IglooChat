@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { X, Upload, Gamepad2, School, Users, Sparkles } from 'lucide-react';
 
 export const CreateServerModal: React.FC = () => {
-  const { isCreateServerOpen, closeCreateServerModal, createServer } = useConcord();
+  const { isCreateServerOpen, closeCreateServerModal, createServer } = useIglooChat();
   const [step, setStep] = useState<'template' | 'details'>('template');
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('');
@@ -71,7 +71,7 @@ export const CreateServerModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none animate-in fade-in">
-      <div className="bg-[#313338] border border-[#232428] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95">
+      <div className="bg-discord-dark border border-discord-floating rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95">
         {/* Header */}
         <div className="p-6 text-center relative pb-2">
           <button
@@ -90,7 +90,7 @@ export const CreateServerModal: React.FC = () => {
           <div className="p-6 pt-2 space-y-2.5">
             <button
               onClick={() => handleTemplateSelect('Servidor do Usuário')}
-              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-[#2b2d31] hover:bg-[#35373c] transition group text-left"
+              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-discord-floating hover:bg-discord-darkhover transition group text-left"
             >
               <div className="p-2.5 bg-discord-blurple/20 text-discord-blurple rounded-lg group-hover:bg-discord-blurple group-hover:text-white transition">
                 <Sparkles className="w-6 h-6" />
@@ -103,7 +103,7 @@ export const CreateServerModal: React.FC = () => {
 
             <button
               onClick={() => handleTemplateSelect('Comunidade de Jogos')}
-              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-[#2b2d31] hover:bg-[#35373c] transition group text-left"
+              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-discord-floating hover:bg-discord-darkhover transition group text-left"
             >
               <div className="p-2.5 bg-discord-green/20 text-discord-green rounded-lg group-hover:bg-discord-green group-hover:text-white transition">
                 <Gamepad2 className="w-6 h-6" />
@@ -116,7 +116,7 @@ export const CreateServerModal: React.FC = () => {
 
             <button
               onClick={() => handleTemplateSelect('Clube Escolar & Estudos')}
-              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-[#2b2d31] hover:bg-[#35373c] transition group text-left"
+              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-discord-floating hover:bg-discord-darkhover transition group text-left"
             >
               <div className="p-2.5 bg-discord-amber/20 text-discord-amber rounded-lg group-hover:bg-discord-amber group-hover:text-white transition">
                 <School className="w-6 h-6" />
@@ -129,7 +129,7 @@ export const CreateServerModal: React.FC = () => {
 
             <button
               onClick={() => handleTemplateSelect('Amigos & Bate-papo')}
-              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-[#2b2d31] hover:bg-[#35373c] transition group text-left"
+              className="w-full flex items-center space-x-4 p-3 rounded-lg border border-discord-floating hover:bg-discord-darkhover transition group text-left"
             >
               <div className="p-2.5 bg-purple-500/20 text-purple-400 rounded-lg group-hover:bg-purple-600 group-hover:text-white transition">
                 <Users className="w-6 h-6" />
@@ -146,7 +146,7 @@ export const CreateServerModal: React.FC = () => {
             <div>
               <div className="text-xs font-bold text-discord-muted uppercase mb-2">Ícone do Servidor</div>
               <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 rounded-full bg-[#1e1f22] border-2 border-discord-blurple flex items-center justify-center overflow-hidden flex-shrink-0 shadow-md">
+                <div className="w-16 h-16 rounded-full bg-discord-darkest border-2 border-discord-blurple flex items-center justify-center overflow-hidden flex-shrink-0 shadow-md">
                   {icon ? (
                     <img src={icon} alt="Server Icon Preview" className="w-full h-full object-cover" />
                   ) : (
@@ -168,7 +168,7 @@ export const CreateServerModal: React.FC = () => {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className="bg-[#2b2d31] hover:bg-[#35373c] text-white text-xs px-3 py-1.5 rounded flex items-center space-x-2 transition font-medium"
+                    className="bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-white text-xs px-3 py-1.5 rounded flex items-center space-x-2 transition font-medium"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>{isUploading ? 'Enviando...' : 'Fazer Upload de Ícone'}</span>
@@ -180,12 +180,12 @@ export const CreateServerModal: React.FC = () => {
                       placeholder="Ou cole a URL de uma imagem..."
                       value={iconUrlInput}
                       onChange={(e) => setIconUrlInput(e.target.value)}
-                      className="flex-1 bg-[#1e1f22] text-xs text-white px-2.5 py-1 rounded border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                      className="flex-1 bg-discord-darkest text-xs text-white px-2.5 py-1 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={handleApplyUrl}
-                      className="bg-[#2b2d31] hover:bg-[#35373c] text-discord-header text-xs px-2.5 py-1 rounded transition"
+                      className="bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-discord-header text-xs px-2.5 py-1 rounded transition"
                     >
                       OK
                     </button>
@@ -204,11 +204,11 @@ export const CreateServerModal: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: Comunidade dos Desenvolvedores"
-                className="w-full bg-[#1e1f22] text-sm text-white px-3.5 py-2.5 rounded-lg border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                className="w-full bg-discord-darkest text-sm text-white px-3.5 py-2.5 rounded-lg border border-discord-floating focus:border-discord-blurple focus:outline-none"
               />
             </div>
 
-            <div className="bg-[#2b2d31] -mx-6 -mb-6 p-4 flex justify-between items-center mt-6">
+            <div className="bg-discord-darker border-t border-discord-floating -mx-6 -mb-6 p-4 flex justify-between items-center mt-6">
               <button
                 type="button"
                 onClick={() => setStep('template')}

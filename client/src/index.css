@@ -4,6 +4,19 @@
 
 :root,
 [data-theme="dark"] {
+  --igloochat-darkest: #1e1f22;
+  --igloochat-darker: #2b2d31;
+  --igloochat-dark: #313338;
+  --igloochat-darkhover: #35373c;
+  --igloochat-floating: #232428;
+  --igloochat-input: #383a40;
+  --igloochat-blurple: #5865F2;
+  --igloochat-blurple-hover: #4752c4;
+  --igloochat-blurple-active: #3c45a5;
+  --igloochat-muted: #949ba4;
+  --igloochat-normal: #dbdee1;
+  --igloochat-header: #f2f3f5;
+
   --concord-darkest: #1e1f22;
   --concord-darker: #2b2d31;
   --concord-dark: #313338;
@@ -19,6 +32,19 @@
 }
 
 [data-theme="midnight"] {
+  --igloochat-darkest: #000000;
+  --igloochat-darker: #09090b;
+  --igloochat-dark: #121215;
+  --igloochat-darkhover: #1e1e24;
+  --igloochat-floating: #141418;
+  --igloochat-input: #1a1a20;
+  --igloochat-blurple: #6366f1;
+  --igloochat-blurple-hover: #4f46e5;
+  --igloochat-blurple-active: #4338ca;
+  --igloochat-muted: #828292;
+  --igloochat-normal: #e4e4e7;
+  --igloochat-header: #ffffff;
+
   --concord-darkest: #000000;
   --concord-darker: #09090b;
   --concord-dark: #121215;
@@ -33,7 +59,21 @@
   --concord-header: #ffffff;
 }
 
+[data-theme="igloochat"],
 [data-theme="concord"] {
+  --igloochat-darkest: #06080d;
+  --igloochat-darker: #0c111a;
+  --igloochat-dark: #111827;
+  --igloochat-darkhover: #1b253b;
+  --igloochat-floating: #131b2c;
+  --igloochat-input: #192338;
+  --igloochat-blurple: #0284c7;
+  --igloochat-blurple-hover: #0369a1;
+  --igloochat-blurple-active: #075985;
+  --igloochat-muted: #64748b;
+  --igloochat-normal: #e0f2fe;
+  --igloochat-header: #f0f9ff;
+
   --concord-darkest: #06080d;
   --concord-darker: #0c111a;
   --concord-dark: #111827;
@@ -49,6 +89,19 @@
 }
 
 [data-theme="blurple"] {
+  --igloochat-darkest: #0d0a1a;
+  --igloochat-darker: #15102a;
+  --igloochat-dark: #1d163a;
+  --igloochat-darkhover: #291f52;
+  --igloochat-floating: #1e173d;
+  --igloochat-input: #261d4e;
+  --igloochat-blurple: #8b5cf6;
+  --igloochat-blurple-hover: #7c3aed;
+  --igloochat-blurple-active: #6d28d9;
+  --igloochat-muted: #a78bfa;
+  --igloochat-normal: #f3e8ff;
+  --igloochat-header: #ffffff;
+
   --concord-darkest: #0d0a1a;
   --concord-darker: #15102a;
   --concord-dark: #1d163a;
@@ -64,6 +117,19 @@
 }
 
 [data-theme="emerald"] {
+  --igloochat-darkest: #040d08;
+  --igloochat-darker: #091a10;
+  --igloochat-dark: #0e2617;
+  --igloochat-darkhover: #153823;
+  --igloochat-floating: #0f2b1a;
+  --igloochat-input: #173b26;
+  --igloochat-blurple: #10b981;
+  --igloochat-blurple-hover: #059669;
+  --igloochat-blurple-active: #047857;
+  --igloochat-muted: #6ee7b7;
+  --igloochat-normal: #d1fae5;
+  --igloochat-header: #ffffff;
+
   --concord-darkest: #040d08;
   --concord-darker: #091a10;
   --concord-dark: #0e2617;
@@ -79,6 +145,19 @@
 }
 
 [data-theme="crimson"] {
+  --igloochat-darkest: #0e0507;
+  --igloochat-darker: #19090d;
+  --igloochat-dark: #260e14;
+  --igloochat-darkhover: #38151e;
+  --igloochat-floating: #290f16;
+  --igloochat-input: #38151e;
+  --igloochat-blurple: #f43f5e;
+  --igloochat-blurple-hover: #e11d48;
+  --igloochat-blurple-active: #be123c;
+  --igloochat-muted: #fda4af;
+  --igloochat-normal: #ffe4e6;
+  --igloochat-header: #ffffff;
+
   --concord-darkest: #0e0507;
   --concord-darker: #19090d;
   --concord-dark: #260e14;
@@ -100,29 +179,46 @@
   }
 }
 
-/* Custom Discord Scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Custom Discord Scrollbars on Desktop */
+@media (min-width: 769px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--igloochat-floating, var(--concord-floating, #232428));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--igloochat-darkhover, var(--concord-darkhover, #35373c));
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: var(--concord-darker, #2b2d31);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--concord-floating, #1a1b1e);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--concord-darkhover, #111214);
+/* Clean mobile viewport: zero intrusive browser scrollbars on touch devices */
+@media (max-width: 768px) {
+  html, body, #root, * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
 
 .scrollbar-none::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 .scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }

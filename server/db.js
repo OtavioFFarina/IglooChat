@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const dbFile = path.join(__dirname, 'data', 'concord.json');
+const dbFile = path.join(__dirname, 'data', 'igloochat.json');
 
 // Password hashing helpers using native crypto
 function hashPassword(password) {
@@ -51,7 +51,7 @@ function loadDb() {
       if (!dbData.direct_messages) dbData.direct_messages = [];
       return dbData;
     } catch (e) {
-      console.error('Error reading concord.json, resetting', e);
+      console.error('Error reading igloochat.json, resetting', e);
     }
   }
   dbData = JSON.parse(JSON.stringify(initialData));
@@ -71,7 +71,7 @@ function generateDefaultAvatar(username) {
   const colors = ['5865F2', '57F287', 'FEE75C', 'EB459E', 'ED4245'];
   const charCode = username ? username.charCodeAt(0) : 0;
   const bg = colors[charCode % colors.length];
-  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username || 'Concord')}&backgroundColor=${bg}&textColor=ffffff`;
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username || 'IglooChat')}&backgroundColor=${bg}&textColor=ffffff`;
 }
 
 // Clean user object for client (removes password)
@@ -107,7 +107,7 @@ const db = {
       avatar_history: [userAvatar],
       status: 'online',
       status_preference: 'online',
-      custom_status: 'No Concord 🚀',
+      custom_status: 'No IglooChat 🚀',
       created_at: new Date().toISOString()
     };
 
@@ -473,7 +473,7 @@ const db = {
     const catVoiceId = 'cat_voice_' + crypto.randomUUID().substring(0, 8);
     const chGeralId = 'ch_geral_' + crypto.randomUUID().substring(0, 8);
     const chVoiceId = 'ch_voice_' + crypto.randomUUID().substring(0, 8);
-    const inviteCode = 'concord-' + Math.random().toString(36).substring(2, 8);
+    const inviteCode = 'igloochat-' + Math.random().toString(36).substring(2, 8);
 
     const newServer = {
       id: newServerId,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { UserStatus } from '../types';
 import { 
   X, 
@@ -37,7 +37,7 @@ export const UserSettingsModal: React.FC = () => {
     micSensitivity,
     setMicSensitivity,
     getMicLevel
-  } = useConcord();
+  } = useIglooChat();
 
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'voice' | 'appearance'>('profile');
   const [username, setUsername] = useState(currentUser?.username || '');
@@ -68,14 +68,14 @@ export const UserSettingsModal: React.FC = () => {
   const [audioOutputs, setAudioOutputs] = useState<MediaDeviceInfo[]>([]);
   const [videoInputDevices, setVideoInputDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedVideoInputId, setSelectedVideoInputId] = useState<string>(
-    localStorage.getItem('concord_video_input_id') || ''
+    localStorage.getItem('igloochat_video_input_id') || ''
   );
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [selectedAudioInputId, setSelectedAudioInputId] = useState<string>(
-    localStorage.getItem('concord_audio_input_id') || ''
+    localStorage.getItem('igloochat_audio_input_id') || ''
   );
   const [selectedAudioOutputId, setSelectedAudioOutputId] = useState<string>(
-    localStorage.getItem('concord_audio_output_id') || ''
+    localStorage.getItem('igloochat_audio_output_id') || ''
   );
   const [inputVolume, setInputVolume] = useState<number>(100);
   const [outputVolume, setOutputVolume] = useState<number>(100);
@@ -112,7 +112,7 @@ export const UserSettingsModal: React.FC = () => {
       setVideoInputDevices(videoInputs);
 
       // Auto-select preferred devices if not already chosen
-      const savedInput = localStorage.getItem('concord_audio_input_id');
+      const savedInput = localStorage.getItem('igloochat_audio_input_id');
       if (!savedInput || !inputs.some(i => i.deviceId === savedInput)) {
         const preferred = inputs.find(i => 
           i.label.toLowerCase().includes('fuxi') || 
@@ -122,13 +122,13 @@ export const UserSettingsModal: React.FC = () => {
 
         if (preferred) {
           setSelectedAudioInputId(preferred.deviceId);
-          localStorage.setItem('concord_audio_input_id', preferred.deviceId);
+          localStorage.setItem('igloochat_audio_input_id', preferred.deviceId);
         }
       } else {
         setSelectedAudioInputId(savedInput);
       }
 
-      const savedOutput = localStorage.getItem('concord_audio_output_id');
+      const savedOutput = localStorage.getItem('igloochat_audio_output_id');
       if (!savedOutput || !outputs.some(o => o.deviceId === savedOutput)) {
         const preferred = outputs.find(o => 
           o.label.toLowerCase().includes('fuxi') || 
@@ -138,17 +138,17 @@ export const UserSettingsModal: React.FC = () => {
 
         if (preferred) {
           setSelectedAudioOutputId(preferred.deviceId);
-          localStorage.setItem('concord_audio_output_id', preferred.deviceId);
+          localStorage.setItem('igloochat_audio_output_id', preferred.deviceId);
         }
       } else {
         setSelectedAudioOutputId(savedOutput);
       }
 
-      const savedVideo = localStorage.getItem('concord_video_input_id');
+      const savedVideo = localStorage.getItem('igloochat_video_input_id');
       if (!savedVideo || !videoInputs.some(v => v.deviceId === savedVideo)) {
         if (videoInputs[0]) {
           setSelectedVideoInputId(videoInputs[0].deviceId);
-          localStorage.setItem('concord_video_input_id', videoInputs[0].deviceId);
+          localStorage.setItem('igloochat_video_input_id', videoInputs[0].deviceId);
         }
       } else {
         setSelectedVideoInputId(savedVideo);
@@ -268,7 +268,7 @@ export const UserSettingsModal: React.FC = () => {
         await loadDevices();
       }
 
-      const activeInputId = selectedAudioInputId || localStorage.getItem('concord_audio_input_id');
+      const activeInputId = selectedAudioInputId || localStorage.getItem('igloochat_audio_input_id');
       const constraints: MediaStreamConstraints = {
         audio: {
           deviceId: activeInputId && activeInputId !== 'default' ? { exact: activeInputId } : undefined,
@@ -344,7 +344,7 @@ export const UserSettingsModal: React.FC = () => {
 
   const handleInputDeviceChange = (deviceId: string) => {
     setSelectedAudioInputId(deviceId);
-    localStorage.setItem('concord_audio_input_id', deviceId);
+    localStorage.setItem('igloochat_audio_input_id', deviceId);
     if (isTestingMic) {
       stopMicTest();
       setTimeout(() => startMicTest(), 150);
@@ -353,7 +353,7 @@ export const UserSettingsModal: React.FC = () => {
 
   const handleOutputDeviceChange = (deviceId: string) => {
     setSelectedAudioOutputId(deviceId);
-    localStorage.setItem('concord_audio_output_id', deviceId);
+    localStorage.setItem('igloochat_audio_output_id', deviceId);
     if (loopbackAudioRef.current && (loopbackAudioRef.current as any).setSinkId) {
       (loopbackAudioRef.current as any).setSinkId(deviceId).catch(() => {});
     }
@@ -512,10 +512,10 @@ export const UserSettingsModal: React.FC = () => {
       {/* Hidden Loopback Audio Element for Real-Time Microphone Feedback */}
       <audio ref={loopbackAudioRef} autoPlay playsInline />
 
-      <div className="bg-[#313338] w-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-[580px] border border-[#232428]">
+      <div className="bg-discord-dark w-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row h-[90dvh] md:h-[580px] max-h-[92dvh] border border-discord-floating">
         
         {/* Settings Left Navigation Sidebar */}
-        <div className="w-full md:w-56 bg-[#2b2d31] p-4 flex flex-col justify-between border-r border-[#232428] flex-shrink-0">
+        <div className="w-full md:w-56 bg-discord-darker p-4 flex flex-col justify-between border-r border-discord-floating flex-shrink-0">
           <div className="space-y-1">
             <div className="text-[11px] font-bold text-discord-muted uppercase tracking-wider px-2 mb-2">
               Configurações
@@ -525,8 +525,8 @@ export const UserSettingsModal: React.FC = () => {
               onClick={() => setActiveTab('profile')}
               className={`w-full text-left px-2.5 py-2 rounded text-xs font-semibold transition ${
                 activeTab === 'profile'
-                  ? 'bg-[#35373c] text-white'
-                  : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-white'
+                  ? 'bg-discord-darkhover text-discord-header'
+                  : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-discord-header'
               }`}
             >
               Meu Perfil
@@ -536,8 +536,8 @@ export const UserSettingsModal: React.FC = () => {
               onClick={() => setActiveTab('security')}
               className={`w-full text-left px-2.5 py-2 rounded text-xs font-semibold transition flex items-center justify-between ${
                 activeTab === 'security'
-                  ? 'bg-[#35373c] text-white'
-                  : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-white'
+                  ? 'bg-discord-darkhover text-discord-header'
+                  : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-discord-header'
               }`}
             >
               <span>Segurança & Senha</span>
@@ -548,8 +548,8 @@ export const UserSettingsModal: React.FC = () => {
               onClick={() => setActiveTab('voice')}
               className={`w-full text-left px-2.5 py-2 rounded text-xs font-semibold transition flex items-center justify-between ${
                 activeTab === 'voice'
-                  ? 'bg-[#35373c] text-white'
-                  : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-white'
+                  ? 'bg-discord-darkhover text-discord-header'
+                  : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-discord-header'
               }`}
             >
               <span>Voz, Vídeo & Tela</span>
@@ -560,8 +560,8 @@ export const UserSettingsModal: React.FC = () => {
               onClick={() => setActiveTab('appearance')}
               className={`w-full text-left px-2.5 py-2 rounded text-xs font-semibold transition flex items-center justify-between ${
                 activeTab === 'appearance'
-                  ? 'bg-[#35373c] text-white'
-                  : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-white'
+                  ? 'bg-discord-darkhover text-discord-header'
+                  : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-discord-header'
               }`}
             >
               <span>Aparência & Layout</span>
@@ -583,10 +583,10 @@ export const UserSettingsModal: React.FC = () => {
         </div>
 
         {/* Right Content Area */}
-        <div className="flex-1 flex flex-col h-full bg-[#313338] overflow-hidden">
+        <div className="flex-1 flex flex-col h-full bg-discord-dark overflow-hidden">
           
           {/* Header */}
-          <div className="p-4 border-b border-[#232428] flex items-center justify-between flex-shrink-0">
+          <div className="p-4 border-b border-discord-floating flex items-center justify-between flex-shrink-0">
             <span className="text-sm font-bold text-discord-muted uppercase tracking-wider">
               {activeTab === 'profile' && 'Perfil de Usuário'}
               {activeTab === 'security' && 'Segurança & Senha'}
@@ -596,7 +596,7 @@ export const UserSettingsModal: React.FC = () => {
 
             <button
               onClick={handleClose}
-              className="text-discord-muted hover:text-white p-1 rounded-full hover:bg-[#35373c] transition"
+              className="text-discord-muted hover:text-white p-1 rounded-full hover:bg-discord-darkhover transition"
               title="Fechar"
             >
               <X className="w-5 h-5" />
@@ -649,12 +649,12 @@ export const UserSettingsModal: React.FC = () => {
                           placeholder="Ou cole uma URL de imagem..."
                           value={avatarUrlInput}
                           onChange={(e) => setAvatarUrlInput(e.target.value)}
-                          className="flex-1 bg-[#1e1f22] text-xs text-white px-2.5 py-1.5 rounded border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                          className="flex-1 bg-discord-darkest text-xs text-discord-header px-2.5 py-1.5 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                         />
                         <button
                           type="button"
                           onClick={applyAvatarUrl}
-                          className="bg-[#2b2d31] hover:bg-[#35373c] text-xs font-semibold text-discord-normal hover:text-white px-3 py-1.5 rounded transition border border-[#1f2023]"
+                          className="bg-discord-darker hover:bg-discord-darkhover text-xs font-semibold text-discord-normal hover:text-white px-3 py-1.5 rounded transition border border-discord-floating"
                         >
                           Aplicar
                         </button>
@@ -664,7 +664,7 @@ export const UserSettingsModal: React.FC = () => {
 
                   {/* Avatar History (Recent Avatars) */}
                   {currentUser?.avatar_history && currentUser.avatar_history.length > 0 && (
-                    <div className="mt-4 pt-3 border-t border-[#2b2d31]">
+                    <div className="mt-4 pt-3 border-t border-discord-floating">
                       <div className="text-[11px] font-bold text-discord-muted uppercase tracking-wider mb-2 flex items-center space-x-1">
                         <History className="w-3 h-3" />
                         <span>Histórico de Avatares Recentes:</span>
@@ -677,7 +677,7 @@ export const UserSettingsModal: React.FC = () => {
                             onClick={() => setAvatar(histUrl)}
                             title="Restaurar esta foto"
                             className={`w-10 h-10 rounded-full overflow-hidden border-2 transition hover:scale-105 ${
-                              avatar === histUrl ? 'border-discord-green ring-2 ring-discord-green/30' : 'border-[#2b2d31] hover:border-white'
+                              avatar === histUrl ? 'border-discord-green ring-2 ring-discord-green/30' : 'border-discord-floating hover:border-white'
                             }`}
                           >
                             <img src={histUrl} alt={`Avatar ${idx}`} className="w-full h-full object-cover" />
@@ -697,7 +697,7 @@ export const UserSettingsModal: React.FC = () => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full bg-[#1e1f22] text-white text-sm px-3 py-2 rounded-md border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                    className="w-full bg-discord-darkest text-discord-header text-sm px-3 py-2 rounded-md border border-discord-floating focus:border-discord-blurple focus:outline-none"
                   />
                 </div>
 
@@ -719,8 +719,8 @@ export const UserSettingsModal: React.FC = () => {
                         onClick={() => setStatus(st.id as UserStatus)}
                         className={`flex items-center space-x-2 p-2 rounded-md text-xs font-semibold transition border ${
                           status === st.id
-                            ? 'bg-[#35373c] border-discord-blurple text-white'
-                            : 'bg-[#1e1f22] border-transparent text-discord-muted hover:text-white'
+                            ? 'bg-discord-darkhover border-discord-blurple text-discord-header shadow'
+                            : 'bg-discord-darkest border-discord-floating text-discord-muted hover:text-discord-header'
                         }`}
                       >
                         <div className={`w-2.5 h-2.5 rounded-full ${st.color}`} />
@@ -740,7 +740,7 @@ export const UserSettingsModal: React.FC = () => {
                     value={customStatus}
                     onChange={(e) => setCustomStatus(e.target.value)}
                     placeholder="Ex: Codando um projeto novo..."
-                    className="w-full bg-[#1e1f22] text-white text-sm px-3 py-2 rounded-md border border-[#2b2d31] focus:border-discord-blurple focus:outline-none"
+                    className="w-full bg-discord-darkest text-discord-header text-sm px-3 py-2 rounded-md border border-discord-floating focus:border-discord-blurple focus:outline-none"
                   />
                 </div>
 
@@ -761,8 +761,8 @@ export const UserSettingsModal: React.FC = () => {
             {/* ========================================================= */}
             {activeTab === 'security' && (
               <div className="space-y-6">
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-4">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-4">
+                  <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                     <KeyRound className="w-4 h-4 text-discord-blurple" />
                     <span>Alterar Senha</span>
                   </div>
@@ -777,7 +777,7 @@ export const UserSettingsModal: React.FC = () => {
                         required
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
-                        className="w-full bg-[#1e1f22] text-white text-sm px-3 py-2 rounded border border-[#1f2023] focus:border-discord-blurple focus:outline-none"
+                        className="w-full bg-discord-darkest text-discord-header text-sm px-3 py-2 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                       />
                     </div>
 
@@ -792,7 +792,7 @@ export const UserSettingsModal: React.FC = () => {
                           minLength={6}
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
-                          className="w-full bg-[#1e1f22] text-white text-sm px-3 py-2 rounded border border-[#1f2023] focus:border-discord-blurple focus:outline-none"
+                          className="w-full bg-discord-darkest text-discord-header text-sm px-3 py-2 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                         />
                       </div>
 
@@ -806,7 +806,7 @@ export const UserSettingsModal: React.FC = () => {
                           minLength={6}
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="w-full bg-[#1e1f22] text-white text-sm px-3 py-2 rounded border border-[#1f2023] focus:border-discord-blurple focus:outline-none"
+                          className="w-full bg-discord-darkest text-discord-header text-sm px-3 py-2 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                         />
                       </div>
                     </div>
@@ -862,9 +862,9 @@ export const UserSettingsModal: React.FC = () => {
               <div className="space-y-6">
                 
                 {/* 1. Hardware Device Selectors (Discord-Fidelity Grid) */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#232428] pb-2">
-                    <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-4">
+                  <div className="flex items-center justify-between border-b border-discord-floating pb-2">
+                    <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                       <Sliders className="w-4 h-4 text-discord-blurple" />
                       <span>Configurações de Voz & Dispositivos</span>
                     </div>
@@ -887,7 +887,7 @@ export const UserSettingsModal: React.FC = () => {
                       <select
                         value={selectedAudioInputId}
                         onChange={(e) => handleInputDeviceChange(e.target.value)}
-                        className="w-full bg-[#1e1f22] text-white text-xs px-3 py-2 rounded border border-[#232428] focus:border-discord-blurple focus:outline-none"
+                        className="w-full bg-discord-darkest text-discord-header text-xs px-3 py-2 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                       >
                         {audioInputs.length === 0 && (
                           <option value="">Microfone Padrão do Sistema</option>
@@ -903,7 +903,7 @@ export const UserSettingsModal: React.FC = () => {
                       <div className="space-y-1 pt-1">
                         <div className="flex justify-between text-[11px] text-discord-muted">
                           <span>Volume de Entrada</span>
-                          <span className="font-semibold text-white">{inputVolume}%</span>
+                          <span className="font-semibold text-discord-header">{inputVolume}%</span>
                         </div>
                         <input
                           type="range"
@@ -924,7 +924,7 @@ export const UserSettingsModal: React.FC = () => {
                       <select
                         value={selectedAudioOutputId}
                         onChange={(e) => handleOutputDeviceChange(e.target.value)}
-                        className="w-full bg-[#1e1f22] text-white text-xs px-3 py-2 rounded border border-[#232428] focus:border-discord-blurple focus:outline-none"
+                        className="w-full bg-discord-darkest text-discord-header text-xs px-3 py-2 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
                       >
                         {audioOutputs.length === 0 && (
                           <option value="">Dispositivo de Saída Padrão</option>
@@ -940,7 +940,7 @@ export const UserSettingsModal: React.FC = () => {
                       <div className="space-y-1 pt-1">
                         <div className="flex justify-between text-[11px] text-discord-muted">
                           <span>Volume de Saída</span>
-                          <span className="font-semibold text-white">{outputVolume}%</span>
+                          <span className="font-semibold text-discord-header">{outputVolume}%</span>
                         </div>
                         <input
                           type="range"
@@ -956,10 +956,10 @@ export const UserSettingsModal: React.FC = () => {
                 </div>
 
                 {/* 2. Microphone Test with Responsive RMS Volume Meter */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                      <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                         <Mic className="w-4 h-4 text-discord-green" />
                         <span>Teste de Microfone & Retorno</span>
                       </div>
@@ -991,7 +991,7 @@ export const UserSettingsModal: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="w-full bg-[#1e1f22] h-4 rounded-full overflow-hidden p-0.5 border border-[#1a1b1e] relative">
+                    <div className="w-full bg-discord-darkest h-4 rounded-full overflow-hidden p-0.5 border border-discord-floating relative">
                       <div
                         className={`h-full transition-all duration-75 rounded-full ${
                           micVolume > 60
@@ -1004,13 +1004,13 @@ export const UserSettingsModal: React.FC = () => {
                   </div>
 
                   {/* Loopback Toggle with AutoPlay Playback */}
-                  <div className="flex items-center space-x-2 pt-2 border-t border-[#232428]">
+                  <div className="flex items-center space-x-2 pt-2 border-t border-discord-floating">
                     <input
                       type="checkbox"
                       id="loopback-toggle"
                       checked={hearMyself}
                       onChange={(e) => handleToggleHearMyself(e.target.checked)}
-                      className="rounded border-[#2b2d31] bg-[#1e1f22] text-discord-blurple focus:ring-0 cursor-pointer"
+                      className="rounded border-discord-floating bg-discord-darkest text-discord-blurple focus:ring-0 cursor-pointer"
                     />
                     <label htmlFor="loopback-toggle" className="text-xs text-discord-normal cursor-pointer flex items-center space-x-1.5 font-medium">
                       <Headphones className="w-3.5 h-3.5 text-discord-blurple" />
@@ -1020,10 +1020,10 @@ export const UserSettingsModal: React.FC = () => {
                 </div>
 
                 {/* 3. Speaker Output Test (Harmonic Chime) */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                      <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                         <Volume2 className="w-4 h-4 text-discord-blurple" />
                         <span>Teste de Saída de Áudio (Fones)</span>
                       </div>
@@ -1044,9 +1044,9 @@ export const UserSettingsModal: React.FC = () => {
                 </div>
 
                 {/* 4. Noise Suppression Card (Krisp) */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] flex items-center justify-between">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating flex items-center justify-between">
                   <div className="space-y-1 pr-4">
-                    <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                    <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                       <AudioWaveform className="w-4 h-4 text-discord-green" />
                       <span>Supressão de Ruído Inteligente (Krisp)</span>
                     </div>
@@ -1071,10 +1071,10 @@ export const UserSettingsModal: React.FC = () => {
                 </div>
 
                 {/* 5. Input Sensitivity / Gate de Ruído */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                      <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                         <AudioWaveform className="w-4 h-4 text-discord-blurple" />
                         <span>Sensibilidade de Entrada (Gate de Voz)</span>
                       </div>
@@ -1111,7 +1111,7 @@ export const UserSettingsModal: React.FC = () => {
 
                   {/* Dual-Zone Real-time Meter with Threshold Needle */}
                   <div className="space-y-1.5 pt-1">
-                    <div className="relative w-full bg-[#1e1f22] h-6 rounded-lg overflow-hidden border border-[#1a1b1e] flex items-center">
+                    <div className="relative w-full bg-discord-darkest h-6 rounded-lg overflow-hidden border border-discord-floating flex items-center">
                       {(() => {
                         const currentLevel = isTestingMic ? micVolume : liveMicLevel;
                         const isSpeakingGate = currentLevel >= micSensitivity;
@@ -1158,7 +1158,7 @@ export const UserSettingsModal: React.FC = () => {
                           max="100"
                           value={micSensitivity}
                           onChange={(e) => setMicSensitivity(Number(e.target.value))}
-                          className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-discord-blurple"
+                          className="w-full h-1.5 bg-discord-darkest rounded-lg appearance-none cursor-pointer accent-discord-blurple"
                           title={`Sensibilidade: ${micSensitivity}%`}
                         />
                         <span className="text-xs font-mono text-discord-header w-10 text-right">
@@ -1170,10 +1170,10 @@ export const UserSettingsModal: React.FC = () => {
                 </div>
 
                 {/* 6. Camera Test with Device Selection */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                      <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                         <Video className="w-4 h-4 text-discord-blurple" />
                         <span>Teste de Câmera & Dispositivo de Vídeo</span>
                       </div>
@@ -1205,13 +1205,13 @@ export const UserSettingsModal: React.FC = () => {
                         value={selectedVideoInputId}
                         onChange={(e) => {
                           setSelectedVideoInputId(e.target.value);
-                          localStorage.setItem('concord_video_input_id', e.target.value);
+                          localStorage.setItem('igloochat_video_input_id', e.target.value);
                           if (isTestingCamera) {
                             stopCameraTest();
                             setTimeout(() => startCameraTest(), 200);
                           }
                         }}
-                        className="w-full bg-[#1e1f22] text-white text-xs px-3 py-2.5 rounded-lg border border-[#232428] focus:border-discord-blurple focus:outline-none appearance-none cursor-pointer pr-8"
+                        className="w-full bg-discord-darkest text-discord-header text-xs px-3 py-2.5 rounded-lg border border-discord-floating focus:border-discord-blurple focus:outline-none appearance-none cursor-pointer pr-8"
                       >
                         {videoInputDevices.length === 0 ? (
                           <option value="">Nenhuma câmera detectada pelo navegador</option>
@@ -1236,7 +1236,7 @@ export const UserSettingsModal: React.FC = () => {
 
                   {/* Camera Preview */}
                   {isTestingCamera && cameraStream && (
-                    <div className="w-full aspect-video bg-black rounded-lg overflow-hidden border border-[#1f2023] flex items-center justify-center">
+                    <div className="w-full aspect-video bg-black rounded-lg overflow-hidden border border-discord-floating flex items-center justify-center">
                       <video
                         ref={(el) => {
                           if (el && cameraStream && el.srcObject !== cameraStream) {
@@ -1253,10 +1253,10 @@ export const UserSettingsModal: React.FC = () => {
                   )}
                 </div>
 
-                {/* 5. Screen Share Test */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
+                {/* 7. Screen Share Test */}
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-xs font-bold text-white uppercase tracking-wider">
+                    <div className="flex items-center space-x-2 text-xs font-bold text-discord-header uppercase tracking-wider">
                       <Monitor className="w-4 h-4 text-discord-amber" />
                       <span>Teste de Compartilhamento de Tela</span>
                     </div>
@@ -1275,7 +1275,7 @@ export const UserSettingsModal: React.FC = () => {
                   </div>
 
                   {isTestingScreen && (
-                    <div className="w-full aspect-video bg-black rounded-lg overflow-hidden border border-[#1f2023] flex items-center justify-center">
+                    <div className="w-full aspect-video bg-black rounded-lg overflow-hidden border border-discord-floating flex items-center justify-center">
                       <video
                         ref={screenPreviewRef}
                         autoPlay
@@ -1293,8 +1293,8 @@ export const UserSettingsModal: React.FC = () => {
             {activeTab === 'appearance' && (
               <div className="space-y-6">
                 {/* Font Size */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
-                  <div className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
+                  <div className="text-xs font-bold text-discord-header uppercase tracking-wider">
                     Tamanho da Fonte das Mensagens
                   </div>
                   <p className="text-xs text-discord-muted">
@@ -1315,7 +1315,7 @@ export const UserSettingsModal: React.FC = () => {
                         className={`py-2 px-3 rounded-lg text-xs font-semibold border transition ${
                           appearanceSettings?.fontSize === item.id
                             ? 'bg-discord-blurple border-discord-blurple text-white shadow'
-                            : 'bg-[#1e1f22] border-[#2b2d31] text-discord-muted hover:text-white hover:border-gray-500'
+                            : 'bg-discord-darkest border-discord-floating text-discord-muted hover:text-white hover:border-discord-muted/50'
                         }`}
                       >
                         {item.label}
@@ -1325,8 +1325,8 @@ export const UserSettingsModal: React.FC = () => {
                 </div>
 
                 {/* Message Display Mode */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
-                  <div className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
+                  <div className="text-xs font-bold text-discord-header uppercase tracking-wider">
                     Modo de Exibição das Mensagens
                   </div>
                   <p className="text-xs text-discord-muted">
@@ -1337,10 +1337,10 @@ export const UserSettingsModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => updateAppearanceSettings({ messageDisplay: 'cozy' })}
-                      className={`p-3 rounded-xl border text-left transition flex items-start space-x-3 ${
+                      className={`p-3 rounded-xl border text-left transition flex items-start space-x-3 cursor-pointer ${
                         appearanceSettings?.messageDisplay !== 'compact'
-                          ? 'bg-discord-blurple/15 border-discord-blurple text-white shadow'
-                          : 'bg-[#1e1f22] border-[#2b2d31] text-discord-muted hover:border-gray-500'
+                          ? 'bg-discord-darkhover border-discord-blurple text-discord-header shadow'
+                          : 'bg-discord-darkest border-discord-floating text-discord-muted hover:border-discord-muted/50'
                       }`}
                     >
                       <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center mt-0.5 border-discord-blurple flex-shrink-0">
@@ -1349,7 +1349,7 @@ export const UserSettingsModal: React.FC = () => {
                         )}
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-white">Confortável (Padrão)</div>
+                        <div className="text-xs font-bold text-discord-header">Confortável (Padrão)</div>
                         <div className="text-[11px] text-discord-muted mt-0.5">
                           Visual moderno com avatares grandes e espaçamento relaxado.
                         </div>
@@ -1359,10 +1359,10 @@ export const UserSettingsModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => updateAppearanceSettings({ messageDisplay: 'compact' })}
-                      className={`p-3 rounded-xl border text-left transition flex items-start space-x-3 ${
+                      className={`p-3 rounded-xl border text-left transition flex items-start space-x-3 cursor-pointer ${
                         appearanceSettings?.messageDisplay === 'compact'
-                          ? 'bg-discord-blurple/15 border-discord-blurple text-white shadow'
-                          : 'bg-[#1e1f22] border-[#2b2d31] text-discord-muted hover:border-gray-500'
+                          ? 'bg-discord-darkhover border-discord-blurple text-discord-header shadow'
+                          : 'bg-discord-darkest border-discord-floating text-discord-muted hover:border-discord-muted/50'
                       }`}
                     >
                       <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center mt-0.5 border-discord-blurple flex-shrink-0">
@@ -1371,7 +1371,7 @@ export const UserSettingsModal: React.FC = () => {
                         )}
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-white">Compacto (IRC Style)</div>
+                        <div className="text-xs font-bold text-discord-header">Compacto (IRC Style)</div>
                         <div className="text-[11px] text-discord-muted mt-0.5">
                           Mais mensagens por tela, com horário na esquerda e sem avatares repetidos.
                         </div>
@@ -1381,46 +1381,55 @@ export const UserSettingsModal: React.FC = () => {
                 </div>
 
                 {/* Theme Mode */}
-                <div className="bg-[#2b2d31] p-4 rounded-xl border border-[#232428] space-y-3">
-                  <div className="text-xs font-bold text-white uppercase tracking-wider">
-                    Tema do Concord
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-3">
+                  <div className="text-xs font-bold text-discord-header uppercase tracking-wider">
+                    Tema do IglooChat
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
                     {[
-                      { id: 'dark', title: 'Escuro Padrão', desc: 'Visual clássico Discord #313338', color: 'bg-[#313338]', border: 'border-discord-blurple' },
-                      { id: 'midnight', title: 'Meia-noite (AMOLED)', desc: 'Preto puro #000000 ultra contraste', color: 'bg-[#000000]', border: 'border-indigo-500' },
-                      { id: 'concord', title: 'Concord Cyber', desc: 'Azul e ciano espacial profundo', color: 'bg-[#06080d]', border: 'border-sky-500' },
-                      { id: 'blurple', title: 'Roxo Neon', desc: 'Violeta cósmico com toque neon', color: 'bg-[#0d0a1a]', border: 'border-purple-500' },
-                      { id: 'emerald', title: 'Floresta Esmeralda', desc: 'Verde musgo nórdico elegante', color: 'bg-[#040d08]', border: 'border-emerald-500' },
-                      { id: 'crimson', title: 'Rubro Carmesim', desc: 'Bordeaux e escarlate imersivo', color: 'bg-[#0e0507]', border: 'border-rose-500' }
-                    ].map(t => (
-                      <button
-                        key={t.id}
-                        type="button"
-                        onClick={() => updateAppearanceSettings({ theme: t.id as any })}
-                        className={`p-3 rounded-xl border text-left transition flex flex-col justify-between space-y-2 ${
-                          appearanceSettings?.theme === t.id
-                            ? 'bg-discord-blurple/20 border-discord-blurple shadow-lg ring-1 ring-discord-blurple'
-                            : 'bg-[#1e1f22] border-[#2b2d31] hover:border-gray-500'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <span className={`w-4 h-4 rounded-full ${t.color} border border-gray-600 shadow-inner`} />
-                          <span className="text-xs font-bold text-white">{t.title}</span>
-                        </div>
-                        <span className="text-[10px] text-discord-muted">{t.desc}</span>
-                      </button>
-                    ))}
+                      { id: 'dark', title: 'Escuro Padrão', desc: 'Visual clássico Discord #313338', color: '#313338' },
+                      { id: 'midnight', title: 'Meia-noite (AMOLED)', desc: 'Preto puro #000000 ultra contraste', color: '#000000' },
+                      { id: 'igloochat', title: 'IglooChat Cyber', desc: 'Azul e ciano espacial profundo', color: '#06080d' },
+                      { id: 'blurple', title: 'Roxo Neon', desc: 'Violeta cósmico com toque neon', color: '#0d0a1a' },
+                      { id: 'emerald', title: 'Floresta Esmeralda', desc: 'Verde musgo nórdico elegante', color: '#040d08' },
+                      { id: 'crimson', title: 'Rubro Carmesim', desc: 'Bordeaux e escarlate imersivo', color: '#0e0507' }
+                    ].map(t => {
+                      const isCurrent = appearanceSettings?.theme === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => updateAppearanceSettings({ theme: t.id as any })}
+                          className={`p-3 rounded-xl border text-left transition flex flex-col justify-between space-y-2 cursor-pointer ${
+                            isCurrent
+                              ? 'bg-discord-darkhover border-discord-blurple shadow-lg ring-2 ring-discord-blurple'
+                              : 'bg-discord-darkest border-discord-floating hover:border-discord-muted/50 hover:bg-discord-darkhover/50'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <span
+                              className="w-4 h-4 rounded-full border border-white/20 shadow-inner flex-shrink-0"
+                              style={{ backgroundColor: t.color }}
+                            />
+                            <span className="text-xs font-bold text-discord-header">{t.title}</span>
+                            {isCurrent && (
+                              <span className="ml-auto text-[10px] font-bold text-discord-blurple uppercase tracking-wider">Ativo</span>
+                            )}
+                          </div>
+                          <span className="text-[10px] text-discord-muted leading-tight">{t.desc}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* Live Preview */}
-                <div className="bg-[#1e1f22] p-4 rounded-xl border border-[#2b2d31] space-y-2">
+                <div className="bg-discord-darker p-4 rounded-xl border border-discord-floating space-y-2">
                   <div className="text-[11px] font-bold text-discord-muted uppercase tracking-wider">
                     Pré-visualização em Tempo Real
                   </div>
-                  <div className="p-3 bg-[#313338] rounded-lg border border-[#232428] flex items-start space-x-3">
+                  <div className="p-3 bg-discord-dark rounded-lg border border-discord-floating flex items-start space-x-3">
                     <img
                       src={currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
                       alt={currentUser?.username}
@@ -1428,7 +1437,7 @@ export const UserSettingsModal: React.FC = () => {
                     />
                     <div>
                       <div className="flex items-baseline space-x-2">
-                        <span className="text-white font-bold text-sm">{currentUser?.username}</span>
+                        <span className="text-discord-header font-bold text-sm">{currentUser?.username}</span>
                         <span className="text-[11px] text-discord-muted">Hoje às 20:45</span>
                       </div>
                       <p className={`text-discord-normal mt-0.5 ${
@@ -1450,23 +1459,23 @@ export const UserSettingsModal: React.FC = () => {
       {/* Account Deletion Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-60 bg-black/80 flex items-center justify-center p-4 animate-in fade-in zoom-in-95">
-          <div className="bg-[#313338] w-full max-w-md rounded-2xl p-6 border border-red-500/30 shadow-2xl space-y-4">
+          <div className="bg-discord-dark w-full max-w-md rounded-2xl p-6 border border-red-500/30 shadow-2xl space-y-4">
             <div className="flex items-center space-x-2 text-discord-red font-bold text-base">
               <ShieldAlert className="w-5 h-5" />
               <span>Excluir Conta Permanentemente</span>
             </div>
 
             <p className="text-xs text-discord-muted leading-relaxed">
-              Esta ação é <span className="text-white font-bold">irreversível</span>. Todos os seus dados, amigos, mensagens e servidores serão apagados para sempre.
+              Esta ação é <span className="text-discord-header font-bold">irreversível</span>. Todos os seus dados, amigos, mensagens e servidores serão apagados para sempre.
             </p>
 
-            <div className="bg-[#1e1f22] p-3 rounded-lg border border-[#2b2d31] flex items-start space-x-2.5">
+            <div className="bg-discord-darkest p-3 rounded-lg border border-discord-floating flex items-start space-x-2.5">
               <input
                 type="checkbox"
                 id="accept-terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mt-0.5 rounded border-[#3f4147] bg-[#2b2d31] text-discord-red focus:ring-0 cursor-pointer"
+                className="mt-0.5 rounded border-discord-floating bg-discord-darker text-discord-red focus:ring-0 cursor-pointer"
               />
               <label htmlFor="accept-terms" className="text-xs text-discord-normal cursor-pointer leading-tight">
                 Estou ciente e aceito os termos de exclusão permanente da minha conta.
@@ -1477,7 +1486,7 @@ export const UserSettingsModal: React.FC = () => {
               <label className="block text-[11px] font-bold text-discord-muted uppercase tracking-wider">
                 Para confirmar, digite exatamente a frase abaixo:
               </label>
-              <div className="p-2.5 bg-[#1e1f22] rounded border border-amber-500/30 text-amber-400 font-mono text-xs font-semibold text-center select-all">
+              <div className="p-2.5 bg-discord-darkest rounded border border-amber-500/30 text-amber-400 font-mono text-xs font-semibold text-center select-all">
                 {CONFIRMATION_PHRASE}
               </div>
               <input
@@ -1485,7 +1494,7 @@ export const UserSettingsModal: React.FC = () => {
                 placeholder="Digite a frase de confirmação..."
                 value={deleteConfirmationText}
                 onChange={(e) => setDeleteConfirmationText(e.target.value)}
-                className="w-full bg-[#1e1f22] text-white text-xs px-3 py-2 rounded border border-[#2b2d31] focus:border-discord-red focus:outline-none font-mono"
+                className="w-full bg-discord-darkest text-discord-header text-xs px-3 py-2 rounded border border-discord-floating focus:border-discord-red focus:outline-none font-mono"
               />
             </div>
 

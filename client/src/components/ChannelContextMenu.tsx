@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { Channel } from '../types';
 import { 
   Edit3, 
@@ -18,7 +18,7 @@ interface ChannelContextMenuProps {
 }
 
 export const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({ channel, position, onClose }) => {
-  const { currentServer, currentUser, updateChannel, deleteChannel } = useConcord();
+  const { currentServer, currentUser, updateChannel, deleteChannel } = useIglooChat();
   const [copiedId, setCopiedId] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(channel.name);
@@ -96,10 +96,10 @@ export const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({ channel,
         <div
           ref={menuRef}
           style={{ top: `${top}px`, left: `${left}px` }}
-          className="fixed z-50 w-56 bg-[#111214] border border-[#232428] rounded-xl shadow-2xl p-1.5 select-none animate-in fade-in duration-100"
+          className="fixed z-50 w-56 bg-discord-floating border border-discord-darkhover rounded-xl shadow-2xl p-1.5 select-none animate-in fade-in duration-100"
         >
           {/* Channel Name Header */}
-          <div className="px-2.5 py-1.5 mb-1 border-b border-[#1f2023] flex items-center space-x-2 text-xs font-semibold text-discord-header truncate">
+          <div className="px-2.5 py-1.5 mb-1 border-b border-discord-darkest flex items-center space-x-2 text-xs font-semibold text-discord-header truncate">
             {channel.type === 'text' ? (
               <Hash className="w-3.5 h-3.5 text-discord-muted flex-shrink-0" />
             ) : (
@@ -121,7 +121,7 @@ export const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({ channel,
             {/* Copy Channel ID */}
             <button
               onClick={handleCopyId}
-              className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-discord-normal hover:bg-[#35373c] hover:text-white rounded-lg transition"
+              className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-discord-normal hover:bg-discord-darkhover hover:text-white rounded-lg transition"
             >
               <div className="flex items-center space-x-2.5">
                 <Copy className="w-4 h-4" />
@@ -133,7 +133,7 @@ export const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({ channel,
             {/* Delete Channel (if Server Owner or Admin) */}
             {isOwner && (
               <>
-                <div className="my-1 border-t border-[#1f2023]" />
+                <div className="my-1 border-t border-discord-darkest" />
                 <button
                   onClick={handleDelete}
                   className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-discord-red hover:bg-discord-red hover:text-white rounded-lg transition"
@@ -152,9 +152,9 @@ export const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({ channel,
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none animate-in fade-in duration-150">
           <div 
             ref={menuRef}
-            className="bg-[#313338] border border-[#232428] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl"
+            className="bg-discord-dark border border-discord-floating rounded-2xl w-full max-w-md overflow-hidden shadow-2xl"
           >
-            <div className="p-4 border-b border-[#232428] flex items-center justify-between">
+            <div className="p-4 border-b border-discord-floating flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 {channel.type === 'text' ? (
                   <Hash className="w-5 h-5 text-discord-blurple" />
@@ -185,7 +185,7 @@ export const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({ channel,
                     type="text"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className={`w-full bg-[#1e1f22] text-sm text-white py-2 pr-3 rounded-lg border border-[#232428] focus:border-discord-blurple outline-none transition ${
+                    className={`w-full bg-discord-darkest text-sm text-white py-2 pr-3 rounded-lg border border-discord-floating focus:border-discord-blurple outline-none transition ${
                       channel.type === 'text' ? 'pl-8' : 'px-3'
                     }`}
                     placeholder="Digite o novo nome do canal"

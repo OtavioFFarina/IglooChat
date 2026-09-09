@@ -1,7 +1,7 @@
-# Concord — Product Specification
+# IglooChat — Product Specification
 
 ## 1. Visão do Produto
-O **Concord** é uma plataforma de comunicação em tempo real de alta fidelidade visual e funcional inspirada diretamente na arquitetura e experiência de usuário do Discord. Ele foi projetado para oferecer comunicação cristalina com canais de voz, compartilhamento de tela com baixa latência, gestão modular de servidores e canais, além de chats diretos e privados (DMs).
+O **IglooChat** é uma plataforma de comunicação em tempo real de alta fidelidade visual e funcional inspirada diretamente na arquitetura e experiência de usuário do Discord. Ele foi projetado para oferecer comunicação cristalina com canais de voz, compartilhamento de tela com baixa latência, gestão modular de servidores e canais, além de chats diretos e privados (DMs).
 
 ## 2. Público-Alvo e Casos de Uso
 - **Desenvolvedores & Equipes de Tecnologia:** Compartilhamento de tela em tempo real para pair programming, debugging colaborativo e reuniões rápidas.
@@ -16,7 +16,7 @@ O **Concord** é uma plataforma de comunicação em tempo real de alta fidelidad
    - Modos de visualização: Grade Dinâmica (Grid View) e Foco/Teatro (Stage Mode) com suporte a tela cheia nativa.
 2. **Servidores, Canais e Convites:**
    - Criação de servidores com ícone/avatar customizável e canais padrões predefinidos.
-   - Sistema de convite por código único (ex: `concord-alpha-123`) para entrada imediata.
+   - Sistema de convite por código único (ex: `igloochat-alpha-123`) para entrada imediata.
    - Categorias colapsáveis organizando canais de texto (`#`) e canais de voz (`🔊`).
    - Lista dinâmica de canais mostrando os participantes conectados ao vivo sob o canal de voz correspondente.
 3. **Canais de Voz e Chamadas Privadas:**

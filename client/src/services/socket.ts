@@ -14,9 +14,9 @@ export const socket: Socket = io(SOCKET_URL, {
 });
 
 socket.on('connect', () => {
-  console.log('[Concord Gateway] Conectado ao servidor via Socket.IO:', socket.id);
+  console.log('[IglooChat Gateway] Conectado ao servidor via Socket.IO:', socket.id);
 });
 
 socket.on('disconnect', (reason) => {
-  console.warn('[Concord Gateway] Desconectado:', reason);
+  console.warn('[IglooChat Gateway] Desconectado:', reason);
 });

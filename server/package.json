@@ -1,7 +1,7 @@
 {
-  "name": "concord-server",
+  "name": "igloochat-server",
   "version": "1.0.0",
-  "description": "Concord Backend Server (Express, Socket.IO, WebRTC Signaling)",
+  "description": "IglooChat Backend Server (Express, Socket.IO, WebRTC Signaling)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

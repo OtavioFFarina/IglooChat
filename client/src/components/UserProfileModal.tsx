@@ -1,5 +1,5 @@
 import React from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { User } from '../types';
 import { X, Calendar, MessageSquare, PhoneCall, ShieldCheck } from 'lucide-react';
 
@@ -9,7 +9,7 @@ interface UserProfileModalProps {
 }
 
 export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClose }) => {
-  const { currentUser, openDMWithUser, startDirectCall } = useConcord();
+  const { currentUser, openDMWithUser, startDirectCall } = useIglooChat();
   const isSelf = currentUser?.id === user.id;
 
   const formatDate = (dateStr?: string) => {
@@ -27,7 +27,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
 
   return (
     <div className="fixed inset-0 z-70 bg-black/70 flex items-center justify-center p-4 animate-in fade-in duration-150">
-      <div className="bg-[#111214] w-full max-w-sm rounded-2xl overflow-hidden border border-[#232428] shadow-2xl relative select-none">
+      <div className="bg-discord-floating w-full max-w-sm rounded-2xl overflow-hidden border border-discord-darkhover shadow-2xl relative select-none">
         {/* Banner Top */}
         <div className="h-24 bg-gradient-to-r from-discord-blurple to-indigo-700 relative">
           <button
@@ -44,19 +44,19 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
             <img
               src={user.avatar}
               alt={user.username}
-              className="w-20 h-20 rounded-full object-cover ring-8 ring-[#111214] shadow-xl"
+              className="w-20 h-20 rounded-full object-cover ring-8 ring-discord-floating shadow-xl"
             />
             <span
-              className={`absolute bottom-1 right-1 w-4 h-4 rounded-full ring-4 ring-[#111214] ${
-                user.status === 'online' ? 'bg-[#23a55a]' :
-                user.status === 'idle' ? 'bg-[#f0b232]' :
-                user.status === 'dnd' ? 'bg-[#f23f43]' : 'bg-[#80848e]'
+              className={`absolute bottom-1 right-1 w-4 h-4 rounded-full ring-4 ring-discord-floating ${
+                user.status === 'online' ? 'bg-discord-green' :
+                user.status === 'idle' ? 'bg-discord-amber' :
+                user.status === 'dnd' ? 'bg-discord-red' : 'bg-discord-gray'
               }`}
             />
           </div>
 
           {/* User Names */}
-          <div className="mt-3 bg-[#1e1f22] p-4 rounded-xl border border-[#232428] space-y-3">
+          <div className="mt-3 bg-discord-darkest p-4 rounded-xl border border-discord-floating space-y-3">
             <div>
               <h3 className="text-base font-bold text-white leading-tight flex items-center space-x-1.5">
                 <span>{user.username}</span>
@@ -69,13 +69,13 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
               )}
             </div>
 
-            <div className="h-[1px] bg-[#2b2d31]" />
+            <div className="h-[1px] bg-discord-floating" />
 
             {/* Account Info */}
             <div className="space-y-2 text-xs">
               <div>
                 <span className="text-[10px] font-bold text-discord-muted uppercase tracking-wider block">
-                  MEMBRO DO CONCORD DESDE
+                  MEMBRO DO IGLOOCHAT DESDE
                 </span>
                 <div className="flex items-center space-x-1.5 text-discord-normal mt-0.5">
                   <Calendar className="w-3.5 h-3.5 text-discord-blurple" />
@@ -112,7 +112,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ user, onClos
                     startDirectCall(user.id);
                     onClose();
                   }}
-                  className="bg-[#2b2d31] hover:bg-[#35373c] text-white text-xs font-semibold py-2 px-3 rounded-lg transition flex items-center justify-center space-x-1.5 border border-[#3f4147]"
+                  className="bg-discord-darker hover:bg-discord-darkhover text-white text-xs font-semibold py-2 px-3 rounded-lg transition flex items-center justify-center space-x-1.5 border border-discord-floating"
                 >
                   <PhoneCall className="w-3.5 h-3.5" />
                   <span>Ligar</span>

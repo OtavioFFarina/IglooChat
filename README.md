@@ -1,6 +1,6 @@
-# Concord 🚀 — Discord Clone de Alta Fidelidade
+# IglooChat 🚀 — Discord Clone de Alta Fidelidade
 
-O **Concord** é uma plataforma completa de comunicação em tempo real inspirada na arquitetura, design system e experiência de usuário do **Discord**. O software conta com canais de voz, **compartilhamento de tela em tempo real via WebRTC**, criação e gestão de servidores, canais de texto e chamadas privadas (DMs).
+O **IglooChat** é uma plataforma completa de comunicação em tempo real inspirada na arquitetura, design system e experiência de usuário do **Discord**. O software conta com canais de voz, **compartilhamento de tela em tempo real via WebRTC**, criação e gestão de servidores, canais de texto e chamadas privadas (DMs).
 
 ---
 
@@ -28,7 +28,7 @@ O **Concord** é uma plataforma completa de comunicação em tempo real inspirad
 
 ### 3. Servidores (Guilds), Canais e Convites
 - **Criação de Servidores:** Modal com templates temáticos ("Criar o meu", "Jogos", "Clube Escolar", "Amigos"), upload/escolha de ícone e criação automática dos canais padrões.
-- **Sistema de Convites:** Geração de códigos de convite únicos (ex: `concord-oficial`, `dev-pair-2026`) e modal para entrar em qualquer servidor existente via código.
+- **Sistema de Convites:** Geração de códigos de convite únicos (ex: `igloochat-oficial`, `dev-pair-2026`) e modal para entrar em qualquer servidor existente via código.
 - **Canais de Texto (`#`) e Voz (`🔊`):** Organizados em categorias colapsáveis, com indicador de participantes conectados ao vivo logo abaixo do canal de voz correspondente.
 - **Lista de Membros:** Barra lateral direita categorizada por status ("DISPONÍVEL", "INDISPONÍVEL"), com popover de perfil ao clicar.
 
@@ -51,7 +51,7 @@ O **Concord** é uma plataforma completa de comunicação em tempo real inspirad
 ## 🛠️ Arquitetura Técnica
 
 ```
-ConcordProject/
+IglooChatProject/
 ├── client/                     # Frontend (React 18, TypeScript, Tailwind CSS, Lucide Icons)
 │   ├── src/
 │   │   ├── components/
@@ -70,7 +70,7 @@ ConcordProject/
 │   │   │   ├── UserSettingsModal.tsx    # Configurações de perfil e teste de mic/câmera/tela
 │   │   │   └── IncomingCallModal.tsx    # Modal de recebimento de chamada privada
 │   │   ├── context/
-│   │   │   └── ConcordContext.tsx       # Estado global reativo da aplicação
+│   │   │   └── IglooChatContext.tsx       # Estado global reativo da aplicação
 │   │   ├── services/
 │   │   │   ├── socket.ts                # Conexão Gateway Socket.IO
 │   │   │   ├── webrtc.ts                # Gerenciador de WebRTC, telas e VAD
@@ -83,11 +83,11 @@ ConcordProject/
 │   ├── socket/
 │   │   └── index.js                     # Gateway em tempo real e sinalização WebRTC
 │   ├── data/
-│   │   └── concord.json                 # Banco de dados persistente com auto-seed
+│   │   └── igloochat.json                 # Banco de dados persistente com auto-seed
 │   ├── uploads/                         # Armazenamento de anexos enviados no chat
 │   ├── db.js                            # Camada de persistência e operações de dados
 │   └── index.js                         # Ponto de entrada do servidor HTTP e Socket.IO
-├── PRODUCT.md                  # Especificação funcional e personas do Concord
+├── PRODUCT.md                  # Especificação funcional e personas do IglooChat
 ├── DESIGN.md                   # Tokens de cores oficiais do Discord e regras visuais
 └── package.json                # Orquestrador com scripts concurrentes
 ```
@@ -101,7 +101,7 @@ ConcordProject/
 - **NPM**: v9+ ou superior
 
 ### 1. Iniciar em Modo de Desenvolvimento (Hot Reload)
-No diretório raiz `/home/ofx/ProjetosDev/ConcordProject`:
+No diretório raiz `/home/ofx/ProjetosDev/IglooChatProject`:
 ```bash
 npm run dev
 ```
@@ -121,9 +121,9 @@ Basta abrir seu navegador em: **`http://localhost:3001`**
 
 ## 🧪 Roteiro de Teste do Compartilhamento de Tela & Voz
 
-1. **Abra o Concord:** Acesse `http://localhost:3001` no seu navegador.
+1. **Abra o IglooChat:** Acesse `http://localhost:3001` no seu navegador.
 2. **Entre em um Canal de Voz:**
-   - No menu lateral do servidor `Concord Hub Oficial`, clique em `🔊 Sala de Reunião & Tela`.
+   - No menu lateral do servidor `IglooChat Hub Oficial`, clique em `🔊 Sala de Reunião & Tela`.
    - Você ouvirá o som característico de conexão e o card verde **"Voz Conectada"** surgirá.
 3. **Compartilhe sua Tela:**
    - No palco de chamada, clique no botão azul **"Compartilhar Tela"**.

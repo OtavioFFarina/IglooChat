@@ -1,4 +1,4 @@
-name: Build Concord Desktop Releases
+name: Build IglooChat Desktop Releases
 
 on:
   push:

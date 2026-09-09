@@ -9,6 +9,7 @@ export interface User {
   status: UserStatus;
   status_preference?: UserStatus;
   custom_status?: string;
+  theme?: string;
   created_at?: string;
 }
 
@@ -141,7 +142,7 @@ export interface MessageContextMenuState {
 export interface AppearanceSettings {
   fontSize: 'small' | 'normal' | 'medium' | 'large';
   messageDisplay: 'cozy' | 'compact';
-  theme: 'dark' | 'midnight' | 'concord' | 'blurple' | 'emerald' | 'crimson';
+  theme: 'dark' | 'midnight' | 'igloochat' | 'blurple' | 'emerald' | 'crimson';
 }
 
 export interface MentionNotification {

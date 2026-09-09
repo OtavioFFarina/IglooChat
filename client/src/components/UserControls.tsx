@@ -1,5 +1,5 @@
 import React from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { Mic, MicOff, Headphones, VolumeX, Settings, AudioWaveform } from 'lucide-react';
 
 export const UserControls: React.FC = () => {
@@ -12,7 +12,7 @@ export const UserControls: React.FC = () => {
     openUserSettingsModal,
     isNoiseSuppressionEnabled,
     toggleNoiseSuppression
-  } = useConcord();
+  } = useIglooChat();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -26,11 +26,11 @@ export const UserControls: React.FC = () => {
   if (!currentUser) return null;
 
   return (
-    <div className="h-[52px] bg-discord-floating px-2 flex items-center justify-between border-t border-[#1a1b1e] select-none flex-shrink-0">
+    <div className="h-[52px] bg-discord-floating px-2 flex items-center justify-between border-t border-discord-darkest select-none flex-shrink-0">
       {/* User Info with Avatar & Status */}
       <div 
         onClick={openUserSettingsModal}
-        className="flex items-center space-x-2 py-1 px-1.5 rounded-md hover:bg-[#35373c] cursor-pointer transition flex-1 min-w-0 mr-1"
+        className="flex items-center space-x-2 py-1 px-1.5 rounded-md hover:bg-discord-darkhover cursor-pointer transition flex-1 min-w-0 mr-1"
       >
         <div className="relative flex-shrink-0">
           <img
@@ -56,7 +56,7 @@ export const UserControls: React.FC = () => {
         <button
           onClick={toggleMute}
           title={isMuted ? 'Desmutar Microfone' : 'Mutar Microfone'}
-          className={`p-1.5 rounded-md hover:bg-[#35373c] transition ${
+          className={`p-1.5 rounded-md hover:bg-discord-darkhover transition ${
             isMuted ? 'text-discord-red hover:text-discord-red' : 'hover:text-discord-header'
           }`}
         >
@@ -67,7 +67,7 @@ export const UserControls: React.FC = () => {
         <button
           onClick={toggleDeafen}
           title={isDeafened ? 'Ativar Som' : 'Ensurdecer'}
-          className={`p-1.5 rounded-md hover:bg-[#35373c] transition ${
+          className={`p-1.5 rounded-md hover:bg-discord-darkhover transition ${
             isDeafened ? 'text-discord-red hover:text-discord-red' : 'hover:text-discord-header'
           }`}
         >
@@ -78,7 +78,7 @@ export const UserControls: React.FC = () => {
         <button
           onClick={toggleNoiseSuppression}
           title={isNoiseSuppressionEnabled ? 'Supressão de Ruído Ativada (Krisp)' : 'Supressão de Ruído Desativada'}
-          className={`p-1.5 rounded-md hover:bg-[#35373c] transition ${
+          className={`p-1.5 rounded-md hover:bg-discord-darkhover transition ${
             isNoiseSuppressionEnabled ? 'text-discord-green' : 'text-discord-muted hover:text-discord-header'
           }`}
         >
@@ -89,7 +89,7 @@ export const UserControls: React.FC = () => {
         <button
           onClick={openUserSettingsModal}
           title="Configurações de Usuário"
-          className="p-1.5 rounded-md hover:bg-[#35373c] hover:text-discord-header transition"
+          className="p-1.5 rounded-md hover:bg-discord-darkhover hover:text-discord-header transition"
         >
           <Settings className="w-4 h-4" />
         </button>

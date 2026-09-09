@@ -103,18 +103,18 @@ export class WebRTCManager {
     this.callbacks = callbacks;
     this.setupSignalingListeners();
     try {
-      this.selectedAudioInputId = localStorage.getItem('concord_audio_input_id');
-      this.selectedAudioOutputId = localStorage.getItem('concord_audio_output_id');
-      this.selectedVideoInputId = localStorage.getItem('concord_video_input_id');
-      this.noiseSuppressionEnabled = localStorage.getItem('concord_noise_suppression') !== 'false';
-      const sens = localStorage.getItem('concord_mic_sensitivity');
+      this.selectedAudioInputId = localStorage.getItem('igloochat_audio_input_id');
+      this.selectedAudioOutputId = localStorage.getItem('igloochat_audio_output_id');
+      this.selectedVideoInputId = localStorage.getItem('igloochat_video_input_id');
+      this.noiseSuppressionEnabled = localStorage.getItem('igloochat_noise_suppression') !== 'false';
+      const sens = localStorage.getItem('igloochat_mic_sensitivity');
       if (sens !== null) this.micSensitivity = parseInt(sens, 10);
     } catch (e) {}
   }
 
   setMicSensitivity(val: number) {
     this.micSensitivity = Math.max(0, Math.min(100, val));
-    try { localStorage.setItem('concord_mic_sensitivity', val.toString()); } catch (e) {}
+    try { localStorage.setItem('igloochat_mic_sensitivity', val.toString()); } catch (e) {}
   }
 
   getMicSensitivity(): number {
@@ -139,7 +139,7 @@ export class WebRTCManager {
 
   setAudioInputDevice(deviceId: string) {
     this.selectedAudioInputId = deviceId;
-    try { localStorage.setItem('concord_audio_input_id', deviceId); } catch (e) {}
+    try { localStorage.setItem('igloochat_audio_input_id', deviceId); } catch (e) {}
     if (this.rawAudioStream) {
       this.stopMicrophone();
       this.startMicrophone();
@@ -148,12 +148,12 @@ export class WebRTCManager {
 
   setAudioOutputDevice(deviceId: string) {
     this.selectedAudioOutputId = deviceId;
-    try { localStorage.setItem('concord_audio_output_id', deviceId); } catch (e) {}
+    try { localStorage.setItem('igloochat_audio_output_id', deviceId); } catch (e) {}
   }
 
   setVideoInputDevice(deviceId: string) {
     this.selectedVideoInputId = deviceId;
-    try { localStorage.setItem('concord_video_input_id', deviceId); } catch (e) {}
+    try { localStorage.setItem('igloochat_video_input_id', deviceId); } catch (e) {}
     if (this.localVideoStream) {
       this.stopCamera();
       this.startCamera();
@@ -162,7 +162,7 @@ export class WebRTCManager {
 
   setNoiseSuppression(enabled: boolean) {
     this.noiseSuppressionEnabled = enabled;
-    try { localStorage.setItem('concord_noise_suppression', enabled ? 'true' : 'false'); } catch (e) {}
+    try { localStorage.setItem('igloochat_noise_suppression', enabled ? 'true' : 'false'); } catch (e) {}
 
     // Instantly adjust DSP filters and gate gain if active
     if (this.dspAudioCtx) {
@@ -193,7 +193,7 @@ export class WebRTCManager {
     try {
       if (this.localAudioStream) return this.localAudioStream;
 
-      const deviceId = inputDeviceId || this.selectedAudioInputId || localStorage.getItem('concord_audio_input_id');
+      const deviceId = inputDeviceId || this.selectedAudioInputId || localStorage.getItem('igloochat_audio_input_id');
       const audioConstraints: MediaTrackConstraints = {
         echoCancellation: true,
         noiseSuppression: true,
@@ -399,7 +399,7 @@ export class WebRTCManager {
   async startCamera(videoDeviceId?: string): Promise<MediaStream | null> {
     try {
       if (this.localVideoStream) return this.localVideoStream;
-      const devId = videoDeviceId || this.selectedVideoInputId || localStorage.getItem('concord_video_input_id');
+      const devId = videoDeviceId || this.selectedVideoInputId || localStorage.getItem('igloochat_video_input_id');
       const constraints: MediaStreamConstraints = {
         video: devId && devId !== 'default'
           ? { deviceId: { exact: devId }, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } }
@@ -443,18 +443,38 @@ export class WebRTCManager {
       if (this.localScreenStream) return this.localScreenStream;
 
       let stream: MediaStream;
-      const concordDesktop = (window as any).concordDesktop;
+      const igloochatDesktop = (window as any).igloochatDesktop;
+
+      // High-fidelity immersion audio settings:
+      // Enables WebRTC AEC and restrictOwnAudio so call audio (voices of peers) played
+      // by IglooChat is subtracted from desktop capture, preventing the echo of the viewer's voice.
+      const screenAudioConstraints = {
+        echoCancellation: true,            // Built-in WebRTC AEC cancels audio played by IglooChat (peers' voices)
+        restrictOwnAudio: true,            // W3C/Chromium constraint: filters out audio produced by the app itself
+        suppressLocalAudioPlayback: false, // Ensures local speaker/headphone playback continues uninterrupted for streamer
+        autoGainControl: false,            // Preserves music/game dynamic range
+        noiseSuppression: false,           // Preserves game sound effects & music fidelity
+        channelCount: 2                    // High fidelity stereo audio
+      };
 
       // If running inside Electron desktop app, capture native system sources with loopback audio
-      if (concordDesktop && typeof concordDesktop.getScreenSources === 'function') {
-        const sources = await concordDesktop.getScreenSources();
+      if (igloochatDesktop && typeof igloochatDesktop.getScreenSources === 'function') {
+        const sources = await igloochatDesktop.getScreenSources();
         const primarySource = sources && sources.length > 0 ? sources[0] : null;
         if (primarySource && primarySource.id) {
           stream = await (navigator.mediaDevices as any).getUserMedia({
             audio: {
               mandatory: {
-                chromeMediaSource: 'desktop'
-              }
+                chromeMediaSource: 'desktop',
+                echoCancellation: true
+              },
+              optional: [
+                { echoCancellation: true },
+                { googEchoCancellation: true },
+                { googAutoGainControl: false },
+                { googNoiseSuppression: false },
+                { restrictOwnAudio: true }
+              ]
             },
             video: {
               mandatory: {
@@ -474,13 +494,10 @@ export class WebRTCManager {
             video: {
               frameRate: { ideal: 30, max: 60 }
             },
-            audio: {
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false,
-              channelCount: 2
-            }
-          });
+            audio: screenAudioConstraints,
+            systemAudio: 'include',
+            selfBrowserSurface: 'exclude'
+          } as any);
         }
       } else {
         // Standard Web Browser Screen Capture
@@ -488,13 +505,10 @@ export class WebRTCManager {
           video: {
             frameRate: { ideal: 30, max: 60 }
           },
-          audio: {
-            echoCancellation: false,
-            noiseSuppression: false,
-            autoGainControl: false,
-            channelCount: 2
-          }
-        });
+          audio: screenAudioConstraints,
+          systemAudio: 'include',
+          selfBrowserSurface: 'exclude'
+        } as any);
       }
 
       this.localScreenStream = stream;

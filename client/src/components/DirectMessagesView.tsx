@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { User } from '../types';
 import { 
   MessageSquare, 
@@ -14,7 +14,8 @@ import {
   CheckCircle2, 
   AlertCircle,
   Sparkles,
-  Download
+  Download,
+  Menu
 } from 'lucide-react';
 
 export const DirectMessagesView: React.FC = () => {
@@ -28,8 +29,9 @@ export const DirectMessagesView: React.FC = () => {
     removeFriend,
     openDMWithUser,
     startDirectCall,
-    openDownloadModal
-  } = useConcord();
+    openDownloadModal,
+    toggleMobileNav
+  } = useIglooChat();
 
   if (!currentUser) return null;
 
@@ -68,7 +70,7 @@ export const DirectMessagesView: React.FC = () => {
       if (res.autoAccepted) {
         setFeedback({
           type: 'success',
-          message: 'Solicitação mútua detectada! Vocês agora são amigos no Concord!'
+          message: 'Solicitação mútua detectada! Vocês agora são amigos no IglooChat!'
         });
       } else {
         setFeedback({
@@ -118,18 +120,28 @@ export const DirectMessagesView: React.FC = () => {
   return (
     <div className="flex-1 h-full bg-discord-dark flex flex-col select-none">
       {/* Top Header Bar with Tabs */}
-      <div className="h-12 px-4 bg-discord-dark border-b border-[#1f2023] flex items-center justify-between flex-shrink-0 shadow-sm">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 pr-4 border-r border-[#3f4147] text-discord-header font-bold text-sm">
+      <div className="h-12 px-3 sm:px-4 bg-discord-dark border-b border-discord-darkest flex items-center justify-between flex-shrink-0 shadow-sm overflow-hidden">
+        <div className="flex items-center space-x-2 sm:space-x-4 overflow-x-auto scrollbar-none py-1 min-w-0 flex-1 mr-2">
+          {/* Mobile Drawer Trigger */}
+          <button
+            onClick={toggleMobileNav}
+            title="Abrir Menu de Servidores e Canais"
+            className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-discord-darkhover text-discord-header transition flex-shrink-0 active:scale-95 flex items-center justify-center"
+            aria-label="Abrir Menu de Servidores"
+          >
+            <Menu className="w-5 h-5 text-discord-header" />
+          </button>
+
+          <div className="flex items-center space-x-2 pr-3 sm:pr-4 border-r border-discord-floating text-discord-header font-bold text-sm flex-shrink-0">
             <Users className="w-5 h-5 text-discord-muted" />
-            <span>Amigos</span>
+            <span className="hidden sm:inline">Amigos</span>
           </div>
 
-          <div className="flex items-center space-x-2 text-sm">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 text-xs sm:text-sm flex-nowrap flex-shrink-0">
             <button
               onClick={() => { setTab('online'); setFeedback(null); }}
-              className={`px-3 py-1 rounded font-medium transition ${
-                tab === 'online' ? 'bg-[#35373c] text-white' : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-white'
+              className={`px-2.5 sm:px-3 py-1 rounded font-medium transition whitespace-nowrap ${
+                tab === 'online' ? 'bg-discord-darkhover text-white' : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-white'
               }`}
             >
               Disponível ({onlineFriends.length})
@@ -137,8 +149,8 @@ export const DirectMessagesView: React.FC = () => {
 
             <button
               onClick={() => { setTab('all'); setFeedback(null); }}
-              className={`px-3 py-1 rounded font-medium transition ${
-                tab === 'all' ? 'bg-[#35373c] text-white' : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-white'
+              className={`px-2.5 sm:px-3 py-1 rounded font-medium transition whitespace-nowrap ${
+                tab === 'all' ? 'bg-discord-darkhover text-white' : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-white'
               }`}
             >
               Todos ({friends.length})
@@ -146,13 +158,13 @@ export const DirectMessagesView: React.FC = () => {
 
             <button
               onClick={() => { setTab('pending'); setFeedback(null); }}
-              className={`px-3 py-1 rounded font-medium transition flex items-center space-x-1.5 ${
-                tab === 'pending' ? 'bg-[#35373c] text-white' : 'text-discord-muted hover:bg-[#35373c]/50 hover:text-white'
+              className={`px-2.5 sm:px-3 py-1 rounded font-medium transition flex items-center space-x-1 whitespace-nowrap ${
+                tab === 'pending' ? 'bg-discord-darkhover text-white' : 'text-discord-muted hover:bg-discord-darkhover/50 hover:text-white'
               }`}
             >
               <span>Pendentes</span>
               {pendingIncoming.length > 0 && (
-                <span className="bg-discord-red text-white text-[11px] font-extrabold px-1.5 py-0.2 rounded-full">
+                <span className="bg-discord-red text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">
                   {pendingIncoming.length}
                 </span>
               )}
@@ -160,11 +172,11 @@ export const DirectMessagesView: React.FC = () => {
 
             <button
               onClick={() => { setTab('add'); setFeedback(null); }}
-              className={`px-3 py-1 rounded font-semibold transition flex items-center space-x-1.5 ${
+              className={`px-2.5 sm:px-3 py-1 rounded font-semibold transition flex items-center space-x-1 whitespace-nowrap ${
                 tab === 'add' ? 'bg-discord-green text-white shadow' : 'text-discord-green hover:bg-discord-green/10'
               }`}
             >
-              <UserPlus className="w-4 h-4" />
+              <UserPlus className="w-3.5 h-3.5" />
               <span>Adicionar Amigo</span>
             </button>
           </div>
@@ -175,7 +187,7 @@ export const DirectMessagesView: React.FC = () => {
           <button
             onClick={openDownloadModal}
             title="Baixar Aplicativo para PC ou Celular"
-            className="p-1.5 rounded hover:bg-[#35373c] hover:text-white text-discord-muted transition flex items-center space-x-1.5 text-xs"
+            className="p-1.5 rounded hover:bg-discord-darkhover hover:text-white text-discord-muted transition flex items-center space-x-1.5 text-xs"
           >
             <Download className="w-4 h-4 text-discord-blurple" />
             <span className="font-semibold text-discord-normal hover:text-white">Baixar App</span>
@@ -197,7 +209,7 @@ export const DirectMessagesView: React.FC = () => {
                 placeholder="Buscar amigos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#1e1f22] text-white placeholder-discord-muted px-3 py-2 pl-9 rounded-md text-sm border border-[#232428] focus:border-discord-blurple focus:outline-none transition"
+                className="w-full bg-discord-darkest text-white placeholder-discord-muted px-3 py-2 pl-9 rounded-md text-sm border border-discord-floating focus:border-discord-blurple focus:outline-none transition"
               />
               <Search className="w-4 h-4 text-discord-muted absolute left-3 top-2.5" />
               {searchQuery && (
@@ -216,12 +228,12 @@ export const DirectMessagesView: React.FC = () => {
 
             {activeFriendList.length === 0 ? (
               <div className="py-16 flex flex-col items-center justify-center text-center space-y-3 select-none">
-                <div className="w-16 h-16 rounded-full bg-[#2b2d31] flex items-center justify-center text-discord-muted">
+                <div className="w-16 h-16 rounded-full bg-discord-darker border border-discord-floating flex items-center justify-center text-discord-muted">
                   <Users className="w-8 h-8" />
                 </div>
                 <div className="text-white font-semibold text-base">
                   {friends.length === 0 
-                    ? 'Nenhum amigo no Concord ainda!' 
+                    ? 'Nenhum amigo no IglooChat ainda!' 
                     : 'Nenhum amigo encontrado nesta busca.'}
                 </div>
                 <p className="text-xs text-discord-muted max-w-sm">
@@ -243,7 +255,7 @@ export const DirectMessagesView: React.FC = () => {
                 {activeFriendList.map((friend) => (
                   <div
                     key={friend.id}
-                    className="flex items-center justify-between p-2.5 rounded-lg hover:bg-[#35373c]/50 border-t border-[#2b2d31]/40 group transition"
+                    className="flex items-center justify-between p-2.5 rounded-lg hover:bg-discord-darkhover/50 border-t border-discord-floating/30 group transition"
                   >
                     <div className="flex items-center space-x-3 truncate">
                       <div className="relative flex-shrink-0">
@@ -274,7 +286,7 @@ export const DirectMessagesView: React.FC = () => {
                       <button
                         onClick={() => handleStartDM(friend)}
                         title="Abrir Mensagem Direta"
-                        className="p-2 rounded-full bg-[#2b2d31] hover:bg-[#35373c] text-discord-normal hover:text-white transition"
+                        className="p-2 rounded-full bg-discord-darker hover:bg-discord-darkhover border border-discord-floating/30 text-discord-normal hover:text-white transition"
                       >
                         <MessageSquare className="w-4 h-4" />
                       </button>
@@ -282,13 +294,13 @@ export const DirectMessagesView: React.FC = () => {
                       <button
                         onClick={() => handleStartCall(friend)}
                         title="Iniciar Chamada com Compartilhamento de Tela"
-                        className="p-2 rounded-full bg-[#2b2d31] hover:bg-[#35373c] text-discord-green hover:text-white transition"
+                        className="p-2 rounded-full bg-discord-darker hover:bg-discord-darkhover border border-discord-floating/30 text-discord-green hover:text-white transition"
                       >
                         <Phone className="w-4 h-4" />
                       </button>
 
                       {confirmRemoveId === friend.id ? (
-                        <div className="flex items-center space-x-1 bg-[#1e1f22] p-1 rounded-lg border border-red-500/30 animate-in fade-in">
+                        <div className="flex items-center space-x-1 bg-discord-darkest p-1 rounded-lg border border-red-500/30 animate-in fade-in">
                           <button
                             onClick={async () => {
                               await removeFriend(friend.id);
@@ -309,7 +321,7 @@ export const DirectMessagesView: React.FC = () => {
                         <button
                           onClick={() => setConfirmRemoveId(friend.id)}
                           title="Remover Amigo"
-                          className="p-2 rounded-full bg-[#2b2d31] hover:bg-red-500/20 text-discord-muted hover:text-red-400 transition"
+                          className="p-2 rounded-full bg-discord-darker hover:bg-red-500/20 border border-discord-floating/30 text-discord-muted hover:text-red-400 transition"
                         >
                           <UserX className="w-4 h-4" />
                         </button>
@@ -329,7 +341,7 @@ export const DirectMessagesView: React.FC = () => {
           <div className="max-w-4xl space-y-6">
             {totalPending === 0 ? (
               <div className="py-16 flex flex-col items-center justify-center text-center space-y-3 select-none">
-                <div className="w-16 h-16 rounded-full bg-[#2b2d31] flex items-center justify-center text-discord-muted">
+                <div className="w-16 h-16 rounded-full bg-discord-darker border border-discord-floating flex items-center justify-center text-discord-muted">
                   <Clock className="w-8 h-8" />
                 </div>
                 <div className="text-white font-semibold text-base">Nenhuma solicitação pendente</div>
@@ -349,7 +361,7 @@ export const DirectMessagesView: React.FC = () => {
                       {pendingIncoming.map((req) => (
                         <div
                           key={req.id}
-                          className="flex items-center justify-between p-2.5 rounded-lg bg-[#2b2d31]/40 hover:bg-[#35373c]/50 border border-[#2b2d31] transition"
+                          className="flex items-center justify-between p-2.5 rounded-lg bg-discord-darker hover:bg-discord-darkhover/50 border border-discord-floating transition"
                         >
                           <div className="flex items-center space-x-3">
                             <img
@@ -372,14 +384,14 @@ export const DirectMessagesView: React.FC = () => {
                             <button
                               onClick={() => acceptFriendRequest(req.id)}
                               title="Aceitar Pedido"
-                              className="w-9 h-9 rounded-full bg-[#2b2d31] hover:bg-discord-green text-discord-muted hover:text-white flex items-center justify-center transition shadow"
+                              className="w-9 h-9 rounded-full bg-discord-darkest hover:bg-discord-green text-discord-muted hover:text-white flex items-center justify-center transition shadow"
                             >
                               <Check className="w-5 h-5" />
                             </button>
                             <button
                               onClick={() => rejectFriendRequest(req.id)}
                               title="Recusar Pedido"
-                              className="w-9 h-9 rounded-full bg-[#2b2d31] hover:bg-discord-red text-discord-muted hover:text-white flex items-center justify-center transition shadow"
+                              className="w-9 h-9 rounded-full bg-discord-darkest hover:bg-discord-red text-discord-muted hover:text-white flex items-center justify-center transition shadow"
                             >
                               <X className="w-5 h-5" />
                             </button>
@@ -400,7 +412,7 @@ export const DirectMessagesView: React.FC = () => {
                       {pendingOutgoing.map((req) => (
                         <div
                           key={req.id}
-                          className="flex items-center justify-between p-2.5 rounded-lg bg-[#2b2d31]/30 hover:bg-[#35373c]/40 border border-[#2b2d31]/60 transition"
+                          className="flex items-center justify-between p-2.5 rounded-lg bg-discord-darker hover:bg-discord-darkhover/40 border border-discord-floating transition"
                         >
                           <div className="flex items-center space-x-3">
                             <img
@@ -422,7 +434,7 @@ export const DirectMessagesView: React.FC = () => {
                           <button
                             onClick={() => rejectFriendRequest(req.id)}
                             title="Cancelar Solicitação"
-                            className="w-9 h-9 rounded-full bg-[#2b2d31] hover:bg-discord-red text-discord-muted hover:text-white flex items-center justify-center transition"
+                            className="w-9 h-9 rounded-full bg-discord-darkest hover:bg-discord-red text-discord-muted hover:text-white flex items-center justify-center transition"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -451,13 +463,13 @@ export const DirectMessagesView: React.FC = () => {
             </div>
 
             <form onSubmit={handleSendFriendRequest} className="space-y-3">
-              <div className="bg-[#1e1f22] p-3 rounded-lg flex items-center border border-[#2b2d31] focus-within:border-discord-blurple transition shadow-inner">
+              <div className="bg-discord-darkest p-3 rounded-lg flex items-center border border-discord-floating focus-within:border-discord-blurple transition shadow-inner">
                 <input
                   type="text"
                   placeholder="Insira um Nome de Usuário#0000"
                   value={friendTagInput}
                   onChange={(e) => setFriendTagInput(e.target.value)}
-                  className="bg-transparent flex-1 text-sm text-white focus:outline-none placeholder-[#80848e]"
+                  className="bg-transparent flex-1 text-sm text-white focus:outline-none placeholder-discord-muted"
                   autoFocus
                 />
                 <button
@@ -495,7 +507,7 @@ export const DirectMessagesView: React.FC = () => {
             </form>
 
             {/* User tag banner */}
-            <div className="p-4 rounded-xl bg-[#2b2d31]/40 border border-[#2b2d31] flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-discord-darker border border-discord-floating flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-full bg-discord-blurple/20 flex items-center justify-center text-discord-blurple">
                   <Sparkles className="w-5 h-5" />
@@ -516,7 +528,7 @@ export const DirectMessagesView: React.FC = () => {
                     message: `Tag "${currentUser.username}#${currentUser.discriminator}" copiada para a área de transferência!`
                   });
                 }}
-                className="bg-[#1e1f22] hover:bg-[#35373c] text-xs font-semibold text-discord-normal hover:text-white px-3 py-1.5 rounded transition border border-[#232428]"
+                className="bg-discord-darkest hover:bg-discord-darkhover text-xs font-semibold text-discord-normal hover:text-white px-3 py-1.5 rounded transition border border-discord-floating"
               >
                 Copiar Minha Tag
               </button>

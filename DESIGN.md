@@ -1,4 +1,4 @@
-# Concord — Design System & Tokens
+# IglooChat — Design System & Tokens
 
 ## 1. Tokens de Cores (Paleta Discord Oficial)
 ```css

@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('concordDesktop', {
+contextBridge.exposeInMainWorld('igloochatDesktop', {
   isElectron: true,
   platform: process.platform,
   getScreenSources: async (opts) => {

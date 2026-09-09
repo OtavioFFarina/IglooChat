@@ -19,7 +19,7 @@ import { socket } from '../services/socket';
 import { WebRTCManager, WebRTCCallbacks } from '../services/webrtc';
 import { audioFX } from '../services/audioEffects';
 
-interface ConcordContextType {
+interface IglooChatContextType {
   currentUser: User | null;
   token: string | null;
   isAuthenticated: boolean;
@@ -198,11 +198,11 @@ interface ConcordContextType {
   closeServerSettings: () => void;
 }
 
-const ConcordContext = createContext<ConcordContextType | null>(null);
+const IglooChatContext = createContext<IglooChatContextType | null>(null);
 
-export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('concord_token'));
+  const [token, setToken] = useState<string | null>(localStorage.getItem('igloochat_token'));
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   const [allUsers, setAllUsers] = useState<User[]>([]);
@@ -360,11 +360,27 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setMentionNotifications(prev => prev.filter(n => n.id !== id));
   };
 
-  // Appearance Settings (Persisted in localStorage)
+  // Appearance Settings (Persisted in localStorage & Server Profile)
   const [appearanceSettings, setAppearanceSettings] = useState<AppearanceSettings>(() => {
     try {
-      const saved = localStorage.getItem('concord_appearance');
-      if (saved) return JSON.parse(saved);
+      const savedTheme = localStorage.getItem('igloochat_theme');
+      const savedApp = localStorage.getItem('igloochat_appearance');
+      if (savedApp) {
+        const parsed = JSON.parse(savedApp);
+        if (savedTheme) parsed.theme = savedTheme;
+        if (parsed.theme) {
+          document.documentElement.setAttribute('data-theme', parsed.theme);
+        }
+        return parsed;
+      }
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        return {
+          fontSize: 'normal',
+          messageDisplay: 'cozy',
+          theme: savedTheme as any
+        };
+      }
     } catch (e) {}
     return {
       fontSize: 'normal',
@@ -376,9 +392,20 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const updateAppearanceSettings = (updates: Partial<AppearanceSettings>) => {
     setAppearanceSettings(prev => {
       const next = { ...prev, ...updates };
-      localStorage.setItem('concord_appearance', JSON.stringify(next));
+      try {
+        localStorage.setItem('igloochat_appearance', JSON.stringify(next));
+        if (next.theme) {
+          localStorage.setItem('igloochat_theme', next.theme);
+          document.documentElement.setAttribute('data-theme', next.theme);
+        }
+      } catch (e) {}
       return next;
     });
+
+    // Also persist theme to user profile in backend if logged in
+    if (updates.theme && currentUser?.id) {
+      updateUserProfile({ theme: updates.theme }).catch(console.error);
+    }
   };
 
   // Mobile Navigation Drawer
@@ -393,7 +420,7 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Noise Suppression
   const [isNoiseSuppressionEnabled, setIsNoiseSuppressionEnabled] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('concord_noise_suppression') !== 'false';
+      return localStorage.getItem('igloochat_noise_suppression') !== 'false';
     } catch (e) {
       return true;
     }
@@ -408,7 +435,7 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Microphone Sensitivity (0-100 threshold)
   const [micSensitivity, setMicSensitivityState] = useState<number>(() => {
     try {
-      const saved = localStorage.getItem('concord_mic_sensitivity');
+      const saved = localStorage.getItem('igloochat_mic_sensitivity');
       return saved !== null ? parseInt(saved, 10) : 40;
     } catch (e) {
       return 40;
@@ -477,7 +504,7 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Helper for authenticated headers
   const getAuthHeaders = (): Record<string, string> => {
-    const activeToken = token || localStorage.getItem('concord_token');
+    const activeToken = token || localStorage.getItem('igloochat_token');
     return activeToken
       ? { Authorization: `Bearer ${activeToken}`, 'Content-Type': 'application/json' }
       : { 'Content-Type': 'application/json' };
@@ -486,7 +513,7 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Check existing session on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const storedToken = localStorage.getItem('concord_token');
+      const storedToken = localStorage.getItem('igloochat_token');
       if (!storedToken) {
         setIsLoadingAuth(false);
         return;
@@ -499,8 +526,19 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
           const data = await res.json();
           setCurrentUser(data.user);
           setToken(data.token);
+          if (data.user?.theme) {
+            setAppearanceSettings(prev => {
+              const next = { ...prev, theme: data.user.theme };
+              try {
+                localStorage.setItem('igloochat_appearance', JSON.stringify(next));
+                localStorage.setItem('igloochat_theme', data.user.theme);
+              } catch (e) {}
+              return next;
+            });
+            document.documentElement.setAttribute('data-theme', data.user.theme);
+          }
         } else {
-          localStorage.removeItem('concord_token');
+          localStorage.removeItem('igloochat_token');
           setCurrentUser(null);
           setToken(null);
         }
@@ -925,7 +963,14 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (!res.ok) return data.error || 'Falha ao registrar.';
       setCurrentUser(data.user);
       setToken(data.token);
-      localStorage.setItem('concord_token', data.token);
+      localStorage.setItem('igloochat_token', data.token);
+      if (appearanceSettings.theme) {
+        fetch(`/api/users/${data.user.id}`, {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${data.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ theme: appearanceSettings.theme })
+        }).catch(console.error);
+      }
       return null;
     } catch (err: any) {
       return err.message || 'Erro ao conectar ao servidor.';
@@ -943,7 +988,18 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (!res.ok) return data.error || 'Falha ao fazer login.';
       setCurrentUser(data.user);
       setToken(data.token);
-      localStorage.setItem('concord_token', data.token);
+      localStorage.setItem('igloochat_token', data.token);
+      if (data.user?.theme) {
+        setAppearanceSettings(prev => {
+          const next = { ...prev, theme: data.user.theme };
+          try {
+            localStorage.setItem('igloochat_appearance', JSON.stringify(next));
+            localStorage.setItem('igloochat_theme', data.user.theme);
+          } catch (e) {}
+          return next;
+        });
+        document.documentElement.setAttribute('data-theme', data.user.theme);
+      }
       return null;
     } catch (err: any) {
       return err.message || 'Erro ao conectar ao servidor.';
@@ -960,7 +1016,7 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     } catch (e) {}
     leaveVoiceChannel();
-    localStorage.removeItem('concord_token');
+    localStorage.removeItem('igloochat_token');
     setCurrentUser(null);
     setToken(null);
     setServers([]);
@@ -1851,7 +1907,7 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   return (
-    <ConcordContext.Provider
+    <IglooChatContext.Provider
       value={{
         currentUser,
         token,
@@ -1986,14 +2042,14 @@ export const ConcordProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }}
     >
       {children}
-    </ConcordContext.Provider>
+    </IglooChatContext.Provider>
   );
 };
 
-export const useConcord = () => {
-  const context = useContext(ConcordContext);
+export const useIglooChat = () => {
+  const context = useContext(IglooChatContext);
   if (!context) {
-    throw new Error('useConcord deve ser usado dentro de um ConcordProvider');
+    throw new Error('useIglooChat deve ser usado dentro de um IglooChatProvider');
   }
   return context;
 };

@@ -1,19 +1,19 @@
 {
-  "name": "concord-desktop",
+  "name": "igloochat-desktop",
   "version": "1.0.0",
-  "description": "Concord Desktop App with System Screen & Audio Capture",
+  "description": "IglooChat Desktop App with System Screen & Audio Capture",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "keywords": ["concord", "discord", "webrtc", "electron"],
-  "author": "Concord Team",
+  "keywords": ["igloochat", "discord", "webrtc", "electron"],
+  "author": "IglooChat Team",
   "license": "MIT",
   "build": {
-    "appId": "com.concord.desktop",
-    "productName": "Concord",
+    "appId": "com.igloochat.desktop",
+    "productName": "IglooChat",
     "directories": {
       "output": "dist"
     },

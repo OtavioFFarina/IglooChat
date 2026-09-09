@@ -1,7 +1,7 @@
 {
-  "name": "concord",
+  "name": "igloochat",
   "version": "1.0.0",
-  "description": "Concord - Discord Clone with Screen Sharing, Voice Calls, Servers and Private Chat",
+  "description": "IglooChat - Discord Clone with Screen Sharing, Voice Calls, Servers and Private Chat",
   "private": true,
   "scripts": {
     "server": "node server/index.js",
@@ -9,6 +9,7 @@
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run server\" \"npm run client\"",
     "build": "cd client && npm run build",
     "start": "NODE_ENV=production node server/index.js",
+    "online": "./start_online.sh",
     "desktop": "cd electron && (test -d node_modules || npm install) && npm start",
     "desktop:install": "cd electron && npm install"
   },

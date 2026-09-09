@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { User } from '../types';
 import { 
   User as UserIcon, 
@@ -34,7 +34,7 @@ export const UserContextMenu: React.FC<UserContextMenuProps> = ({ user, position
     toggleUserMutedLocally,
     toggleUserVideoLocally,
     openProfileModal
-  } = useConcord();
+  } = useIglooChat();
 
   const [copiedId, setCopiedId] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -112,17 +112,17 @@ export const UserContextMenu: React.FC<UserContextMenuProps> = ({ user, position
     <div
       ref={menuRef}
       style={{ left: Math.max(10, left), top: Math.max(10, top) }}
-      className="fixed z-70 w-56 bg-[#111214] border border-[#232428] rounded-xl shadow-2xl p-1.5 text-xs text-[#dbdee1] select-none animate-in fade-in zoom-in-95 duration-100"
+      className="fixed z-70 w-56 bg-discord-floating border border-discord-darkhover rounded-xl shadow-2xl p-1.5 text-xs text-discord-normal select-none animate-in fade-in zoom-in-95 duration-100"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header Profile Peek */}
-      <div className="flex items-center space-x-2.5 px-2 py-2 border-b border-[#1f2023] mb-1">
+      <div className="flex items-center space-x-2.5 px-2 py-2 border-b border-discord-darkest mb-1">
         <div className="relative">
           <img src={user.avatar} alt={user.username} className="w-8 h-8 rounded-full object-cover" />
-          <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#111214] ${
-            user.status === 'online' ? 'bg-[#23a55a]' :
-            user.status === 'idle' ? 'bg-[#f0b232]' :
-            user.status === 'dnd' ? 'bg-[#f23f43]' : 'bg-[#80848e]'
+          <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-discord-floating ${
+            user.status === 'online' ? 'bg-discord-green' :
+            user.status === 'idle' ? 'bg-discord-amber' :
+            user.status === 'dnd' ? 'bg-discord-red' : 'bg-discord-gray'
           }`} />
         </div>
         <div className="truncate flex-1">
@@ -172,10 +172,10 @@ export const UserContextMenu: React.FC<UserContextMenuProps> = ({ user, position
             <PhoneCall className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
           </button>
 
-          <div className="h-[1px] bg-[#1f2023] my-1" />
+          <div className="h-[1px] bg-discord-darkest my-1" />
 
           {/* User Volume Slider (0% - 200%) */}
-          <div className="px-2.5 py-2 space-y-1.5 bg-[#18191c] rounded-lg border border-[#1f2023] my-1">
+          <div className="px-2.5 py-2 space-y-1.5 bg-discord-darker rounded-lg border border-discord-darkest my-1">
             <div className="flex items-center justify-between text-[11px] font-semibold text-white">
               <span className="flex items-center space-x-1.5">
                 <Volume2 className="w-3.5 h-3.5 text-discord-blurple" />
@@ -193,12 +193,12 @@ export const UserContextMenu: React.FC<UserContextMenuProps> = ({ user, position
               step="1"
               value={settings.volume}
               onChange={(e) => setUserVolume(user.id, parseInt(e.target.value))}
-              className="w-full h-1.5 bg-[#2b2d31] rounded-lg appearance-none cursor-pointer accent-discord-blurple"
+              className="w-full h-1.5 bg-discord-darkest rounded-lg appearance-none cursor-pointer accent-discord-blurple"
             />
           </div>
 
           {/* Mute Locally Checkbox */}
-          <label className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-[#1f2023] transition cursor-pointer text-left">
+          <label className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-discord-darkhover transition cursor-pointer text-left">
             <span className="flex items-center space-x-2">
               <VolumeX className="w-3.5 h-3.5 text-discord-red" />
               <span>Silenciar</span>
@@ -207,12 +207,12 @@ export const UserContextMenu: React.FC<UserContextMenuProps> = ({ user, position
               type="checkbox"
               checked={settings.muted}
               onChange={() => toggleUserMutedLocally(user.id)}
-              className="rounded border-[#3f4147] bg-[#2b2d31] text-discord-red focus:ring-0 cursor-pointer"
+              className="rounded border-discord-floating bg-discord-darkest text-discord-red focus:ring-0 cursor-pointer"
             />
           </label>
 
           {/* Disable Video Locally Checkbox */}
-          <label className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-[#1f2023] transition cursor-pointer text-left">
+          <label className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-discord-darkhover transition cursor-pointer text-left">
             <span className="flex items-center space-x-2">
               <VideoOff className="w-3.5 h-3.5 text-discord-muted" />
               <span>Desativar vídeo</span>
@@ -221,11 +221,11 @@ export const UserContextMenu: React.FC<UserContextMenuProps> = ({ user, position
               type="checkbox"
               checked={settings.videoDisabled}
               onChange={() => toggleUserVideoLocally(user.id)}
-              className="rounded border-[#3f4147] bg-[#2b2d31] text-discord-blurple focus:ring-0 cursor-pointer"
+              className="rounded border-discord-floating bg-discord-darkest text-discord-blurple focus:ring-0 cursor-pointer"
             />
           </label>
 
-          <div className="h-[1px] bg-[#1f2023] my-1" />
+          <div className="h-[1px] bg-discord-darkest my-1" />
 
           {/* Add / Remove Friend */}
           <button
@@ -246,12 +246,12 @@ export const UserContextMenu: React.FC<UserContextMenuProps> = ({ user, position
         </>
       )}
 
-      <div className="h-[1px] bg-[#1f2023] my-1" />
+      <div className="h-[1px] bg-discord-darkest my-1" />
 
       {/* Copy User ID */}
       <button
         onClick={handleCopyId}
-        className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-[#1f2023] transition text-discord-muted hover:text-white text-left"
+        className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-discord-darkhover transition text-discord-muted hover:text-white text-left"
       >
         <span>{copiedId ? 'Copiado!' : 'Copiar ID do usuário'}</span>
         {copiedId ? (

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useConcord } from '../context/ConcordContext';
+import { useIglooChat } from '../context/IglooChatContext';
 import { X, Compass } from 'lucide-react';
 
 export const JoinServerModal: React.FC = () => {
-  const { isJoinServerOpen, closeJoinServerModal, joinServer } = useConcord();
+  const { isJoinServerOpen, closeJoinServerModal, joinServer } = useIglooChat();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ export const JoinServerModal: React.FC = () => {
     const success = await joinServer(code);
     setLoading(false);
     if (!success) {
-      setError('Código de convite inválido ou expirado. Tente "concord-oficial" ou "dev-pair-2026".');
+      setError('Código de convite inválido ou expirado. Tente "igloochat-oficial" ou "dev-pair-2026".');
     } else {
       setCode('');
     }
@@ -27,7 +27,7 @@ export const JoinServerModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 select-none">
-      <div className="bg-[#313338] border border-[#232428] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95">
+      <div className="bg-discord-dark border border-discord-floating rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95">
         <div className="p-6 text-center relative pb-2">
           <button
             onClick={closeJoinServerModal}
@@ -54,19 +54,19 @@ export const JoinServerModal: React.FC = () => {
               required
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              placeholder="Ex: concord-oficial ou dev-pair-2026"
-              className="w-full bg-[#1e1f22] text-sm text-white px-3.5 py-2.5 rounded-lg border border-[#2b2d31] focus:border-discord-green focus:outline-none"
+              placeholder="Ex: igloochat-oficial ou dev-pair-2026"
+              className="w-full bg-discord-darkest text-sm text-white px-3.5 py-2.5 rounded-lg border border-discord-floating focus:border-discord-green focus:outline-none"
             />
             {error && <div className="text-xs text-discord-red mt-1.5">{error}</div>}
           </div>
 
-          <div className="text-xs text-discord-muted space-y-1 bg-[#1e1f22] p-3 rounded-lg border border-[#2b2d31]">
+          <div className="text-xs text-discord-muted space-y-1 bg-discord-darkest p-3 rounded-lg border border-discord-floating">
             <div className="font-semibold text-discord-normal">Convites públicos de exemplo:</div>
-            <div>• <code className="text-white font-mono bg-[#2b2d31] px-1 rounded cursor-pointer" onClick={() => setCode('concord-oficial')}>concord-oficial</code> (Hub Geral)</div>
-            <div>• <code className="text-white font-mono bg-[#2b2d31] px-1 rounded cursor-pointer" onClick={() => setCode('dev-pair-2026')}>dev-pair-2026</code> (Pair Programming)</div>
+            <div>• <code className="text-white font-mono bg-discord-darker px-1 rounded cursor-pointer" onClick={() => setCode('igloochat-oficial')}>igloochat-oficial</code> (Hub Geral)</div>
+            <div>• <code className="text-white font-mono bg-discord-darker px-1 rounded cursor-pointer" onClick={() => setCode('dev-pair-2026')}>dev-pair-2026</code> (Pair Programming)</div>
           </div>
 
-          <div className="bg-[#2b2d31] -mx-6 -mb-6 p-4 flex justify-between items-center mt-6">
+          <div className="bg-discord-darker border-t border-discord-floating -mx-6 -mb-6 p-4 flex justify-between items-center mt-6">
             <button
               type="button"
               onClick={closeJoinServerModal}
