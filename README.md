@@ -1,6 +1,8 @@
-# IglooChat 🚀 — Discord Clone de Alta Fidelidade
+# IglooChat 🚀 — Aplicativo de Conversas & Transmissão de Tela em Tempo Real
 
-O **IglooChat** é uma plataforma completa de comunicação em tempo real inspirada na arquitetura, design system e experiência de usuário do **Discord**. O software conta com canais de voz, **compartilhamento de tela em tempo real via WebRTC**, criação e gestão de servidores, canais de texto e chamadas privadas (DMs).
+> **Desenvolvido primariamente para uso pessoal no dia a dia, mas projetado para ser compartilhado com a comunidade e ajudar qualquer pessoa que busque uma plataforma leve, sem fricção e de alta performance para conversas por voz, texto e streaming de tela.**
+
+O **IglooChat** é uma plataforma completa de comunicação em tempo real inspirada na arquitetura, design system e experiência de usuário do **Discord**. O software conta com canais de voz de baixa latência, **compartilhamento de tela em tempo real via WebRTC** (1080p 60fps), criação e gestão de servidores, canais de texto e chamadas privadas (DMs).
 
 ---
 
