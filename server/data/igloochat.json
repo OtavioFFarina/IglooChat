@@ -15,7 +15,7 @@
       "custom_status": "Os D",
       "created_at": "2026-09-05T19:23:35.029Z",
       "status_preference": "online",
-      "theme": "igloochat"
+      "theme": "crimson"
     },
     {
       "id": "user_053057d8",
@@ -106,11 +106,123 @@
         "https://i.pinimg.com/736x/04/a1/2b/04a12be1ff77ca43998ae739ca752b6e.jpg",
         "https://api.dicebear.com/7.x/initials/svg?seed=Piroquinha&backgroundColor=5865F2&textColor=ffffff"
       ],
-      "status": "online",
+      "status": "offline",
       "status_preference": "online",
       "custom_status": "E us D com TI com 171",
       "created_at": "2026-09-08T22:42:00.877Z",
       "theme": "midnight"
+    },
+    {
+      "id": "user_1f5ecd3a",
+      "email": "fay@gmail.com",
+      "username": "Deus cria e nois Mata, exu no corpo",
+      "discriminator": "5799",
+      "password": "9edc5bfb65a03d17978ea4f3bd08eb3d:f97f28a49232e3c0eb23b90d9a656406fbdd67babeb6f1760c5c32cce88c91e686dd561bdec1b2c6904e035150f70b81c1bc8caf5e2fc579619ba704a47b258c",
+      "avatar": "/uploads/file-1788994106615-988301563.jpeg",
+      "avatar_history": [
+        "/uploads/file-1788994106615-988301563.jpeg"
+      ],
+      "status": "offline",
+      "status_preference": "online",
+      "custom_status": "No IglooChat 🚀",
+      "created_at": "2026-09-09T22:48:33.416Z",
+      "theme": "dark"
+    },
+    {
+      "id": "user_7cafaadb",
+      "email": "liviacordeirodemoraes@gmail.com",
+      "username": "OFLx",
+      "discriminator": "9270",
+      "password": "a2bbc4956041bd6cbb9f43e4cc49238f:62b12d6e3e83a85b314fb4ff5dbed5366c4c38f2dff0c1f38a32b8f1f431b223d54c6487f5fe5be49ce85605b5512cd34d5a7445e10cda0f5e877f333fd6afa8",
+      "avatar": "/uploads/file-1789072716401-784894759.jpg",
+      "avatar_history": [
+        "/uploads/file-1789072716401-784894759.jpg"
+      ],
+      "status": "offline",
+      "status_preference": "online",
+      "custom_status": " A Princesa",
+      "created_at": "2026-09-10T20:38:44.004Z",
+      "theme": "igloochat"
+    },
+    {
+      "id": "user_b4cf9b9d",
+      "email": "asda@gmail.com",
+      "username": "dadsa",
+      "discriminator": "6398",
+      "password": "26c2725a84cf06426b91a2cea9198144:3c6d8c6eb4a62e0e343eae0741c38d89c1a6331d10d08605e31d7dc4798ac7a06828a084c15c25e32ce6fb3423c46e66ab1c45e98f051fba5d098b66b207f515",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=dadsa&backgroundColor=5865F2&textColor=ffffff",
+      "avatar_history": [
+        "https://api.dicebear.com/7.x/initials/svg?seed=dadsa&backgroundColor=5865F2&textColor=ffffff"
+      ],
+      "status": "offline",
+      "status_preference": "online",
+      "custom_status": "No IglooChat 🚀",
+      "created_at": "2026-09-11T04:29:42.781Z",
+      "theme": "blurple"
+    },
+    {
+      "id": "user_f6ce3222",
+      "email": "gabvinibatista@gmail.com",
+      "username": "Gabriel Vinicius",
+      "discriminator": "9793",
+      "password": "3e0f75a9bb20da7d311d1a4fb890e3aa:0c6285157d2994cc556a318b56e7cf9fb37a8caf429cae21e8625649149350dc3f2468c40cd9d4b1877db841f59b950018ca647aa083f3ca7917f9ce1d54c50e",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Gabriel%20Vinicius%20&backgroundColor=57F287&textColor=ffffff",
+      "avatar_history": [
+        "https://api.dicebear.com/7.x/initials/svg?seed=Gabriel%20Vinicius%20&backgroundColor=57F287&textColor=ffffff"
+      ],
+      "status": "offline",
+      "status_preference": "online",
+      "custom_status": "No IglooChat 🚀",
+      "created_at": "2026-09-16T01:26:10.207Z",
+      "theme": "blurple"
+    },
+    {
+      "id": "user_a7e986f0",
+      "email": "jssjjs@gmail.com",
+      "username": "?",
+      "discriminator": "1017",
+      "password": "34cbbd45783ae3ab44a6b25736edd177:a9d877f17cd2d8ee906855231f49591e418b019dad09f9f52b9b5528f88c84e319617b2f38d46aa9e67d34c5934c60d9416fd4ff1a0b13ec98b72380a92599c7",
+      "avatar": "/uploads/file-1789522646774-530780649.jpeg",
+      "avatar_history": [
+        "/uploads/file-1789522646774-530780649.jpeg"
+      ],
+      "status": "offline",
+      "status_preference": "online",
+      "custom_status": "No IglooChat 🚀",
+      "created_at": "2026-09-16T01:38:03.932Z",
+      "theme": "dark"
+    },
+    {
+      "id": "user_cfaac457",
+      "email": "messias.luiz20089@gmail.com",
+      "username": "Lzzz019",
+      "discriminator": "9501",
+      "password": "4a72801deab68e4334f337c592922591:9b140cee9be6464df20a2efcbea41389c128a6fc19ceed080148dfe16bd6da96f558fd0b6c12183b3fa40004edcd80f7f1e92e2bcf170b83e4e8c309da88305a",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Lzzz019&backgroundColor=57F287&textColor=ffffff",
+      "avatar_history": [
+        "https://api.dicebear.com/7.x/initials/svg?seed=Lzzz019&backgroundColor=57F287&textColor=ffffff"
+      ],
+      "status": "offline",
+      "status_preference": "online",
+      "custom_status": "No IglooChat 🚀",
+      "created_at": "2026-09-22T01:10:48.761Z",
+      "theme": "dark"
+    },
+    {
+      "id": "user_1cc398fc",
+      "email": "amordaminhavida@gmail.com",
+      "username": "LÍVIA",
+      "discriminator": "3493",
+      "password": "28965fb65ef4477740c0ec5de011466c:cabfaad9fb968e2a679d6e1597f9fb909e9acb9087bcb1a5db5a7c06d78bdb6505dab01d88e5b47e53fefdf3a3d8b9411ce0acf0ba650cf8324e2b67b83821f5",
+      "avatar": "/uploads/file-1790650116280-530130972.jpg",
+      "avatar_history": [
+        "/uploads/file-1790650116280-530130972.jpg"
+      ],
+      "status": "offline",
+      "status_preference": "online",
+      "custom_status": "No IglooChat 🚀",
+      "created_at": "2026-09-29T02:48:48.878Z",
+      "theme": "dark"
     }
   ],
   "servers": [
@@ -183,8 +295,21 @@
           "user_id": "user_3c019e39",
           "role": "member",
           "joined_at": "2026-09-08T22:44:13.550Z"
+        },
+        {
+          "server_id": "srv_fbb12c55",
+          "user_id": "user_f6ce3222",
+          "role": "member",
+          "joined_at": "2026-09-16T01:32:15.966Z"
+        },
+        {
+          "server_id": "srv_fbb12c55",
+          "user_id": "user_cfaac457",
+          "role": "member",
+          "joined_at": "2026-09-22T01:12:27.497Z"
         }
-      ]
+      ],
+      "banner": "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnlocXFsNWs5N25xZjVwbG1jZ3FqNmhkbjZ5NDh5czllZG5sN3A5ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bwnwDRUpiDZG336koE/giphy.gif"
     },
     {
       "id": "srv_d85c8944",
@@ -291,6 +416,73 @@
           "user_id": "user_50cbd5b9",
           "role": "owner",
           "joined_at": "2026-09-08T03:37:19.892Z"
+        },
+        {
+          "server_id": "srv_531a3704",
+          "user_id": "user_7cafaadb",
+          "role": "member",
+          "joined_at": "2026-09-10T20:46:15.920Z"
+        },
+        {
+          "server_id": "srv_531a3704",
+          "user_id": "user_1cc398fc",
+          "role": "member",
+          "joined_at": "2026-09-29T02:49:36.180Z"
+        }
+      ],
+      "banner": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXZhYmlubWRnNWY1ano4OXUwaXNkYndqcWxsZDQzNWl5b3M2NXc2eiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JZIH0qECeD99YQQgiO/giphy.gif"
+    },
+    {
+      "id": "srv_8742b83d",
+      "name": "TesteGordo",
+      "icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgTcKxwF8cUAs6MWMDSxIzR0gP0a15fXE72G7kCMBCjC_c8eadJv-7Hruh&s=10",
+      "owner_id": "user_50cbd5b9",
+      "invite_code": "igloochat-7p6bzy",
+      "created_at": "2026-09-09T22:44:10.701Z",
+      "categories": [
+        {
+          "id": "cat_text_6441bedc",
+          "server_id": "srv_8742b83d",
+          "name": "CANAIS DE TEXTO",
+          "position": 0,
+          "channels": [
+            {
+              "id": "ch_geral_7c99a538",
+              "server_id": "srv_8742b83d",
+              "category_id": "cat_text_6441bedc",
+              "name": "geral",
+              "type": "text",
+              "topic": "Canal geral de conversas",
+              "position": 0,
+              "created_at": "2026-09-09T22:44:10.701Z"
+            }
+          ]
+        },
+        {
+          "id": "cat_voice_6a692acc",
+          "server_id": "srv_8742b83d",
+          "name": "CANAIS DE VOZ",
+          "position": 1,
+          "channels": [
+            {
+              "id": "ch_voice_716b7430",
+              "server_id": "srv_8742b83d",
+              "category_id": "cat_voice_6a692acc",
+              "name": "Geral (Voz & Tela)",
+              "type": "voice",
+              "topic": "Converse e compartilhe tela",
+              "position": 0,
+              "created_at": "2026-09-09T22:44:10.701Z"
+            }
+          ]
+        }
+      ],
+      "members": [
+        {
+          "server_id": "srv_8742b83d",
+          "user_id": "user_50cbd5b9",
+          "role": "owner",
+          "joined_at": "2026-09-09T22:44:10.701Z"
         }
       ]
     }
@@ -664,6 +856,510 @@
       "reply_to_id": null,
       "reactions": [],
       "created_at": "2026-09-09T02:54:07.030Z"
+    },
+    {
+      "id": "msg_1f0f946c-c965-4811-9eb6-93391d839074",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "",
+      "attachments": [
+        {
+          "id": "0.7345103240469224",
+          "name": "AtividadeRaul.pdf",
+          "url": "/uploads/file-1788993387768-679038103.pdf",
+          "size": 99815,
+          "type": "application/pdf"
+        }
+      ],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-09T22:36:31.140Z"
+    },
+    {
+      "id": "msg_823860cd-56eb-4c9d-afe6-1e07a1f6feec",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "1- Arrumar o Ctrl C ctrl V de imagens e arquivos nos chats\n\n2- Colocar opção para enviar GIFS\n\n3- Criar um sistema de hierarquia (Donos, Adms, Membros)\n\n4- Criar Bot de musica igual uma \"Lorita\"\n\n5- Quando colocar uma foto de perfil tanto no servidor quanto no seu User privado, criar uma função para quando enviar a imagem você conseguir recortar a imagem da forma que quiser\n\n6- Opção de colocar Banner no Servidor",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-09T22:45:04.677Z",
+      "edited_at": "2026-09-09T22:55:16.431Z"
+    },
+    {
+      "id": "msg_cbee766c-a39d-4970-adde-3bcbd373552f",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "7- Verificação por email para entrar na conta/Recuperar senha caso tenha esquecido",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-09T22:47:48.659Z"
+    },
+    {
+      "id": "msg_b860b5dd-67df-45b6-a445-6da2b12797a7",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "8- Obrigar usuário a reforçar a senha, tendo que usar caracteres especiais e no minimo 8 digitos",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-09T22:48:35.784Z"
+    },
+    {
+      "id": "msg_4b0f146f-493c-44e0-87bc-8600bcdc8702",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_7cafaadb",
+      "content": "To aq",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:46:40.433Z"
+    },
+    {
+      "id": "msg_05ab95af-3ef6-4718-8170-c369ad815350",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Vc me ouve?",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:47:43.681Z"
+    },
+    {
+      "id": "msg_579e852b-9959-4ebc-89b4-09733762ba80",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_7cafaadb",
+      "content": "Eu nao estou te ouvindo, me ouve?",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:48:38.740Z"
+    },
+    {
+      "id": "msg_7e706a6a-b5b8-4324-a6c0-71c7433c5286",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Não",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:48:45.265Z"
+    },
+    {
+      "id": "msg_0280ecc3-98e3-426f-a1a2-f79638c68a4a",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Vc permitiu o microfone?",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:48:51.416Z"
+    },
+    {
+      "id": "msg_249c53ed-266b-4d5e-8858-d1f631ddf31f",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_7cafaadb",
+      "content": "Permiti",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:49:05.213Z"
+    },
+    {
+      "id": "msg_d4ff9cb2-c3cf-414d-8b75-1252aec1a8db",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Uai",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:49:16.778Z"
+    },
+    {
+      "id": "msg_46d64cf1-5f9a-4e97-a67f-10ace915231b",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Agora vc se mutou",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:49:23.161Z"
+    },
+    {
+      "id": "msg_1eb54270-944e-4b23-85a2-802b1df21093",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Raivinha",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:50:05.837Z"
+    },
+    {
+      "id": "msg_86d2f5b4-9aa1-45d6-ac9d-86c8d8915e25",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Entra no dc",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:50:08.715Z"
+    },
+    {
+      "id": "msg_fad8d448-2843-49c1-86f2-1b5fc02a9145",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Pra ver",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:50:10.484Z"
+    },
+    {
+      "id": "msg_e1df77ce-436e-4917-a533-d9f4adf5530b",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_7cafaadb",
+      "content": "Viu?",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:50:10.551Z"
+    },
+    {
+      "id": "msg_af7e33d6-cdb6-4d16-b972-0ef8a927ce71",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_50cbd5b9",
+      "content": "Não",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-10T20:50:18.470Z"
+    },
+    {
+      "id": "msg_ea4e44e0-7f7b-4208-a61c-5eba7598c9e8",
+      "channel_id": "ch_geral_821b7f83",
+      "server_id": "srv_531a3704",
+      "author_id": "user_7cafaadb",
+      "content": "Here",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-11T03:27:34.988Z"
+    },
+    {
+      "id": "msg_b28fd1ee-071f-440a-9173-ef157febaf27",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "Boss como matar helo",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:43:01.155Z"
+    },
+    {
+      "id": "msg_6fbdcbaa-43be-4548-b972-10f058e3b32e",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "to ouvindo ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:31.001Z"
+    },
+    {
+      "id": "msg_ddf9e407-37c8-4631-afd0-3a4d20765dd9",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "me escuta??",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:34.461Z"
+    },
+    {
+      "id": "msg_a696d54c-2829-4e44-a878-dc28ccd77d78",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "ou ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:36.641Z"
+    },
+    {
+      "id": "msg_58808ab7-2706-41c7-a68e-1297e0575058",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "N",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:40.048Z"
+    },
+    {
+      "id": "msg_e060b8d6-2e4f-4f40-825e-5e7104764f87",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "programado ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:41.512Z"
+    },
+    {
+      "id": "msg_6595876e-3fa1-4d94-9541-ccb3df9f9e29",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Ah man",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:41.614Z"
+    },
+    {
+      "id": "msg_fa895d22-88e6-4713-af70-e0620c18acd6",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "ajuda o pai ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:43.956Z"
+    },
+    {
+      "id": "msg_6bed07b5-cdb7-421a-a5d8-db9a51615139",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "KKKKK",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:46.508Z"
+    },
+    {
+      "id": "msg_500fda1d-639b-4e0a-820a-419633a0fc2a",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_12071697",
+      "content": "jajajjajaa",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:50.542Z"
+    },
+    {
+      "id": "msg_8d82a87f-4925-436c-8707-6c69d7865815",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Tem q estar vendo",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:52.648Z"
+    },
+    {
+      "id": "msg_8bdbba06-57cc-439a-9a01-372e039a415c",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Abre o dc ai dog",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:56.387Z"
+    },
+    {
+      "id": "msg_ae54d3fa-f801-428b-835f-ed5dd751704b",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Mais facil",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:56:59.470Z"
+    },
+    {
+      "id": "msg_ebdc8062-508a-4f29-a7b2-976ddb99d5fa",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Puta merda",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:01.270Z"
+    },
+    {
+      "id": "msg_5bd38b33-37d7-4c8c-99b4-c36f04d3229e",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "viado kkkkkkkkkkk para de digitar krai kkkkkkkkkk",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:06.185Z"
+    },
+    {
+      "id": "msg_540359b1-a31d-438a-9dd4-36f0f3532de5",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "Tem coisa pra arrumar aqui",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:07.165Z"
+    },
+    {
+      "id": "msg_9da843eb-d10b-4871-9f7e-7bfbd5d269de",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "eu to ouvindo vcs ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:10.674Z"
+    },
+    {
+      "id": "msg_dd343390-bbab-4ce1-928a-028c0da5b536",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "kkkkkkkkkkkkkkkkkkk",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:12.767Z"
+    },
+    {
+      "id": "msg_0315b9c5-9468-46f6-8fdd-cf6f87466b30",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "eu falei que tava o krl ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:24.068Z"
+    },
+    {
+      "id": "msg_9d29118f-492b-439c-a377-d46fa7d0253e",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "é que vou ter que baixar pra ficar melhor ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:32.649Z"
+    },
+    {
+      "id": "msg_dc00fa2d-ca9e-415c-8745-73b245ce3e97",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "que discord oq krai ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:57:43.438Z"
+    },
+    {
+      "id": "msg_bc1df0d1-de20-438b-b5bc-4e6d75069fa2",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "deu erro pra fazer dowloud",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:58:06.932Z"
+    },
+    {
+      "id": "msg_698160f3-da7e-4b27-b0f2-8afba2e7fa5c",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "loud",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:58:17.624Z"
+    },
+    {
+      "id": "msg_33a5122a-b535-4eb2-afde-8d6a21c2a72f",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "laud",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:58:19.371Z"
+    },
+    {
+      "id": "msg_98d6a608-1c97-4a89-894b-1842d6d5c794",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "laud",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:58:21.244Z"
+    },
+    {
+      "id": "msg_84c77a93-d424-4747-a92a-80f763b6f056",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_f6ce3222",
+      "content": "daulaud",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-16T01:58:31.893Z"
+    },
+    {
+      "id": "msg_8f206187-ab67-460e-a03c-0e7af04c533f",
+      "channel_id": "ch_geral_20816a4e",
+      "server_id": "srv_fbb12c55",
+      "author_id": "user_50cbd5b9",
+      "content": "@Pedal ",
+      "attachments": [],
+      "reply_to_id": null,
+      "reactions": [],
+      "created_at": "2026-09-26T23:54:25.687Z"
     }
   ],
   "direct_channels": [
@@ -695,6 +1391,50 @@
       "user2_id": "user_3c019e39",
       "created_at": "2026-09-08T22:43:07.599Z",
       "updated_at": "2026-09-08T22:43:51.831Z"
+    },
+    {
+      "id": "dm_200908cb",
+      "members": [
+        "user_50cbd5b9",
+        "user_1f5ecd3a"
+      ],
+      "user1_id": "user_50cbd5b9",
+      "user2_id": "user_1f5ecd3a",
+      "created_at": "2026-09-09T22:52:58.187Z",
+      "updated_at": "2026-09-09T22:54:25.629Z"
+    },
+    {
+      "id": "dm_c2b13008",
+      "members": [
+        "user_50cbd5b9",
+        "user_7cafaadb"
+      ],
+      "user1_id": "user_50cbd5b9",
+      "user2_id": "user_7cafaadb",
+      "created_at": "2026-09-10T20:42:34.693Z",
+      "updated_at": "2026-09-10T20:43:58.888Z"
+    },
+    {
+      "id": "dm_c2586b1f",
+      "members": [
+        "user_50cbd5b9",
+        "user_f6ce3222"
+      ],
+      "user1_id": "user_50cbd5b9",
+      "user2_id": "user_f6ce3222",
+      "created_at": "2026-09-16T01:28:29.761Z",
+      "updated_at": "2026-09-16T01:31:19.135Z"
+    },
+    {
+      "id": "dm_58de0e4d",
+      "members": [
+        "user_50cbd5b9",
+        "user_cfaac457"
+      ],
+      "user1_id": "user_50cbd5b9",
+      "user2_id": "user_cfaac457",
+      "created_at": "2026-09-22T01:11:37.346Z",
+      "updated_at": "2026-09-22T01:11:49.468Z"
     }
   ],
   "direct_messages": [
@@ -843,6 +1583,159 @@
       "attachments": [],
       "reply_to_id": null,
       "created_at": "2026-09-08T22:43:51.831Z"
+    },
+    {
+      "id": "dm_msg_d85ac018-eea1-4ab2-bcf1-40a30a20274d",
+      "channel_id": "dm_200908cb",
+      "author_id": "user_50cbd5b9",
+      "content": "VAI TOMA NO SEU CÚ",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-09T22:53:08.283Z"
+    },
+    {
+      "id": "dm_msg_1f57e442-cf1d-4c8b-851f-e4f270e8258d",
+      "channel_id": "dm_200908cb",
+      "author_id": "user_50cbd5b9",
+      "content": "BIXA DO KARALHO",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-09T22:53:39.036Z"
+    },
+    {
+      "id": "dm_msg_831d26cd-6904-4cef-a6ee-c81d598a15fc",
+      "channel_id": "dm_200908cb",
+      "author_id": "user_1f5ecd3a",
+      "content": "n entrosa ",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-09T22:53:53.784Z"
+    },
+    {
+      "id": "dm_msg_a66a89f5-d5d8-4cc9-ad5d-dece650959a3",
+      "channel_id": "dm_200908cb",
+      "author_id": "user_1f5ecd3a",
+      "content": "a",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-09T22:54:00.854Z"
+    },
+    {
+      "id": "dm_msg_20c05f14-e84e-4c16-9de1-057a65c421a4",
+      "channel_id": "dm_200908cb",
+      "author_id": "user_1f5ecd3a",
+      "content": "a",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-09T22:54:03.323Z"
+    },
+    {
+      "id": "dm_msg_9443518e-038e-435a-bc29-9e4ded77b751",
+      "channel_id": "dm_200908cb",
+      "author_id": "user_50cbd5b9",
+      "content": "igloochat-zcm46b",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-09T22:54:25.629Z"
+    },
+    {
+      "id": "dm_msg_bd0999da-4bbb-4b51-9313-12d6a7e94e5c",
+      "channel_id": "dm_c2b13008",
+      "author_id": "user_50cbd5b9",
+      "content": "igloochat-8pwp8i",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-10T20:43:41.784Z"
+    },
+    {
+      "id": "dm_msg_55dd1490-4c10-4101-ac94-3619ff051d12",
+      "channel_id": "dm_c2b13008",
+      "author_id": "user_50cbd5b9",
+      "content": "Aperta na bússula",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-10T20:43:47.295Z"
+    },
+    {
+      "id": "dm_msg_ea72589e-b7a1-4c69-b08b-91f74b256463",
+      "channel_id": "dm_c2b13008",
+      "author_id": "user_50cbd5b9",
+      "content": "E cola o código do servidor",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-10T20:43:56.885Z"
+    },
+    {
+      "id": "dm_msg_a11a1829-dfcd-4c4c-b2ad-3f2e769daee1",
+      "channel_id": "dm_c2b13008",
+      "author_id": "user_50cbd5b9",
+      "content": "@OFLx ",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-10T20:43:58.888Z"
+    },
+    {
+      "id": "dm_msg_ec8c7901-5995-4345-aa3f-1aaf88a53892",
+      "channel_id": "dm_c2586b1f",
+      "author_id": "user_50cbd5b9",
+      "content": "Toma sua cú",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-16T01:28:36.769Z"
+    },
+    {
+      "id": "dm_msg_2ada322d-db4a-4655-b9aa-1af0f6998eb0",
+      "channel_id": "dm_c2586b1f",
+      "author_id": "user_50cbd5b9",
+      "content": "igloochat-zcm46b",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-16T01:28:45.223Z"
+    },
+    {
+      "id": "dm_msg_e8ecf892-06fa-41d8-906f-a6a577797c78",
+      "channel_id": "dm_c2586b1f",
+      "author_id": "user_50cbd5b9",
+      "content": "Aperta no ícone da bussula",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-16T01:28:51.942Z"
+    },
+    {
+      "id": "dm_msg_207ed680-d760-403d-9d18-35cbf9fe2af2",
+      "channel_id": "dm_c2586b1f",
+      "author_id": "user_50cbd5b9",
+      "content": "E cola esse código",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-16T01:28:56.815Z"
+    },
+    {
+      "id": "dm_msg_7e515538-0658-4f71-91f9-ee70e56ca5b5",
+      "channel_id": "dm_c2586b1f",
+      "author_id": "user_f6ce3222",
+      "content": "Como???",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-16T01:31:19.135Z"
+    },
+    {
+      "id": "dm_msg_70f61776-a56a-4965-88da-afeaf84381e3",
+      "channel_id": "dm_58de0e4d",
+      "author_id": "user_50cbd5b9",
+      "content": "Opa",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-22T01:11:39.566Z"
+    },
+    {
+      "id": "dm_msg_018d290b-04c4-4793-915c-36beaa5d8a90",
+      "channel_id": "dm_58de0e4d",
+      "author_id": "user_50cbd5b9",
+      "content": "igloochat-zcm46b",
+      "attachments": [],
+      "reply_to_id": null,
+      "created_at": "2026-09-22T01:11:49.468Z"
     }
   ],
   "friend_requests": [
@@ -866,6 +1759,34 @@
       "to_id": "user_50cbd5b9",
       "status": "accepted",
       "created_at": "2026-09-08T22:42:22.233Z"
+    },
+    {
+      "id": "freq_64a8570a",
+      "from_id": "user_50cbd5b9",
+      "to_id": "user_1f5ecd3a",
+      "status": "accepted",
+      "created_at": "2026-09-09T22:50:04.740Z"
+    },
+    {
+      "id": "freq_65b7eaa2",
+      "from_id": "user_7cafaadb",
+      "to_id": "user_50cbd5b9",
+      "status": "accepted",
+      "created_at": "2026-09-10T20:38:59.766Z"
+    },
+    {
+      "id": "freq_e1985a38",
+      "from_id": "user_f6ce3222",
+      "to_id": "user_50cbd5b9",
+      "status": "accepted",
+      "created_at": "2026-09-16T01:28:10.916Z"
+    },
+    {
+      "id": "freq_4f499c2e",
+      "from_id": "user_50cbd5b9",
+      "to_id": "user_cfaac457",
+      "status": "accepted",
+      "created_at": "2026-09-22T01:11:26.697Z"
     }
   ],
   "tokens": {
@@ -893,13 +1814,42 @@
     "bc9c98ac9d48efa6ff67c8a7cb7d0c2beef1bb6d51822702301136c6179e4355": "user_50cbd5b9",
     "301fe65bb948e66e86bd58d731db78c15b41ce9642997a0a8500c93afa96fd65": "user_3c019e39",
     "a380ca1b8f324c0104e3cef86df11b85ce973b9ab19653f713e7782685966f5c": "user_3c019e39",
-    "d727cb509a7d982ca7433f501782dce74dc380f6e66188fd38d0522ad0573d0c": "user_50cbd5b9"
+    "d727cb509a7d982ca7433f501782dce74dc380f6e66188fd38d0522ad0573d0c": "user_50cbd5b9",
+    "255d79f5b131d1da427b6c4759a234ca2af9b426d760ef071e908b32ff3ffe00": "user_50cbd5b9",
+    "21ef5977f988e4f10c31f8d5a659a4d0434e96f7437a0cb3ffce13f971a56ef3": "user_50cbd5b9",
+    "955727272c96a66468cedee55b1f42ddbf1e0e6fd72e2d4047e4ce12372aedf8": "user_1f5ecd3a",
+    "742dd9d0a633b5a19216b39aef71475ec55e8e50523b74290cc178e4d638459d": "user_50cbd5b9",
+    "0672f77d82314adbafb3f2b3abbfd196d5bba6c1f3ea1f8c94d2eb8a1cf8ea19": "user_7cafaadb",
+    "678e9876ecb38d0e3f7f1476a51750702cbd99655341e16ff0e352cfa08ab94f": "user_7cafaadb",
+    "0d2c697def8227bd3eca4490d0fb98f524b97ea585d2c75d2fa4011040004804": "user_50cbd5b9",
+    "b3ee1a983655c9d6422308844f8d28f1b7be3cf73cf812c7b8bccc458c5ce771": "user_3c019e39",
+    "4ee3b485ad796b29fb05966319845c42d28851ca1852b637c2b4c2c536672c6e": "user_50cbd5b9",
+    "9b83c9ac6c185a34e4384aa9eeeeb613189084d7755b877863160ea92b6d98e5": "user_7cafaadb",
+    "d9719f4713f0685fca8d74be354946c469740dcd8d02a7d29f6ddad055e870f7": "user_50cbd5b9",
+    "342fd2c64a1007b0d1107d1b33fcea525a2dfd85f8bbbf994520eddc6fd5eb27": "user_50cbd5b9",
+    "844b88b6801ba4e6fb28a24b759aa970099181a21c4fbb870d51bdfaaa1971c6": "user_7cafaadb",
+    "c4983beeadaa2b115331fbfc8a3a9c2ab8809801ff5d5cb77d9ddfad6775f18c": "user_50cbd5b9",
+    "b4219de628c956c377803546a1267fc7dab4bb805a69b1254d63793e124753c0": "user_f6ce3222",
+    "c7ba46b569a2dc5ec13993a4afbd25805ea905c5a06c84263c70d64b02f2d72b": "user_a7e986f0",
+    "0bed2bf6eec9647bd6947b23302814c1754448ea9adf3d648fdd33328dea8e7b": "user_12071697",
+    "cb5b387f095eda1527cba0f9e6e4ba822b6545c6983c941b070463e2eb4f5a5f": "user_f6ce3222",
+    "fc6e28a14f55a2fff344b73b80cf500aeb423fc2ce9e1e49175ba76359176132": "user_f6ce3222",
+    "2547d2a0b0ce9fc6332d1cf7c3b2a5bc5d49ffb1974e9d8093112044e85215fb": "user_50cbd5b9",
+    "ae9a967f3451c5acd6aaeb122afe5b1b872df8bfe90e2b089008bff4964db5d3": "user_cfaac457",
+    "003991bd377d2929524cfcac80dff128c1225678ce532ba1f90e798c2b2346d3": "user_50cbd5b9",
+    "f6266dfa5e565eb010b0684e28756d119a429634d0b3ded4aca79e576db7f404": "user_12071697",
+    "903cce6c86a8a087f70974c5775ee07f581a8c34eedda4b08d38fb9eef4d2aa0": "user_50cbd5b9",
+    "12b473198ddf2902f7d6e53e90f81f68499adb09ca0c3fe7a7f9f98ad4518c76": "user_1cc398fc"
   },
   "friends": {
     "user_50cbd5b9": [
       "user_12071697",
       "user_c11b8177",
-      "user_3c019e39"
+      "user_3c019e39",
+      "user_1f5ecd3a",
+      "user_7cafaadb",
+      "user_f6ce3222",
+      "user_cfaac457"
     ],
     "user_053057d8": [],
     "user_7f127692": [],
@@ -912,6 +1862,21 @@
     "user_e9c36204": [],
     "user_3c019e39": [
       "user_50cbd5b9"
-    ]
+    ],
+    "user_1f5ecd3a": [
+      "user_50cbd5b9"
+    ],
+    "user_7cafaadb": [
+      "user_50cbd5b9"
+    ],
+    "user_b4cf9b9d": [],
+    "user_f6ce3222": [
+      "user_50cbd5b9"
+    ],
+    "user_a7e986f0": [],
+    "user_cfaac457": [
+      "user_50cbd5b9"
+    ],
+    "user_1cc398fc": []
   }
 }

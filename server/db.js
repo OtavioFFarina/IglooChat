@@ -535,7 +535,7 @@ const db = {
     return this.getServer(newServerId);
   },
 
-  updateServer(serverId, userId, { name, icon }) {
+  updateServer(serverId, userId, { name, icon, banner }) {
     const data = loadDb();
     const server = data.servers.find(s => s.id === serverId);
     if (!server) return { error: 'Servidor não encontrado.' };
@@ -543,6 +543,7 @@ const db = {
 
     if (name && name.trim()) server.name = name.trim();
     if (icon !== undefined) server.icon = icon ? icon.trim() : null;
+    if (banner !== undefined) server.banner = banner ? banner.trim() : null;
 
     saveDb();
     return { success: true, server: this.getServer(serverId) };

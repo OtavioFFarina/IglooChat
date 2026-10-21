@@ -233,8 +233,8 @@ router.get('/servers/:id', requireAuth, (req, res) => {
 });
 
 router.patch('/servers/:id', requireAuth, (req, res) => {
-  const { name, icon } = req.body;
-  const result = db.updateServer(req.params.id, req.user.id, { name, icon });
+  const { name, icon, banner } = req.body;
+  const result = db.updateServer(req.params.id, req.user.id, { name, icon, banner });
   if (result.error) {
     return res.status(403).json({ error: result.error });
   }
@@ -412,11 +412,37 @@ let cachedIceServers = null;
 let lastFetchTime = 0;
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 min
 
-const FALLBACK_ICE_SERVERS = [
+const ROBUST_ICE_SERVERS = [
+  // STUN Servers (Ultra low latency direct candidate discovery)
   { urls: 'stun:stun.l.google.com:19302' },
   { urls: 'stun:stun1.l.google.com:19302' },
   { urls: 'stun:stun2.l.google.com:19302' },
+  { urls: 'stun:stun3.l.google.com:19302' },
+  { urls: 'stun:stun4.l.google.com:19302' },
   { urls: 'stun:stun.cloudflare.com:3478' },
+  // OpenRelay Public TURN (High availability community relay - no private quota limits)
+  { urls: 'stun:openrelay.metered.ca:80' },
+  {
+    urls: 'turn:openrelay.metered.ca:80',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turns:openrelay.metered.ca:443?transport=tcp',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  // Dedicated Metered Relay Pool
   { urls: 'stun:stun.relay.metered.ca:80' },
   {
     urls: 'turn:global.relay.metered.ca:80',
@@ -448,25 +474,24 @@ router.get('/webrtc/ice-servers', async (req, res) => {
 
   try {
     const fetchRes = await fetch('https://doudizhu-online.metered.live/api/v1/turn/credentials?apiKey=69960ccff638874fa5ab1dcb405d13b1097f', {
-      signal: AbortSignal.timeout(4000)
+      signal: AbortSignal.timeout(3500)
     });
     if (fetchRes.ok) {
       const data = await fetchRes.json();
       if (Array.isArray(data) && data.length > 0) {
-        cachedIceServers = [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun.cloudflare.com:3478' },
-          ...data
-        ];
+        // Merge dynamic servers with OpenRelay and Google STUN
+        const dynamicUrls = new Set(data.map(s => s.urls));
+        const nonDuplicateRobust = ROBUST_ICE_SERVERS.filter(s => !dynamicUrls.has(s.urls));
+        cachedIceServers = [...data, ...nonDuplicateRobust];
         lastFetchTime = now;
         return res.json({ iceServers: cachedIceServers });
       }
     }
   } catch (err) {
-    console.warn('[WebRTC ICE] Usando fallback com servidores TURN autenticados:', err.message);
+    console.warn('[WebRTC ICE] Usando fallback com servidores TURN resilientes:', err.message);
   }
 
-  cachedIceServers = FALLBACK_ICE_SERVERS;
+  cachedIceServers = ROBUST_ICE_SERVERS;
   lastFetchTime = now;
   return res.json({ iceServers: cachedIceServers });
 });
