@@ -291,24 +291,25 @@ async function createWindow() {
     return true;
   });
 
-  // Enable system screen & window capture across all desktop platforms
-  session.defaultSession.setDisplayMediaRequestHandler(async (request, callback) => {
-    try {
-      const types = process.platform === 'linux' ? ['screen'] : ['screen', 'window'];
-      const sources = await desktopCapturer.getSources({ types, fetchWindowIcons: false });
-      if (sources && sources.length > 0) {
-        callback({
-          video: sources[0],
-          audio: (process.platform === 'win32' || process.platform === 'darwin') ? 'loopback' : undefined
-        });
-      } else {
+  // Enable system screen & window capture across supported platforms
+  if (process.platform === 'win32' || process.platform === 'darwin') {
+    session.defaultSession.setDisplayMediaRequestHandler(async (request, callback) => {
+      try {
+        const sources = await desktopCapturer.getSources({ types: ['screen', 'window'], fetchWindowIcons: false });
+        if (sources && sources.length > 0) {
+          callback({
+            video: sources[0],
+            audio: 'loopback'
+          });
+        } else {
+          callback({});
+        }
+      } catch (err) {
+        console.error('[Electron] Erro em setDisplayMediaRequestHandler:', err);
         callback({});
       }
-    } catch (err) {
-      console.error('[Electron] Erro em setDisplayMediaRequestHandler:', err);
-      callback({});
-    }
-  });
+    });
+  }
 
   // Handle connection errors gracefully
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
