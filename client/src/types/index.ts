@@ -53,6 +53,7 @@ export interface Server {
   id: string;
   name: string;
   icon?: string;
+  banner?: string;
   owner_id: string;
   invite_code: string;
   created_at: string;

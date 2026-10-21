@@ -178,7 +178,7 @@ interface IglooChatContextType {
   // Server Management
   createServer: (name: string, icon?: string) => Promise<Server>;
   joinServer: (code: string) => Promise<boolean>;
-  updateServer: (serverId: string, data: { name?: string; icon?: string }) => Promise<boolean>;
+  updateServer: (serverId: string, data: { name?: string; icon?: string; banner?: string }) => Promise<boolean>;
   deleteServer: (serverId: string) => Promise<boolean>;
   leaveServer: (serverId: string) => Promise<boolean>;
   createChannel: (name: string, type: 'text' | 'voice', categoryId?: string, topic?: string) => Promise<Channel>;
@@ -508,6 +508,9 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   currentChannelRef.current = currentChannel;
   const currentDMRef = useRef<DirectChannel | null>(null);
   currentDMRef.current = currentDM;
+  const localScreenStreamRef = useRef<MediaStream | null>(null);
+  localScreenStreamRef.current = localScreenStream;
+  const isJoiningVoiceRef = useRef<boolean>(false);
 
   // Helper for authenticated headers
   const getAuthHeaders = (): Record<string, string> => {
@@ -675,6 +678,9 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return [...prev, participant];
       });
       audioFX.playJoin();
+      if (localScreenStreamRef.current && participant.socketId !== socket.id) {
+        rtcManagerRef.current?.shareScreenWithPeer(participant.socketId);
+      }
     };
 
     const handleUserLeftVoice = ({ socketId }: { socketId: string }) => {
@@ -1285,12 +1291,15 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         const fullServer = await res.json();
         setCurrentServer(fullServer);
 
-        const firstTextChannel = fullServer.categories
-          ?.flatMap((c: any) => c.channels || [])
-          ?.find((ch: any) => ch.type === 'text');
+        // Only select channel from fetch if we didn't already find one immediately
+        if (!immediateChannel) {
+          const firstTextChannel = fullServer.categories
+            ?.flatMap((c: any) => c.channels || [])
+            ?.find((ch: any) => ch.type === 'text');
 
-        if (firstTextChannel && (!currentChannel || currentChannel.server_id !== server.id)) {
-          selectChannel(firstTextChannel);
+          if (firstTextChannel) {
+            selectChannel(firstTextChannel);
+          }
         }
       } catch (e) {
         console.error('Failed to load server details', e);
@@ -1357,42 +1366,49 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Voice & Video Actions
   const joinVoiceChannel = async (channel: Channel) => {
     if (!currentUser) return;
-    if (currentVoiceChannel?.id === channel.id) {
+    if (isJoiningVoiceRef.current) return;
+    if (currentVoiceChannelRef.current?.id === channel.id) {
       setActiveStageView('voice');
       return;
     }
 
-    if (currentVoiceChannel) {
-      leaveVoiceChannel();
+    isJoiningVoiceRef.current = true;
+    try {
+      if (currentVoiceChannelRef.current) {
+        leaveVoiceChannel();
+      }
+
+      setCurrentVoiceChannel(channel);
+      setActiveStageView('voice');
+      audioFX.playJoin();
+
+      // Seed local user immediately so self is never missing in voice list
+      const localParticipant: VoiceParticipant = {
+        socketId: socket.id || 'local',
+        user: currentUser,
+        channelId: channel.id,
+        isMuted,
+        isDeafened,
+        isVideoOn,
+        isScreenSharing,
+        isSpeaking: false
+      };
+      setVoiceParticipants([localParticipant]);
+
+      await rtcManagerRef.current?.startMicrophone();
+
+      sessionStorage.setItem('igloochat_active_voice', JSON.stringify(channel));
+      socket.emit('voice:join', {
+        channelId: channel.id,
+        user: currentUser,
+        isMuted,
+        isDeafened,
+        isVideoOn,
+        isScreenSharing
+      });
+    } finally {
+      isJoiningVoiceRef.current = false;
     }
-
-    setCurrentVoiceChannel(channel);
-    setActiveStageView('voice');
-    audioFX.playJoin();
-
-    // Seed local user immediately so self is never missing in voice list
-    const localParticipant: VoiceParticipant = {
-      socketId: socket.id || 'local',
-      user: currentUser,
-      channelId: channel.id,
-      isMuted,
-      isDeafened,
-      isVideoOn,
-      isScreenSharing,
-      isSpeaking: false
-    };
-    setVoiceParticipants([localParticipant]);
-
-    await rtcManagerRef.current?.startMicrophone();
-
-    socket.emit('voice:join', {
-      channelId: channel.id,
-      user: currentUser,
-      isMuted,
-      isDeafened,
-      isVideoOn,
-      isScreenSharing
-    });
   };
 
   const leaveVoiceChannel = () => {
@@ -1402,6 +1418,7 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     rtcManagerRef.current?.cleanupAll();
     socket.emit('voice:leave');
 
+    sessionStorage.removeItem('igloochat_active_voice');
     setCurrentVoiceChannel(null);
     setVoiceParticipants([]);
     setRemoteStreams({});
@@ -1506,6 +1523,23 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Chat Actions
   const sendMessage = async (content: string, attachments: any[] = []) => {
     if (!currentChannel || !currentUser) return;
+
+    const tempId = `temp-${Date.now()}`;
+    const tempMsg: Message = {
+      id: tempId,
+      content,
+      author_id: currentUser.id,
+      channel_id: currentChannel.id,
+      created_at: new Date().toISOString(),
+      author: currentUser,
+      attachments,
+      reply_to_id: replyToMessage?.id || undefined,
+      reactions: []
+    };
+
+    setMessages(prev => [...prev, tempMsg]);
+    setReplyToMessage(null);
+
     try {
       const res = await fetch(`/api/channels/${currentChannel.id}/messages`, {
         method: 'POST',
@@ -1514,19 +1548,37 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           server_id: currentServer?.id,
           content,
           attachments,
-          reply_to_id: replyToMessage?.id || null
+          reply_to_id: tempMsg.reply_to_id
         })
       });
       const newMsg = await res.json();
       socket.emit('message:send', newMsg);
-      setReplyToMessage(null);
+      setMessages(prev => prev.map(m => m.id === tempId ? newMsg : m));
     } catch (e) {
       console.error('Failed to send message', e);
+      setMessages(prev => prev.filter(m => m.id !== tempId));
     }
   };
 
   const sendDirectMessage = async (content: string, attachments: any[] = []) => {
     if (!currentDM || !currentUser) return;
+
+    const tempId = `temp-${Date.now()}`;
+    const tempMsg: Message = {
+      id: tempId,
+      content,
+      author_id: currentUser.id,
+      channel_id: currentDM.id,
+      created_at: new Date().toISOString(),
+      author: currentUser,
+      attachments,
+      reply_to_id: replyToMessage?.id || undefined,
+      reactions: []
+    };
+
+    setMessages(prev => [...prev, tempMsg]);
+    setReplyToMessage(null);
+
     try {
       const res = await fetch(`/api/direct/${currentDM.id}/messages`, {
         method: 'POST',
@@ -1534,15 +1586,15 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         body: JSON.stringify({
           content,
           attachments,
-          reply_to_id: replyToMessage?.id || null
+          reply_to_id: tempMsg.reply_to_id
         })
       });
       const newMsg = await res.json();
       socket.emit('dm:message:send', { dmChannelId: currentDM.id, message: newMsg });
-      setMessages(prev => [...prev, newMsg]);
-      setReplyToMessage(null);
+      setMessages(prev => prev.map(m => m.id === tempId ? newMsg : m));
     } catch (e) {
       console.error('Failed to send direct message', e);
+      setMessages(prev => prev.filter(m => m.id !== tempId));
     }
   };
 
@@ -1719,7 +1771,7 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const updateServer = async (serverId: string, data: { name?: string; icon?: string }): Promise<boolean> => {
+  const updateServer = async (serverId: string, data: { name?: string; icon?: string; banner?: string }): Promise<boolean> => {
     if (!currentUser) return false;
     try {
       const res = await fetch(`/api/servers/${serverId}`, {
@@ -1949,6 +2001,26 @@ export const IglooChatProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setIsServerSettingsOpen(false);
     setServerSettingsTarget(null);
   };
+
+  // Restore active voice call on mount (F5 / reload)
+  useEffect(() => {
+    if (currentUser && socket.connected) {
+      const activeCallData = sessionStorage.getItem('igloochat_active_voice');
+      if (activeCallData && !currentVoiceChannelRef.current) {
+        try {
+          const channel = JSON.parse(activeCallData);
+          if (channel) {
+            // Give it a tiny delay to ensure socket and refs are fully ready
+            setTimeout(() => {
+              joinVoiceChannel(channel).catch(e => console.error("Error restoring call", e));
+            }, 500);
+          }
+        } catch (e) {
+          sessionStorage.removeItem('igloochat_active_voice');
+        }
+      }
+    }
+  }, [currentUser, socket.connected]);
 
   return (
     <IglooChatContext.Provider

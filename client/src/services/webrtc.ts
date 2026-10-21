@@ -8,13 +8,39 @@ export interface WebRTCCallbacks {
   onScreenShareEnded: () => void;
 }
 
-// Resilient default ICE & TURN configuration with authenticated Metered relay servers
+// Resilient default ICE & TURN configuration with authenticated Metered & OpenRelay servers
 let activeIceConfig: RTCConfiguration = {
   iceServers: [
+    // STUN Servers (Ultra low latency candidate discovery)
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
     { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
     { urls: 'stun:stun.cloudflare.com:3478' },
+    // OpenRelay Public TURN (Community high availability relay)
+    { urls: 'stun:openrelay.metered.ca:80' },
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turns:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    // Dedicated Metered Relay Pool
     { urls: 'stun:stun.relay.metered.ca:80' },
     {
       urls: 'turn:global.relay.metered.ca:80',
@@ -40,18 +66,22 @@ let activeIceConfig: RTCConfiguration = {
   iceCandidatePoolSize: 10
 };
 
-// Fetch dynamic TURN credentials from server proxy
+// Fetch dynamic TURN credentials from server proxy and merge with robust defaults
 async function loadDynamicIceServers() {
   try {
     const res = await fetch('/api/webrtc/ice-servers');
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data.iceServers) && data.iceServers.length > 0) {
+        const dynamicUrls = new Set(data.iceServers.map((s: any) => s.urls));
+        const nonDuplicateDefaults = (activeIceConfig.iceServers || []).filter(
+          (s: any) => !dynamicUrls.has(s.urls)
+        );
         activeIceConfig = {
-          iceServers: data.iceServers,
+          iceServers: [...data.iceServers, ...nonDuplicateDefaults],
           iceCandidatePoolSize: 10
         };
-        console.log(`[WebRTC] ${data.iceServers.length} servidores ICE/TURN carregados dinamicamente com sucesso.`);
+        console.log(`[WebRTC] ${activeIceConfig.iceServers?.length} servidores ICE/TURN carregados e combinados com sucesso.`);
       }
     }
   } catch (err) {
@@ -516,7 +546,21 @@ export class WebRTCManager {
       console.log(`[WebRTC] ICE Connection State [${targetSocketId}][${streamType}]:`, pc.iceConnectionState);
       if (pc.iceConnectionState === 'failed') {
         console.warn(`[WebRTC] ICE falhou para [${targetSocketId}][${streamType}], tentando reiniciar ICE...`);
-        try { pc.restartIce(); } catch (e) {}
+        try {
+          if (pc.signalingState === 'stable') {
+            pc.restartIce();
+            pc.createOffer({ iceRestart: true })
+              .then(offer => pc.setLocalDescription(offer).then(() => offer))
+              .then(offer => {
+                socket.emit('webrtc:offer', {
+                  toSocketId: targetSocketId,
+                  offer,
+                  streamType
+                });
+              })
+              .catch(e => console.warn('[WebRTC] Erro ao emitir oferta de ICE restart:', e));
+          }
+        } catch (e) {}
       }
     };
 
@@ -555,8 +599,9 @@ export class WebRTCManager {
 
       event.track.onmute = () => {
         if (streamType === 'screen') {
-          console.log(`[WebRTC] Screen track muted from ${targetSocketId}`);
-          this.callbacks.onRemoteStreamRemoved(targetSocketId, 'screen');
+          console.log(`[WebRTC] Screen track temporariamente sem novos quadros (onmute) de ${targetSocketId}`);
+          // NUNCA remover a stream no onmute! No Chromium, tela parada dispara onmute temporário.
+          // O encerramento real da transmissão é manipulado via track.onended e via socket.
         }
       };
     };
@@ -624,25 +669,36 @@ export class WebRTCManager {
     }
   }
 
-  private renegotiateScreenWithAllPeers() {
+  renegotiateScreenWithAllPeers() {
     for (const [targetSocketId, pc] of this.screenPeers.entries()) {
       this.renegotiatePeer(targetSocketId, pc, 'screen');
     }
     // Also invite peers that don't have screen connection yet
     for (const targetSocketId of this.peers.keys()) {
       if (!this.screenPeers.has(targetSocketId)) {
-        const screenPC = this.createPeerConnection(targetSocketId, 'screen');
-        screenPC.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true })
-          .then(offer => screenPC.setLocalDescription(offer).then(() => offer))
-          .then(offer => {
-            socket.emit('webrtc:offer', {
-              toSocketId: targetSocketId,
-              offer,
-              streamType: 'screen'
-            });
-          })
-          .catch(e => console.error('[WebRTC] Erro ao criar offer de tela:', e));
+        this.shareScreenWithPeer(targetSocketId);
       }
+    }
+  }
+
+  shareScreenWithPeer(targetSocketId: string) {
+    if (!this.localScreenStream) return;
+    if (this.screenPeers.has(targetSocketId)) {
+      const pc = this.screenPeers.get(targetSocketId)!;
+      this.addTracksToPeers(this.localScreenStream, new Map([[targetSocketId, pc]]), 'screen');
+      this.renegotiatePeer(targetSocketId, pc, 'screen');
+    } else {
+      const screenPC = this.createPeerConnection(targetSocketId, 'screen');
+      screenPC.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true })
+        .then(offer => screenPC.setLocalDescription(offer).then(() => offer))
+        .then(offer => {
+          socket.emit('webrtc:offer', {
+            toSocketId: targetSocketId,
+            offer,
+            streamType: 'screen'
+          });
+        })
+        .catch(e => console.error('[WebRTC] Erro ao criar offer de tela para peer:', e));
     }
   }
 
