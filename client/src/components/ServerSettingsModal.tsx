@@ -13,7 +13,9 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
 
   const [name, setName] = useState(server.name);
   const [icon, setIcon] = useState(server.icon || '');
+  const [banner, setBanner] = useState(server.banner || '');
   const [iconUrlInput, setIconUrlInput] = useState('');
+  const [bannerUrlInput, setBannerUrlInput] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [copiedInvite, setCopiedInvite] = useState(false);
@@ -21,11 +23,13 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
   const [confirmName, setConfirmName] = useState('');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
   const isOwner = currentUser?.id === server.owner_id;
 
   useEffect(() => {
     setName(server.name);
     setIcon(server.icon || '');
+    setBanner(server.banner || '');
   }, [server]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,11 +64,43 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
     }
   };
 
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.url) {
+        setBanner(data.url);
+      }
+    } catch (err) {
+      console.error('Upload server banner error:', err);
+    } finally {
+      setIsUploading(false);
+      if (bannerInputRef.current) bannerInputRef.current.value = '';
+    }
+  };
+
+  const handleApplyBannerUrl = () => {
+    if (bannerUrlInput.trim()) {
+      setBanner(bannerUrlInput.trim());
+      setBannerUrlInput('');
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
     setIsSaving(true);
-    await updateServer(server.id, { name: name.trim(), icon: icon || undefined });
+    await updateServer(server.id, { name: name.trim(), icon: icon || undefined, banner: banner || undefined });
     setIsSaving(false);
     onClose();
   };
@@ -103,7 +139,60 @@ export const ServerSettingsModal: React.FC<ServerSettingsModalProps> = ({ server
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSave} className="p-6 space-y-6">
+        <form onSubmit={handleSave} className="p-6 space-y-6 max-h-[80vh] overflow-y-auto scrollbar-thin">
+          {/* Server Banner with Upload or URL */}
+          <div>
+            <label className="block text-[11px] font-bold text-discord-muted uppercase tracking-wider mb-2">
+              Banner do Servidor
+            </label>
+            <div className="flex flex-col space-y-4">
+              <div className="w-full h-32 rounded-lg bg-discord-darkest border-2 border-discord-floating flex items-center justify-center overflow-hidden shadow-md">
+                {banner ? (
+                  <img src={banner} alt="Server Banner" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-sm font-semibold text-discord-muted">
+                    Sem Banner
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                <input
+                  ref={bannerInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBannerUpload}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => bannerInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="w-full bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-white text-xs px-3 py-2 rounded flex justify-center items-center space-x-2 transition font-medium"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>{isUploading ? 'Enviando...' : 'Fazer Upload de Banner'}</span>
+                </button>
+
+                <div className="flex items-center space-x-1.5">
+                  <input
+                    type="url"
+                    placeholder="Ou cole a URL de um banner..."
+                    value={bannerUrlInput}
+                    onChange={(e) => setBannerUrlInput(e.target.value)}
+                    className="flex-1 bg-discord-darkest text-xs text-white px-3 py-2 rounded border border-discord-floating focus:border-discord-blurple focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyBannerUrl}
+                    className="bg-discord-darker hover:bg-discord-darkhover border border-discord-floating text-discord-header text-xs px-3 py-2 rounded transition"
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           {/* Server Icon with Upload or URL */}
           <div>
             <label className="block text-[11px] font-bold text-discord-muted uppercase tracking-wider mb-2">

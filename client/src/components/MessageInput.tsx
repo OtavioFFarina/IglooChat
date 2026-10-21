@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useIglooChat } from '../context/IglooChatContext';
-import { PlusCircle, Smile, Send, X, Image as ImageIcon, FileText, AtSign } from 'lucide-react';
+import { PlusCircle, Smile, Send, X, Image as ImageIcon, FileText, AtSign, Film } from 'lucide-react';
 import { Attachment, User } from '../types';
 
 interface MessageInputProps {
@@ -25,6 +25,10 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
+  const [gifQuery, setGifQuery] = useState('');
+  const [gifResults, setGifResults] = useState<{ id: string; url: string; preview: string }[]>([]);
+  const [isSearchingGifs, setIsSearchingGifs] = useState(false);
 
   // Mention system state
   const [showMentionMenu, setShowMentionMenu] = useState(false);
@@ -210,10 +214,92 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
     }
   };
 
+  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    let fileToUpload: File | null = null;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].kind === 'file') {
+        const file = items[i].getAsFile();
+        if (file) {
+          fileToUpload = file;
+          break;
+        }
+      }
+    }
+
+    if (fileToUpload) {
+      // We found a file/image pasted, prevent default paste behavior (which does nothing for files in textarea)
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', fileToUpload);
+
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        setAttachments(prev => [
+          ...prev,
+          {
+            id: Math.random().toString(),
+            name: data.name,
+            url: data.url,
+            size: data.size,
+            type: data.type
+          }
+        ]);
+      } catch (err) {
+        console.error('Falha no upload de arquivo colado', err);
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
+
   const addEmoji = (emoji: string) => {
     setContent(prev => prev + emoji);
     setShowEmojiPicker(false);
     textareaRef.current?.focus();
+  };
+
+  const searchGifs = async (query: string) => {
+    setGifQuery(query);
+    if (!query.trim()) {
+      setGifResults([]);
+      return;
+    }
+    setIsSearchingGifs(true);
+    try {
+      const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=Gc7131jiJuvI7IdN0HZ1D7nh0ow5BU6g&q=${encodeURIComponent(query)}&limit=12`);
+      const data = await res.json();
+      if (data.data) {
+        setGifResults(data.data.map((r: any) => ({
+          id: r.id,
+          url: r.images.original.url,
+          preview: r.images.fixed_height_small.url
+        })));
+      }
+    } catch (e) {
+      console.error('GIF search failed', e);
+    } finally {
+      setIsSearchingGifs(false);
+    }
+  };
+
+  const sendGif = (url: string) => {
+    onSend('', [{
+      id: Math.random().toString(),
+      name: 'gif.gif',
+      url: url,
+      size: 0,
+      type: 'image/gif'
+    }]);
+    setShowGifPicker(false);
+    setGifQuery('');
+    setGifResults([]);
   };
 
   const removeAttachment = (index: number) => {
@@ -334,6 +420,40 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
         </div>
       )}
 
+      {/* GIF Picker Popover */}
+      {showGifPicker && (
+        <div className="absolute bottom-20 right-16 bg-discord-floating border border-discord-darkhover rounded-xl p-3 shadow-2xl z-50 w-80 flex flex-col max-h-96">
+          <div className="text-xs font-bold text-discord-muted uppercase mb-2">Buscar GIFs</div>
+          <input
+            type="text"
+            placeholder="Pesquisar Giphy..."
+            value={gifQuery}
+            onChange={(e) => searchGifs(e.target.value)}
+            className="w-full bg-discord-darkest text-sm text-white px-3 py-2 rounded mb-3 border border-discord-darkhover focus:border-discord-blurple focus:outline-none"
+            autoFocus
+          />
+          <div className="flex-1 overflow-y-auto scrollbar-thin grid grid-cols-2 gap-2 auto-rows-max content-start">
+            {isSearchingGifs ? (
+              <div className="col-span-2 text-center text-discord-muted text-sm py-4">Buscando...</div>
+            ) : gifResults.length > 0 ? (
+              gifResults.map(gif => (
+                <button
+                  key={gif.id}
+                  onClick={() => sendGif(gif.url)}
+                  className="rounded overflow-hidden hover:opacity-80 transition bg-discord-darkest h-24 flex items-center justify-center w-full"
+                >
+                  <img src={gif.preview} alt="GIF" className="w-full h-full object-cover" />
+                </button>
+              ))
+            ) : gifQuery.trim() ? (
+              <div className="col-span-2 text-center text-discord-muted text-sm py-4">Nenhum GIF encontrado</div>
+            ) : (
+              <div className="col-span-2 text-center text-discord-muted text-sm py-4">Digite para buscar</div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Input Container */}
       <div className={`bg-discord-input flex flex-col p-2.5 focus-within:ring-1 focus-within:ring-discord-blurple transition border border-transparent focus-within:border-discord-blurple/50 shadow-inner ${
         replyToMessage ? 'rounded-b-lg rounded-t-none' : 'rounded-lg'
@@ -381,13 +501,29 @@ export const MessageInput: React.FC<MessageInputProps> = ({ placeholder, onSend 
             value={content}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
             placeholder={placeholder}
             className="flex-1 bg-transparent text-discord-header placeholder-discord-muted text-sm resize-none focus:outline-none scrollbar-thin max-h-32"
           />
 
+          {/* GIF Picker Button */}
+          <button
+            onClick={() => {
+              setShowGifPicker(!showGifPicker);
+              setShowEmojiPicker(false);
+            }}
+            title="Adicionar GIF"
+            className="text-discord-muted hover:text-white transition p-1 rounded-full hover:bg-discord-darkhover"
+          >
+            <Film className="w-5 h-5" />
+          </button>
+
           {/* Emoji Picker Button */}
           <button
-            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            onClick={() => {
+              setShowEmojiPicker(!showEmojiPicker);
+              setShowGifPicker(false);
+            }}
             title="Adicionar Emoji"
             className="text-discord-muted hover:text-white transition p-1 rounded-full hover:bg-discord-darkhover"
           >

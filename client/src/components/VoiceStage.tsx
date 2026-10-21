@@ -38,6 +38,15 @@ const StreamVideo: React.FC<StreamVideoProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+      videoRef.current.play().catch(e => console.warn('[StreamVideo] Erro no autoplay:', e));
+    }
+  }, [stream]);
+
+  if (!stream) return null;
+
   const checkDimensions = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -54,15 +63,43 @@ const StreamVideo: React.FC<StreamVideoProps> = ({
     const video = videoRef.current;
     if (!video || !stream) return;
 
-    video.srcObject = stream;
+    // Direct DOM property enforcement for Chromium / Electron autoplay
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', 'true');
+    video.setAttribute('muted', 'true');
+
+    if (video.srcObject !== stream) {
+      video.srcObject = stream;
+    }
+
     const playVideo = () => {
-      video.play().catch(e => console.warn('[StreamVideo] Autoplay note:', e));
+      if (!video) return;
+      video.muted = true;
+      const promise = video.play();
+      if (promise && typeof promise.then === 'function') {
+        promise.catch(e => {
+          console.warn('[StreamVideo] Autoplay prevented, waiting for user gesture:', e);
+          const resumeOnGesture = () => {
+            if (video) video.play().catch(() => {});
+            window.removeEventListener('click', resumeOnGesture);
+            window.removeEventListener('keydown', resumeOnGesture);
+            window.removeEventListener('touchstart', resumeOnGesture);
+          };
+          window.addEventListener('click', resumeOnGesture, { once: true });
+          window.addEventListener('keydown', resumeOnGesture, { once: true });
+          window.addEventListener('touchstart', resumeOnGesture, { once: true });
+        });
+      }
       checkDimensions();
     };
 
     playVideo();
 
-    video.onloadedmetadata = checkDimensions;
+    video.onloadedmetadata = playVideo;
+    video.onloadeddata = checkDimensions;
+    video.oncanplay = playVideo;
     video.onresize = checkDimensions;
 
     stream.getVideoTracks().forEach(track => {
@@ -76,6 +113,8 @@ const StreamVideo: React.FC<StreamVideoProps> = ({
     return () => {
       if (video) {
         video.onloadedmetadata = null;
+        video.onloadeddata = null;
+        video.oncanplay = null;
         video.onresize = null;
       }
     };
@@ -88,7 +127,7 @@ const StreamVideo: React.FC<StreamVideoProps> = ({
       ref={videoRef}
       autoPlay
       playsInline
-      muted={true}
+      muted
       className={`w-full h-full pointer-events-none ${mirrored ? 'scale-x-[-1]' : ''} ${className}`}
     />
   );

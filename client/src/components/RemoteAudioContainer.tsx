@@ -12,9 +12,9 @@ const SingleAudioPlayer: React.FC<SingleAudioPlayerProps> = ({ stream, isMuted, 
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || !stream) return;
+    if (!audio) return;
 
-    if (audio.srcObject !== stream) {
+    if (stream && audio.srcObject !== stream) {
       audio.srcObject = stream;
     }
 
@@ -29,33 +29,48 @@ const SingleAudioPlayer: React.FC<SingleAudioPlayerProps> = ({ stream, isMuted, 
     } catch (e) {}
 
     const playSafe = () => {
-      audio.play().catch(e => {
-        console.warn('[RemoteAudioContainer] Autoplay policy prevented playback until interaction:', e.message);
-      });
+      if (!audio || !stream) return;
+      const promise = audio.play();
+      if (promise && typeof promise.then === 'function') {
+        promise.catch(e => {
+          console.warn('[RemoteAudioContainer] Autoplay policy prevented playback until interaction:', e.message);
+          const resumeAudio = () => {
+            if (audio) {
+              audio.play().catch(() => {});
+            }
+            window.removeEventListener('click', resumeAudio);
+            window.removeEventListener('keydown', resumeAudio);
+            window.removeEventListener('touchstart', resumeAudio);
+          };
+          window.addEventListener('click', resumeAudio, { once: true });
+          window.addEventListener('keydown', resumeAudio, { once: true });
+          window.addEventListener('touchstart', resumeAudio, { once: true });
+        });
+      }
     };
 
-    playSafe();
+    if (stream) {
+      playSafe();
 
-    const audioTracks = stream.getAudioTracks();
-    audioTracks.forEach(t => {
-      t.onunmute = playSafe;
-    });
-
-    return () => {
+      const audioTracks = stream.getAudioTracks();
       audioTracks.forEach(t => {
-        t.onunmute = null;
+        t.onunmute = playSafe;
       });
-    };
-  }, [stream, isMuted, volume]);
 
-  if (!stream || stream.getAudioTracks().length === 0) return null;
+      return () => {
+        audioTracks.forEach(t => {
+          t.onunmute = null;
+        });
+      };
+    }
+  }, [stream, isMuted, volume]);
 
   return (
     <audio
       ref={audioRef}
       autoPlay
       playsInline
-      className="hidden"
+      className="w-0 h-0 opacity-0 pointer-events-none"
     />
   );
 };
@@ -71,7 +86,10 @@ export const RemoteAudioContainer: React.FC = () => {
   } = useIglooChat();
 
   return (
-    <div className="hidden pointer-events-none" aria-hidden="true">
+    <div 
+      className="fixed -top-[9999px] -left-[9999px] w-1 h-1 opacity-0 pointer-events-none overflow-hidden" 
+      aria-hidden="true"
+    >
       {Object.entries(remoteStreams).map(([socketId, streams]) => {
         const participant = voiceParticipants.find(p => p.socketId === socketId);
         const userId = participant?.user?.id;

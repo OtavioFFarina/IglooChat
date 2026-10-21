@@ -51,9 +51,24 @@ export const AuthScreen: React.FC = () => {
     }
   };
 
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    if (isRegistering) {
+      if (!EMAIL_REGEX.test(email)) {
+        setError('Por favor, insira um e-mail válido.');
+        return;
+      }
+      if (!PASSWORD_REGEX.test(password)) {
+        setError('A senha deve ter no mínimo 8 caracteres, incluindo letras, números e caracteres especiais.');
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {

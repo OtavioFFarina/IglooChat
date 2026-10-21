@@ -132,21 +132,28 @@ export const Sidebar: React.FC = () => {
         <>
           {/* Server Header Dropdown */}
           <div className="relative">
-            <div className="flex items-center border-b border-discord-darkest">
+            <div
+              className={`relative flex items-end border-b border-discord-darkest ${currentServer.banner ? 'h-[135px]' : 'h-12'}`}
+              style={currentServer.banner ? {
+                backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%), url(${currentServer.banner})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              } : {}}
+            >
               <button
                 onClick={() => setIsServerMenuOpen(!isServerMenuOpen)}
-                className="flex-1 h-12 px-3 sm:px-4 flex items-center justify-between hover:bg-discord-darkhover/50 transition text-discord-header font-bold text-sm shadow-sm min-w-0"
+                className={`flex-1 w-full px-3 sm:px-4 flex items-center justify-between hover:bg-black/20 transition text-discord-header font-bold text-sm shadow-sm min-w-0 ${currentServer.banner ? 'pb-3 pt-6' : 'h-full'}`}
               >
-                <span className="truncate">{currentServer.name}</span>
+                <span className="truncate drop-shadow-md">{currentServer.name}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-discord-muted transition-transform duration-200 ml-1 flex-shrink-0 ${
+                  className={`w-4 h-4 text-discord-muted transition-transform duration-200 ml-1 flex-shrink-0 drop-shadow-md ${
                     isServerMenuOpen ? 'rotate-180' : ''
                   }`}
                 />
               </button>
               <button
                 onClick={() => setIsMobileNavOpen(false)}
-                className="md:hidden p-2 mr-1.5 rounded hover:bg-white/10 text-discord-muted hover:text-white transition flex-shrink-0"
+                className={`md:hidden p-2 mr-1.5 rounded hover:bg-white/10 text-discord-muted hover:text-white transition flex-shrink-0 ${currentServer.banner ? 'absolute top-2 right-2 z-10' : ''}`}
                 title="Fechar menu"
                 aria-label="Fechar menu"
               >

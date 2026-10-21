@@ -471,13 +471,14 @@ export const UserSettingsModal: React.FC = () => {
     e.preventDefault();
     setPasswordStatus(null);
 
-    if (newPassword.length < 6) {
-      setPasswordStatus({ type: 'error', message: 'A nova senha deve ter no mínimo 6 caracteres.' });
+    if (newPassword !== confirmPassword) {
+      setPasswordStatus({ type: 'error', message: 'A nova senha e a confirmação não coincidem.' });
       return;
     }
 
-    if (newPassword !== confirmPassword) {
-      setPasswordStatus({ type: 'error', message: 'A nova senha e a confirmação não coincidem.' });
+    const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+    if (!PASSWORD_REGEX.test(newPassword)) {
+      setPasswordStatus({ type: 'error', message: 'A senha deve ter no mínimo 8 caracteres, incluindo letras, números e caracteres especiais.' });
       return;
     }
 
